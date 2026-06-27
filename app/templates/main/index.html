@@ -1,0 +1,314 @@
+{% extends 'base.html' %}
+{% block title %}Luxury Villa Rentals Worldwide — Bek Tour{% endblock %}
+{% block extra_css %}
+<style>
+/* HERO */
+.hero { position:relative; min-height:calc(100vh - var(--header-h)); display:flex; align-items:center; background:var(--dark); overflow:hidden; }
+.hero-bg { position:absolute; inset:0; background:url('https://images.unsplash.com/photo-1540541338287-41700207dee6?w=1920') center 30%/cover; opacity:.2; }
+.hero-gradient { position:absolute; inset:0; background:linear-gradient(135deg, rgba(8,8,8,.8) 0%, rgba(8,8,8,.3) 100%); }
+.hero-content { position:relative; z-index:1; padding:90px 0 100px; max-width:860px; }
+.hero-label { display:inline-flex; align-items:center; gap:8px; background:rgba(201,168,76,.1); color:var(--gold); padding:5px 14px; border-radius:20px; font-size:.65rem; font-weight:700; letter-spacing:.15em; text-transform:uppercase; margin-bottom:22px; border:1px solid rgba(201,168,76,.2); }
+.hero h1 { color:var(--white); margin-bottom:18px; font-size:clamp(2.6rem,6vw,4.8rem); }
+.hero h1 em { color:var(--gold); font-style:normal; }
+.hero-desc { color:rgba(255,255,255,.55); font-size:1.05rem; margin-bottom:34px; max-width:500px; line-height:1.75; font-weight:300; }
+.hero-btns { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:52px; }
+.search-wrap { background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.08); border-radius:var(--radius); padding:18px; max-width:860px; }
+
+/* COUNTRIES */
+.countries-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; }
+.country-card { position:relative; border-radius:var(--radius); overflow:hidden; height:250px; display:block; }
+.country-card.tall { grid-row:span 2; min-height:514px; }
+.country-card img { width:100%; height:100%; object-fit:cover; transition:transform .5s ease; }
+.country-card:hover img { transform:scale(1.04); }
+.country-overlay { position:absolute; inset:0; background:linear-gradient(to top,rgba(0,0,0,.55) 0%,transparent 50%); }
+.country-info { position:absolute; bottom:14px; left:14px; color:var(--white); }
+.country-name { font-family:var(--font-display); font-size:1.05rem; font-weight:600; }
+.country-count { font-size:.7rem; opacity:.65; margin-top:1px; }
+.country-card:hover .country-overlay { background:linear-gradient(to top,rgba(0,0,0,.7) 0%,rgba(0,0,0,.1) 60%); }
+
+/* SERVICES */
+.service-tiles { display:grid; grid-template-columns:repeat(4,1fr); gap:18px; }
+.service-tile { background:var(--white); border-radius:var(--radius); padding:28px 22px; box-shadow:var(--shadow-sm); transition:all var(--transition); text-decoration:none; color:inherit; display:flex; flex-direction:column; align-items:center; text-align:center; border:1px solid transparent; }
+.service-tile:hover { transform:translateY(-3px); box-shadow:var(--shadow); border-color:var(--gold-light); }
+.service-tile-icon { width:60px; height:60px; border-radius:50%; background:var(--gold-light); color:var(--gold); display:flex; align-items:center; justify-content:center; font-size:1.3rem; margin-bottom:14px; transition:all var(--transition); }
+.service-tile:hover .service-tile-icon { background:var(--gold); color:var(--white); }
+.service-tile h3 { font-size:.9rem; font-weight:700; margin-bottom:4px; }
+.service-tile-price { font-size:.72rem; color:var(--grey-500); }
+
+/* STATS */
+.stats-section { background:var(--dark); padding:52px 0; }
+.stats-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:24px; text-align:center; }
+.stat-divider { width:1px; background:rgba(255,255,255,.08); }
+.stat-num { font-family:var(--font-display); font-size:2.8rem; font-weight:700; color:var(--gold); line-height:1; }
+.stat-label { font-size:.72rem; color:rgba(255,255,255,.35); margin-top:6px; text-transform:uppercase; letter-spacing:.06em; }
+
+/* WHY US */
+.why-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:24px; }
+.why-card { padding:28px; background:var(--white); border-radius:var(--radius); border:1px solid var(--grey-100); transition:all var(--transition); }
+.why-card:hover { border-color:var(--gold-light); box-shadow:var(--shadow); }
+.why-num { font-family:var(--font-display); font-size:2.5rem; color:var(--gold-light); font-weight:700; margin-bottom:12px; line-height:1; }
+.why-card h3 { font-size:.92rem; font-weight:700; margin-bottom:8px; }
+.why-card p { font-size:.8rem; color:var(--grey-500); line-height:1.7; }
+
+/* B2B */
+.b2b-section { background:var(--dark); padding:80px 0; }
+.b2b-inner { display:grid; grid-template-columns:1fr 1fr; gap:60px; align-items:center; }
+.b2b-stats { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:28px; }
+.b2b-stat { padding:16px; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.07); border-radius:var(--radius-sm); }
+.b2b-stat-num { font-family:var(--font-display); font-size:1.8rem; color:var(--gold); font-weight:700; }
+.b2b-stat-label { font-size:.7rem; color:rgba(255,255,255,.35); margin-top:3px; text-transform:uppercase; letter-spacing:.06em; }
+.b2b-form { background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.08); border-radius:var(--radius); padding:32px; }
+
+@media (max-width:1024px) { .countries-grid,.service-tiles { grid-template-columns:repeat(2,1fr); } .stats-grid { grid-template-columns:repeat(2,1fr); } .why-grid { grid-template-columns:1fr 1fr; } .b2b-inner { grid-template-columns:1fr; } }
+@media (max-width:640px) { .country-card.tall { grid-row:span 1; min-height:250px; } .why-grid { grid-template-columns:1fr; } .b2b-stats { grid-template-columns:1fr 1fr; } }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-gradient"></div>
+  <div class="container">
+    <div class="hero-content">
+      <div class="hero-label"><i class="fa fa-crown"></i> {{ t.hero_eyebrow }}</div>
+      <h1>{{ t.hero_title | safe }}</h1>
+      <p class="hero-desc">{{ t.hero_desc }}</p>
+      <div class="hero-btns">
+        <a href="{{ url_for('villas.index') }}" class="btn btn-gold btn-xl"><i class="fa fa-home"></i> {{ t.btn_browse }}</a>
+        <a href="{{ url_for('services.index') }}" class="btn btn-white btn-xl">{{ t.btn_services }}</a>
+      </div>
+
+      <div class="search-wrap">
+        <div class="search-tabs">
+          <div class="search-tab active" data-type="villa"><i class="fa fa-home"></i> Villas</div>
+          <div class="search-tab" data-type="yacht"><i class="fa fa-ship"></i> Yachts</div>
+          <div class="search-tab" data-type="car"><i class="fa fa-car"></i> Cars</div>
+          <div class="search-tab" data-type="transfer"><i class="fa fa-shuttle-van"></i> Transfer</div>
+        </div>
+        <form class="search-box" action="{{ url_for('villas.index') }}" method="GET">
+          <input type="hidden" name="type" id="search-type" value="villa">
+          <div class="search-box-field">
+            <i class="fa fa-globe"></i>
+            <div>
+              <label>{{ t.search_dest }}</label>
+              <select name="country" style="min-width:110px;">
+                <option value="">Any country</option>
+                {% for c in countries %}<option value="{{ c.id }}">{{ c.name_en }}</option>{% endfor %}
+              </select>
+            </div>
+          </div>
+          <div class="search-box-field">
+            <i class="fa fa-calendar-check"></i>
+            <div><label>{{ t.search_checkin }}</label><input type="date" name="check_in" id="search-checkin"></div>
+          </div>
+          <div class="search-box-field">
+            <i class="fa fa-calendar-times"></i>
+            <div><label>Check Out</label><input type="date" name="check_out" id="search-checkout"></div>
+          </div>
+          <div class="search-box-field">
+            <i class="fa fa-users"></i>
+            <div>
+              <label>{{ t.search_guests }}</label>
+              <select name="guests">
+                <option value="">Any</option>
+                <option value="2">2</option><option value="4">4</option><option value="6">6</option><option value="8">8+</option>
+              </select>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-gold" style="border-radius:var(--radius-sm);padding:0 22px;flex-shrink:0;">
+            <i class="fa fa-search"></i> {{ t.btn_search }}
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DESTINATIONS -->
+{% if countries %}
+<section class="section">
+  <div class="container">
+    <div class="section-header fade-up">
+      <span class="eyebrow">Destinations</span>
+      <h2>{{ t.dest_title }}</h2>
+      <p>{{ t.dest_sub }}</p>
+    </div>
+    <div class="countries-grid fade-up">
+      {% for c in countries %}
+      <a href="{{ url_for('villas.index') }}?country={{ c.id }}" class="country-card {% if loop.index == 1 %}tall{% endif %}">
+        <img src="https://source.unsplash.com/800x600/?{{ c.name_en }},luxury,villa&sig={{ c.id }}" alt="{{ c.name_en }}" loading="lazy">
+        <div class="country-overlay"></div>
+        <div class="country-info">
+          <div class="country-name">{{ c.name_en }}</div>
+          <div class="country-count">{{ c.villas.count() }} properties</div>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- FEATURED VILLAS -->
+{% if featured %}
+<section class="section" style="background:var(--grey-100);padding-top:80px;padding-bottom:80px;">
+  <div class="container">
+    <div class="section-header fade-up">
+      <span class="eyebrow">Featured</span>
+      <h2>{{ t.feat_title }}</h2>
+      <p>{{ t.feat_sub }}</p>
+    </div>
+    <div class="cards-grid fade-up">
+      {% for villa in featured %}
+      <div class="prop-card">
+        <div class="prop-card-img">
+          <img src="https://source.unsplash.com/800x600/?villa,luxury,pool&sig={{ villa.id }}f" alt="{{ villa.title_en }}" loading="lazy">
+          <div class="prop-card-badge prop-card-badge-gold">Featured</div>
+          <div class="prop-card-actions">
+            <button class="prop-card-action-btn" data-fav-id="{{ villa.id }}" title="Favorite"><i class="fa fa-heart"></i></button>
+            <button class="prop-card-action-btn" data-cmp-id="{{ villa.id }}" data-cmp-name="{{ villa.title_en }}" title="Compare"><i class="fa fa-balance-scale"></i></button>
+          </div>
+        </div>
+        <div class="prop-card-body">
+          <div class="prop-card-eyebrow">Villa</div>
+          <div class="prop-card-location"><i class="fa fa-map-marker-alt"></i> {{ villa.city or '' }}{% if villa.country %}, {{ villa.country.name_en }}{% endif %}</div>
+          <div class="prop-card-title"><a href="{{ url_for('villas.detail', slug=villa.slug) }}">{{ villa.title_en }}</a></div>
+          <div class="prop-card-meta">
+            {% if villa.bedrooms %}<span><i class="fa fa-bed"></i> {{ villa.bedrooms }} bed</span>{% endif %}
+            {% if villa.guests %}<span><i class="fa fa-users"></i> {{ villa.guests }}</span>{% endif %}
+            {% if villa.has_pool %}<span><i class="fa fa-swimming-pool"></i> Pool</span>{% endif %}
+          </div>
+          <div class="prop-card-footer">
+            <div>
+              <div class="prop-price-label">{{ t.from_label }}</div>
+              <div class="prop-price-amount">${{ villa.price_per_night }}</div>
+              <div class="prop-price-per">{{ t.per_night }}</div>
+            </div>
+            <a href="{{ url_for('villas.detail', slug=villa.slug) }}" class="btn btn-primary btn-sm">{{ t.btn_view }}</a>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    <div style="text-align:center;margin-top:40px;" class="fade-up">
+      <a href="{{ url_for('villas.index') }}" class="btn btn-outline btn-lg">{{ t.btn_all }} <i class="fa fa-arrow-right"></i></a>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- STATS -->
+<div class="stats-section">
+  <div class="container">
+    <div class="stats-grid">
+      <div><div class="stat-num">500+</div><div class="stat-label">{{ t.stat_villas }}</div></div>
+      <div><div class="stat-num">50+</div><div class="stat-label">{{ t.stat_countries }}</div></div>
+      <div><div class="stat-num">10K+</div><div class="stat-label">{{ t.stat_guests }}</div></div>
+      <div><div class="stat-num">24/7</div><div class="stat-label">{{ t.stat_service }}</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- SERVICES -->
+<section class="section">
+  <div class="container">
+    <div class="section-header fade-up">
+      <span class="eyebrow">Services</span>
+      <h2>{{ t.serv_title }}</h2>
+      <p>{{ t.serv_sub }}</p>
+    </div>
+    <div class="service-tiles fade-up">
+      <a href="{{ url_for('services.index') }}#transfer" class="service-tile">
+        <div class="service-tile-icon"><i class="fa fa-car"></i></div>
+        <h3>{{ t.serv_transfer }}</h3>
+        <div class="service-tile-price">From $50</div>
+      </a>
+      <a href="{{ url_for('services.index') }}#car" class="service-tile">
+        <div class="service-tile-icon"><i class="fa fa-car-side"></i></div>
+        <h3>{{ t.serv_car }}</h3>
+        <div class="service-tile-price">From $150/day</div>
+      </a>
+      <a href="{{ url_for('services.index') }}#yacht" class="service-tile">
+        <div class="service-tile-icon"><i class="fa fa-ship"></i></div>
+        <h3>{{ t.serv_yacht }}</h3>
+        <div class="service-tile-price">From $500/day</div>
+      </a>
+      <a href="{{ url_for('services.index') }}#guide" class="service-tile">
+        <div class="service-tile-icon"><i class="fa fa-map-marked-alt"></i></div>
+        <h3>{{ t.serv_guide }}</h3>
+        <div class="service-tile-price">From $80/day</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- WHY US -->
+<section class="section" style="background:var(--grey-100);padding-top:80px;padding-bottom:80px;">
+  <div class="container">
+    <div class="section-header fade-up">
+      <span class="eyebrow">Why Choose Us</span>
+      <h2>The Bek Tour Difference</h2>
+    </div>
+    <div class="why-grid">
+      <div class="why-card fade-up"><div class="why-num">01</div><h3>Handpicked Only</h3><p>Every property is personally vetted by our team. No surprises — only the best.</p></div>
+      <div class="why-card fade-up"><div class="why-num">02</div><h3>Best Price Guarantee</h3><p>Direct deals with owners mean you always get the fairest rate.</p></div>
+      <div class="why-card fade-up"><div class="why-num">03</div><h3>24/7 Concierge</h3><p>From booking to checkout, our team is always one message away.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- B2B -->
+<section class="b2b-section">
+  <div class="container">
+    <div class="b2b-inner">
+      <div>
+        <span class="eyebrow">For Travel Agencies</span>
+        <h2 style="color:var(--white);margin-bottom:14px;">{{ t.b2b_title }}</h2>
+        <p style="color:rgba(255,255,255,.45);line-height:1.8;font-size:.9rem;">{{ t.b2b_sub }}</p>
+        <div class="b2b-stats">
+          <div class="b2b-stat"><div class="b2b-stat-num">20%</div><div class="b2b-stat-label">Commission</div></div>
+          <div class="b2b-stat"><div class="b2b-stat-num">200+</div><div class="b2b-stat-label">Partners</div></div>
+          <div class="b2b-stat"><div class="b2b-stat-num">$0</div><div class="b2b-stat-label">Setup Fee</div></div>
+          <div class="b2b-stat"><div class="b2b-stat-num">24h</div><div class="b2b-stat-label">Activation</div></div>
+        </div>
+        <a href="{{ url_for('b2b.register') }}" class="btn btn-gold btn-lg" style="margin-top:28px;">{{ t.btn_partner }} <i class="fa fa-arrow-right"></i></a>
+      </div>
+      <div class="b2b-form">
+        <h3 style="color:var(--white);font-size:1.1rem;margin-bottom:6px;">Quick Inquiry</h3>
+        <p style="color:rgba(255,255,255,.35);font-size:.78rem;margin-bottom:20px;">We reply within 2 hours</p>
+        <form action="{{ url_for('main.contacts') }}" method="GET">
+          <div class="form-group">
+            <label class="form-label" style="color:rgba(255,255,255,.4);">Your Name</label>
+            <input type="text" class="form-control" placeholder="John Doe" style="background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.1);color:var(--white);">
+          </div>
+          <div class="form-group">
+            <label class="form-label" style="color:rgba(255,255,255,.4);">Phone / Email</label>
+            <input type="text" class="form-control" placeholder="+1 234 567 8900" style="background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.1);color:var(--white);">
+          </div>
+          <button type="submit" class="btn btn-gold btn-block">Send Inquiry <i class="fa fa-paper-plane"></i></button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Compare bar -->
+<div class="compare-bar" id="compare-bar">
+  <span style="font-size:.65rem;font-weight:700;letter-spacing:.1em;color:rgba(255,255,255,.3);white-space:nowrap;text-transform:uppercase;">Compare</span>
+  <div class="compare-items"></div>
+  <a href="#" class="btn btn-gold btn-sm" style="flex-shrink:0;">Compare Now</a>
+  <button onclick="clearCompare()" style="color:rgba(255,255,255,.3);font-size:.75rem;white-space:nowrap;">Clear</button>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const today = new Date().toISOString().split('T')[0];
+const ci = document.getElementById('search-checkin');
+const co = document.getElementById('search-checkout');
+if (ci) { ci.min = today; ci.addEventListener('change', () => { if (co) { co.min = ci.value; } }); }
+</script>
+{% endblock %}

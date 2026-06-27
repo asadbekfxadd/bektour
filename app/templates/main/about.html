@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+{% block title %}About Us — Bek Tour{% endblock %}
+{% block extra_css %}
+<style>
+.team-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:28px; }
+.team-card { text-align:center; }
+.team-avatar { width:120px; height:120px; border-radius:50%; overflow:hidden; margin:0 auto 16px; border:4px solid var(--gold-light); }
+.team-avatar img { width:100%; height:100%; object-fit:cover; }
+.team-name { font-weight:700; font-size:1.05rem; margin-bottom:4px; }
+.team-role { font-size:.875rem; color:var(--gold); margin-bottom:8px; }
+.team-bio { font-size:.82rem; color:var(--grey-500); }
+.values-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:32px; }
+.value-card { padding:32px; background:var(--white); border-radius:var(--radius); box-shadow:var(--shadow); border-top:4px solid var(--gold); }
+.value-icon { font-size:2rem; margin-bottom:16px; }
+.value-card h3 { margin-bottom:10px; }
+.value-card p { font-size:.875rem; color:var(--grey-500); line-height:1.7; }
+.partners-grid { display:flex; gap:40px; flex-wrap:wrap; align-items:center; justify-content:center; }
+.partner-logo { width:120px; height:60px; background:var(--grey-100); border-radius:var(--radius-sm); display:flex; align-items:center; justify-content:center; color:var(--grey-500); font-weight:700; font-size:.875rem; }
+@media (max-width:1024px) { .team-grid { grid-template-columns:repeat(2,1fr); } .values-grid { grid-template-columns:repeat(2,1fr); } }
+@media (max-width:600px) { .team-grid { grid-template-columns:1fr 1fr; } .values-grid { grid-template-columns:1fr; } }
+</style>
+{% endblock %}
+{% block content %}
+<div class="page-hero">
+  <div class="container">
+    <h1>About Bek Tour</h1>
+    <p>Your trusted partner for luxury villa rentals worldwide</p>
+  </div>
+</div>
+
+<section class="section">
+  <div class="container">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;">
+      <div>
+        <span style="font-size:.75rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:12px;">Our Story</span>
+        <h2 style="margin-bottom:20px;">Redefining Luxury Travel Since 2010</h2>
+        <p style="color:var(--grey-700);line-height:1.8;margin-bottom:16px;">Bek Tour was founded with a simple vision: to make extraordinary villa experiences accessible to discerning travelers around the world. What started as a small collection of handpicked villas has grown into a global platform with 500+ properties across 50 countries.</p>
+        <p style="color:var(--grey-700);line-height:1.8;margin-bottom:28px;">Every villa in our collection is personally vetted by our team to ensure it meets our strict standards of quality, comfort, and luxury. We go beyond just providing accommodation — we craft complete travel experiences.</p>
+        <div style="display:flex;gap:24px;">
+          <div style="text-align:center;"><div style="font-family:var(--font-display);font-size:2.5rem;font-weight:700;color:var(--gold);">500+</div><div style="font-size:.875rem;color:var(--grey-500);">Luxury Villas</div></div>
+          <div style="text-align:center;"><div style="font-family:var(--font-display);font-size:2.5rem;font-weight:700;color:var(--gold);">50+</div><div style="font-size:.875rem;color:var(--grey-500);">Countries</div></div>
+          <div style="text-align:center;"><div style="font-family:var(--font-display);font-size:2.5rem;font-weight:700;color:var(--gold);">10K+</div><div style="font-size:.875rem;color:var(--grey-500);">Happy Guests</div></div>
+        </div>
+      </div>
+      <div style="border-radius:var(--radius);overflow:hidden;height:480px;">
+        <img src="https://source.unsplash.com/800x800/?luxury,villa,team" alt="About Bek Tour" style="width:100%;height:100%;object-fit:cover;">
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="background:var(--grey-100);">
+  <div class="container">
+    <div class="section-title">
+      <span class="eyebrow">Our Values</span>
+      <h2>What We Stand For</h2>
+    </div>
+    <div class="values-grid">
+      <div class="value-card"><div class="value-icon">🏆</div><h3>Excellence</h3><p>Every villa is personally inspected and curated to meet our highest standards.</p></div>
+      <div class="value-card"><div class="value-icon">🤝</div><h3>Trust</h3><p>Transparent pricing, honest reviews, and a team you can always reach.</p></div>
+      <div class="value-card"><div class="value-icon">🌍</div><h3>Global Reach</h3><p>Local expertise in 50+ countries combined with international service standards.</p></div>
+      <div class="value-card"><div class="value-icon">💎</div><h3>Luxury</h3><p>We believe luxury is not just about price — it's about exceptional experience.</p></div>
+      <div class="value-card"><div class="value-icon">⚡</div><h3>Responsiveness</h3><p>24/7 concierge support. We're here whenever you need us.</p></div>
+      <div class="value-card"><div class="value-icon">🌱</div><h3>Sustainability</h3><p>We partner with eco-conscious properties and promote responsible tourism.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="section-title"><span class="eyebrow">Our Team</span><h2>Meet the People Behind Bek Tour</h2></div>
+    <div class="team-grid">
+      <div class="team-card">
+        <div class="team-avatar"><img src="https://source.unsplash.com/200x200/?portrait,man,professional&sig=1" alt=""></div>
+        <div class="team-name">Bek Tashmatov</div>
+        <div class="team-role">Founder & CEO</div>
+        <div class="team-bio">15 years in luxury hospitality</div>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar"><img src="https://source.unsplash.com/200x200/?portrait,woman,professional&sig=2" alt=""></div>
+        <div class="team-name">Sarah Johnson</div>
+        <div class="team-role">Head of Properties</div>
+        <div class="team-bio">Expert in villa curation across Europe & Asia</div>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar"><img src="https://source.unsplash.com/200x200/?portrait,man&sig=3" alt=""></div>
+        <div class="team-name">Ahmed Al-Rashid</div>
+        <div class="team-role">Middle East Director</div>
+        <div class="team-bio">Specialist in luxury travel for GCC clients</div>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar"><img src="https://source.unsplash.com/200x200/?portrait,woman&sig=4" alt=""></div>
+        <div class="team-name">Maria Santos</div>
+        <div class="team-role">Guest Relations</div>
+        <div class="team-bio">Dedicated to creating perfect experiences</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="background:var(--grey-100);">
+  <div class="container">
+    <div class="section-title"><span class="eyebrow">Partners</span><h2>Trusted By</h2></div>
+    <div class="partners-grid">
+      <div class="partner-logo">Marriott</div>
+      <div class="partner-logo">Four Seasons</div>
+      <div class="partner-logo">Airbus</div>
+      <div class="partner-logo">Visa</div>
+      <div class="partner-logo">Booking.com</div>
+      <div class="partner-logo">Amex</div>
+    </div>
+  </div>
+</section>
+{% endblock %}

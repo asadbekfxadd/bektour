@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+{% block title %}Services — Bek Tour{% endblock %}
+{% block extra_css %}
+<style>
+.services-hero { background:linear-gradient(135deg,var(--dark) 0%,#2A1A00 100%); padding:70px 0; color:var(--white); text-align:center; }
+.service-section { padding:80px 0; }
+.service-section:nth-child(even) { background:var(--grey-100); }
+.service-big { display:grid; grid-template-columns:1fr 1fr; gap:60px; align-items:center; }
+.service-big.reverse { direction:rtl; }
+.service-big.reverse > * { direction:ltr; }
+.service-img { border-radius:var(--radius); overflow:hidden; height:400px; }
+.service-img img { width:100%; height:100%; object-fit:cover; }
+.service-content .eyebrow { font-size:.75rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--gold); margin-bottom:12px; display:block; }
+.service-content h2 { margin-bottom:16px; }
+.service-content p { color:var(--grey-700); line-height:1.8; margin-bottom:24px; }
+.service-features { display:flex; flex-direction:column; gap:12px; margin-bottom:32px; }
+.service-feature { display:flex; align-items:center; gap:12px; font-size:.9rem; }
+.service-feature i { color:var(--gold); width:20px; }
+.price-tag { display:inline-flex; align-items:center; gap:8px; background:var(--gold-light); color:var(--gold-dark); padding:8px 18px; border-radius:20px; font-weight:700; font-size:.9rem; margin-bottom:24px; }
+@media (max-width:768px) { .service-big { grid-template-columns:1fr; } .service-big.reverse { direction:ltr; } .service-img { height:250px; } }
+</style>
+{% endblock %}
+{% block content %}
+<div class="services-hero">
+  <div class="container">
+    <span style="font-size:.75rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:12px;">What We Offer</span>
+    <h1 style="color:var(--white);margin-bottom:16px;">Premium Services</h1>
+    <p style="color:rgba(255,255,255,.7);font-size:1.1rem;max-width:500px;margin:0 auto;">Everything you need for a perfect luxury experience</p>
+  </div>
+</div>
+
+<section class="service-section">
+  <div class="container">
+    <div class="service-big">
+      <div class="service-img"><img src="https://source.unsplash.com/800x600/?airport,transfer,luxury" alt="Airport Transfer"></div>
+      <div class="service-content">
+        <span class="eyebrow">Transfer</span>
+        <h2>Airport Transfer</h2>
+        <div class="price-tag"><i class="fa fa-tag"></i> From $50</div>
+        <p>Arrive in style with our premium airport transfer service. Professional drivers, luxury vehicles, and meet-and-greet service included.</p>
+        <div class="service-features">
+          <div class="service-feature"><i class="fa fa-check-circle"></i> Mercedes, BMW, Range Rover fleet</div>
+          <div class="service-feature"><i class="fa fa-check-circle"></i> Flight tracking — no waiting</div>
+          <div class="service-feature"><i class="fa fa-check-circle"></i> Meet & greet at arrivals</div>
+          <div class="service-feature"><i class="fa fa-check-circle"></i> Available 24/7</div>
+        </div>
+        <a href="{{ url_for('main.contacts') }}" class="btn btn-gold btn-lg"><i class="fa fa-calendar-check"></i> Book Transfer</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="service-section">
+  <div class="container">
+    <div class="service-big reverse">
+      <div class="service-img"><img src="https://source.unsplash.com/800x600/?luxury,car,rental" alt="Car Rental"></div>
+      <div class="service-content">
+        <span class="eyebrow">Car Rental</span>
+        <h2>Luxury Car Rental</h2>
+        <div class="price-tag"><i class="fa fa-tag"></i> From $150 / day</div>
+        <p>Explore your destination in absolute comfort. Choose from our exclusive fleet of premium vehicles — from sleek sports cars to spacious SUVs.</p>
+        <div class="service-features">
+          <div class="service-feature"><i class="fa fa-check-circle"></i> Ferrari, Lamborghini, Rolls-Royce</div>
+          <div class="service-feature"><i class="fa fa-check-circle"></i> Full insurance included</div>
+          <div class="service-feature"><i class="fa fa-check-circle"></i> Delivery to your villa</div>
+          <div class="service-feature"><i class="fa fa-check-circle"></i> Optional chauffeur service</div>
+        </div>
+        <a href="{{ url_for('main.contacts') }}" class="btn btn-gold btn-lg"><i class="fa fa-car"></i> Rent a Car</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="service-section">
+  <div class="container">
+    <div class="service-big">
+      <div class="service-img"><img src="https://source.unsplash.com/800x600/?yacht,luxury,sea" alt="Yacht Charter"></div>
+      <div class="service-content">
+        <span class="eyebrow">Yacht</span>
+        <h2>Yacht Charter</h2>
+        <div class="price-tag"><i class="fa fa-tag"></i> From $500 / day</div>
+        <p>Set sail on a private luxury yacht. Perfect for sunset cruises, island hopping, snorkeling adventures, or exclusive private parties.</p>
+        <div class="service-features">
+          <div class="service-feature"><i class="fa fa-check-circle"></i> Sailboats, motorboats, superyachts</div>
+          <div class="service-feature"><i class="fa fa-check-circle"></i> Professional captain & crew</div>
+          <div class="service-feature"><i class="fa fa-check-circle"></i> Catering & drinks on board</div>
+          <div class="service-feature"><i class="fa fa-check-circle"></i> Custom routes</div>
+        </div>
+        <a href="{{ url_for('main.contacts') }}" class="btn btn-gold btn-lg"><i class="fa fa-ship"></i> Charter Yacht</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="service-section">
+  <div class="container">
+    <div class="service-big reverse">
+      <div class="service-img"><img src="https://source.unsplash.com/800x600/?guide,tourism,historical" alt="Private Guide"></div>
+      <div class="service-content">
+        <span class="eyebrow">Guide</span>
+        <h2>Private Guide</h2>
+        <div class="price-tag"><i class="fa fa-tag"></i> From $80 / day</div>
+        <p>Discover hidden gems and ancient cities with our licensed private guides. Deep local knowledge, multilingual, and fully certified.</p>
+        <div class="service-features">
+          <div class="service-feature"><i class="fa fa-check-circle"></i> Licensed & certified guides</div>
+          <div class="service-feature"><i class="fa fa-check-circle"></i> EN, RU, UZ, AR, FR available</div>
+          <div class="service-feature"><i class="fa fa-check-circle"></i> Custom itineraries</div>
+          <div class="service-feature"><i class="fa fa-check-circle"></i> Cultural & historical expertise</div>
+        </div>
+        <a href="{{ url_for('main.contacts') }}" class="btn btn-gold btn-lg"><i class="fa fa-map-marked-alt"></i> Book a Guide</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="background:linear-gradient(135deg,var(--dark),#2A1A00);padding:80px 0;text-align:center;color:var(--white);">
+  <div class="container">
+    <h2 style="color:var(--white);margin-bottom:16px;">Need a Custom Package?</h2>
+    <p style="color:rgba(255,255,255,.7);margin-bottom:32px;max-width:500px;margin-left:auto;margin-right:auto;">We create bespoke travel experiences tailored to your preferences and budget.</p>
+    <a href="{{ url_for('main.contacts') }}" class="btn btn-gold btn-lg"><i class="fa fa-envelope"></i> Contact Us</a>
+  </div>
+</section>
+{% endblock %}
