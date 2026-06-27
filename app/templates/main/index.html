@@ -1,254 +1,293 @@
 {% extends 'base.html' %}
-{% block title %}Luxury Villa Rentals Worldwide — Bek Tour{% endblock %}
+{% set is_hero = true %}
+{% block title %}{% if lang=='ru' %}Роскошная аренда вилл по всему миру{% elif lang=='uz' %}Dunyo bo\'yicha hashamatli villa ijarasi{% else %}Luxury Villa Rentals Worldwide{% endif %} — Bek Tour{% endblock %}
 
 {% block content %}
-<!-- HERO -->
+
+<!-- ══ HERO ══════════════════════════════════ -->
 <section class="hero">
-  <div class="hero-bg"></div>
-  <div class="hero-bg-img"></div>
-  <div class="hero-particles"></div>
-  <div class="hero-overlay"></div>
+  <div class="hero-media">
+    <img src="https://picsum.photos/seed/hero-luxury-travel/1920/1080" alt="Luxury Travel" loading="eager">
+  </div>
+  <div class="hero-vignette"></div>
+  <div class="hero-noise"></div>
   <div class="container">
     <div class="hero-content">
-      <div class="hero-eyebrow"><i class="fa fa-crown"></i> {{ t.hero_eyebrow }}</div>
+      <div class="hero-tag"><i class="fa fa-crown"></i> {{ t.hero_eyebrow }}</div>
       <h1>{{ t.hero_title | safe }}</h1>
-      <p class="hero-desc">{{ t.hero_desc }}</p>
-      <div class="hero-stats">
-        <div><div class="hero-stat-num" data-counter data-target="500" data-suffix="+">500+</div><div class="hero-stat-label">Luxury Villas</div></div>
-        <div><div class="hero-stat-num" data-counter data-target="50" data-suffix="+">50+</div><div class="hero-stat-label">Countries</div></div>
-        <div><div class="hero-stat-num" data-counter data-target="10000" data-suffix="+">10K+</div><div class="hero-stat-label">Happy Guests</div></div>
-      </div>
-      <div class="hero-btns">
+      <p class="hero-sub">{{ t.hero_desc }}</p>
+      <div class="hero-ctas">
         <a href="{{ url_for('villas.index') }}" class="btn btn-gold btn-xl"><i class="fa fa-home"></i> {{ t.btn_browse }}</a>
-        <a href="{{ url_for('services.index') }}" class="btn btn-outline-white btn-xl">{{ t.btn_services }}</a>
+        <a href="{{ url_for('services.index') }}" class="btn btn-outline-w btn-xl">{{ t.btn_services }}</a>
       </div>
-      <div class="hero-search-wrap">
+      <div class="hero-stats">
+        <div>
+          <div class="hero-stat-n" data-n="500" data-s="+">500+</div>
+          <div class="hero-stat-l">{{ t.stat_villas }}</div>
+        </div>
+        <div>
+          <div class="hero-stat-n" data-n="50" data-s="+">50+</div>
+          <div class="hero-stat-l">{{ t.stat_countries }}</div>
+        </div>
+        <div>
+          <div class="hero-stat-n" data-n="10000" data-s="+">10K+</div>
+          <div class="hero-stat-l">{{ t.stat_guests }}</div>
+        </div>
+        <div>
+          <div class="hero-stat-n">24/7</div>
+          <div class="hero-stat-l">{{ t.stat_service }}</div>
+        </div>
+      </div>
+      <!-- Search -->
+      <div class="search-wrap">
         <div class="search-tabs">
-          <div class="search-tab active" data-type="villa"><i class="fa fa-home"></i> Villas</div>
-          <div class="search-tab" data-type="yacht"><i class="fa fa-ship"></i> Yachts</div>
-          <div class="search-tab" data-type="car"><i class="fa fa-car"></i> Cars</div>
-          <div class="search-tab" data-type="transfer"><i class="fa fa-shuttle-van"></i> Transfer</div>
+          <div class="s-tab on" data-type="villa"><i class="fa fa-home"></i> Villas</div>
+          <div class="s-tab" data-type="yacht"><i class="fa fa-ship"></i> Yachts</div>
+          <div class="s-tab" data-type="car"><i class="fa fa-car"></i> Cars</div>
+          <div class="s-tab" data-type="transfer"><i class="fa fa-shuttle-van"></i> Transfer</div>
         </div>
         <form class="search-bar" action="{{ url_for('villas.index') }}" method="GET">
-          <input type="hidden" name="type" id="searchType" value="villa">
-          <div class="search-field">
-            <div class="search-field-label">{{ t.search_dest }}</div>
-            <select name="country" style="min-width:110px;">
-              <option value="">Any country</option>
+          <input type="hidden" name="type" id="sType" value="villa">
+          <div class="s-field">
+            <span class="s-label">{{ t.search_dest }}</span>
+            <select name="country" style="min-width:100px;">
+              <option value="">{% if lang=='ru' %}Любая страна{% elif lang=='uz' %}Istalgan mamlakat{% else %}Any country{% endif %}</option>
               {% for c in countries %}<option value="{{ c.id }}">{{ c.name_en }}</option>{% endfor %}
             </select>
           </div>
-          <div class="search-field">
-            <div class="search-field-label">{{ t.search_checkin }}</div>
-            <input type="date" name="check_in" id="checkIn">
+          <div class="s-field">
+            <span class="s-label">{{ t.search_checkin }}</span>
+            <input type="date" name="check_in" id="heroCI">
           </div>
-          <div class="search-field">
-            <div class="search-field-label">Check Out</div>
-            <input type="date" name="check_out" id="checkOut">
+          <div class="s-field">
+            <span class="s-label">{% if lang=='ru' %}Выезд{% elif lang=='uz' %}Chiqish{% else %}Check Out{% endif %}</span>
+            <input type="date" name="check_out" id="heroCO">
           </div>
-          <div class="search-field">
-            <div class="search-field-label">{{ t.search_guests }}</div>
+          <div class="s-field">
+            <span class="s-label">{{ t.search_guests }}</span>
             <select name="guests">
-              <option value="">Any</option>
+              <option value="">{% if lang=='ru' %}Любое{% elif lang=='uz' %}Istalgan{% else %}Any{% endif %}</option>
               <option value="2">2</option><option value="4">4</option>
               <option value="6">6</option><option value="8">8+</option>
             </select>
           </div>
-          <button type="submit" class="btn btn-gold" style="border-radius:var(--radius-sm);padding:0 28px;flex-shrink:0;">
+          <button type="submit" class="btn btn-gold btn-pill" style="padding:0 28px;flex-shrink:0;">
             <i class="fa fa-search"></i> {{ t.btn_search }}
           </button>
         </form>
       </div>
     </div>
   </div>
-  <div class="hero-scroll"><div class="hero-scroll-line"></div>Scroll</div>
+  <div class="hero-scroll">
+    <div class="hero-scroll-line"></div>
+    Scroll
+  </div>
 </section>
 
-<!-- DESTINATIONS -->
+<!-- ══ DESTINATIONS ══════════════════════════ -->
 {% if countries %}
-<section class="section" style="background:var(--beige);">
+<section class="section" style="background:var(--cream);">
   <div class="container">
-    <div class="section-header reveal">
-      <span class="section-label">Destinations</span>
-      <h2 class="section-title">{{ t.dest_title }}</h2>
-      <p class="section-sub">{{ t.dest_sub }}</p>
+    <div class="sh reveal">
+      <span class="eyebrow">{% if lang=='ru' %}Направления{% elif lang=='uz' %}Yo\'nalishlar{% else %}Destinations{% endif %}</span>
+      <h2 class="sh-title">{{ t.dest_title }}</h2>
+      <p class="sh-sub">{{ t.dest_sub }}</p>
     </div>
-    <div class="dest-grid reveal">
+    <div class="dest-editorial reveal">
       {% for c in countries %}
-      <a href="{{ url_for('villas.index') }}?country={{ c.id }}" class="dest-card {% if loop.index == 1 %}tall{% endif %}">
-        <img src="https://picsum.photos/seed/dest{{ c.id }}/800/600" alt="{{ c.name_en }}" loading="lazy">
-        <div class="dest-overlay"></div>
-        <div class="dest-info">
-          <div class="dest-name">{{ c.name_en }}</div>
-          <div class="dest-count">{{ c.villas.count() }} properties</div>
+      {% if loop.index == 1 %}
+      <a href="{{ url_for('villas.index') }}?country={{ c.id }}" class="dest-card main">
+        <img src="https://picsum.photos/seed/dest{{ c.id }}main/900/700" alt="{{ c.name_en }}" loading="lazy">
+        <div class="dest-card-overlay"></div>
+        <div class="dest-card-info">
+          <div class="dest-card-name">{{ c.name_en }}</div>
+          <div class="dest-card-count">{{ c.villas.count() }} {% if lang=='ru' %}объектов{% elif lang=='uz' %}mulk{% else %}properties{% endif %}</div>
         </div>
       </a>
+      <div class="dest-right">
+      {% elif loop.index <= 3 %}
+      <a href="{{ url_for('villas.index') }}?country={{ c.id }}" class="dest-card">
+        <img src="https://picsum.photos/seed/dest{{ c.id }}side/600/350" alt="{{ c.name_en }}" loading="lazy">
+        <div class="dest-card-overlay"></div>
+        <div class="dest-card-info">
+          <div class="dest-card-name">{{ c.name_en }}</div>
+          <div class="dest-card-count">{{ c.villas.count() }} {% if lang=='ru' %}объектов{% elif lang=='uz' %}mulk{% else %}properties{% endif %}</div>
+        </div>
+      </a>
+      {% if loop.index == 3 %}</div>{% endif %}
+      {% endif %}
       {% endfor %}
+    </div>
+    <div style="text-align:center;margin-top:40px;" class="reveal">
+      <a href="{{ url_for('villas.index') }}" class="btn btn-outline btn-lg">
+        {% if lang=='ru' %}Все направления{% elif lang=='uz' %}Barcha yo\'nalishlar{% else %}All Destinations{% endif %}
+        <i class="fa fa-arrow-right"></i>
+      </a>
     </div>
   </div>
 </section>
 {% endif %}
 
-<!-- FEATURED VILLAS -->
+<!-- ══ FEATURED VILLAS ═══════════════════════ -->
 {% if featured %}
-<section class="section">
+<section class="section" style="background:var(--white);">
   <div class="container">
-    <div class="section-header centered reveal">
-      <span class="section-label">Featured</span>
-      <h2 class="section-title">{{ t.feat_title }}</h2>
-      <p class="section-sub">{{ t.feat_sub }}</p>
+    <div class="sh centered reveal">
+      <span class="eyebrow">Featured</span>
+      <h2 class="sh-title">{{ t.feat_title }}</h2>
+      <p class="sh-sub">{{ t.feat_sub }}</p>
     </div>
     <div class="cards-grid">
       {% for villa in featured %}
-      <div class="card reveal reveal-delay-{{ loop.index0 % 3 + 1 }}">
-        <div class="card-img">
-          <img src="https://picsum.photos/seed/villa{{ villa.id }}feat/800/600" alt="{{ villa.title_en }}" loading="lazy">
-          <div class="card-badges"><span class="card-badge card-badge-gold">Featured</span></div>
-          <div class="card-actions">
-            <button class="card-action" data-fav="{{ villa.id }}" title="Favorite"><i class="fa fa-heart"></i></button>
-            <button class="card-action" data-compare="{{ villa.id }}" data-name="{{ villa.title_en }}" title="Compare"><i class="fa fa-balance-scale"></i></button>
+      <div class="pcard reveal delay-{{ loop.index0 % 3 + 1 }}">
+        <div class="pcard-img">
+          <img src="https://picsum.photos/seed/villa{{ villa.id }}hero/800/600" alt="{{ villa.title_en }}" loading="lazy">
+          <div class="pcard-badges">
+            <span class="pcard-badge pb-gold">Featured</span>
+          </div>
+          <div class="pcard-acts">
+            <button class="pcard-act" data-fav="{{ villa.id }}" title="Favorite"><i class="fa fa-heart"></i></button>
+            <button class="pcard-act" data-cmp="{{ villa.id }}" data-name="{{ villa.title_en }}" title="Compare"><i class="fa fa-balance-scale"></i></button>
           </div>
         </div>
-        <div class="card-body">
-          <div class="card-tag">Villa</div>
-          <div class="card-location"><i class="fa fa-map-marker-alt"></i> {{ villa.city or '' }}{% if villa.country %}, {{ villa.country.name_en }}{% endif %}</div>
-          <div class="card-title"><a href="{{ url_for('villas.detail', slug=villa.slug) }}">{{ villa.title_en }}</a></div>
-          <div class="card-meta">
-            {% if villa.bedrooms %}<span><i class="fa fa-bed"></i> {{ villa.bedrooms }} bed</span>{% endif %}
-            {% if villa.guests %}<span><i class="fa fa-users"></i> {{ villa.guests }}</span>{% endif %}
-            {% if villa.has_pool %}<span><i class="fa fa-swimming-pool"></i> Pool</span>{% endif %}
-            {% if villa.has_beach %}<span><i class="fa fa-umbrella-beach"></i> Beach</span>{% endif %}
+        <div class="pcard-body">
+          <div class="pcard-tag">Villa</div>
+          <div class="pcard-loc"><i class="fa fa-map-marker-alt"></i> {{ villa.city or '' }}{% if villa.country %}, {{ villa.country.name_en }}{% endif %}</div>
+          <div class="pcard-title"><a href="{{ url_for('villas.detail', slug=villa.slug) }}">{{ villa.title_en }}</a></div>
+          <div class="pcard-meta">
+            {% if villa.bedrooms %}<span><i class="fa fa-bed"></i>{{ villa.bedrooms }}</span>{% endif %}
+            {% if villa.guests %}<span><i class="fa fa-users"></i>{{ villa.guests }}</span>{% endif %}
+            {% if villa.has_pool %}<span><i class="fa fa-swimming-pool"></i>Pool</span>{% endif %}
+            {% if villa.has_beach %}<span><i class="fa fa-umbrella-beach"></i>Beach</span>{% endif %}
           </div>
-          <div class="card-footer">
+          <div class="pcard-foot">
             <div>
-              <div class="card-price-label">{{ t.from_label }}</div>
-              <div class="card-price">${{ villa.price_per_night }}</div>
-              <div class="card-price-per">{{ t.per_night }}</div>
+              <div class="pcard-price-label">{{ t.from_label }}</div>
+              <div class="pcard-price">${{ villa.price_per_night }}</div>
+              <div class="pcard-price-per">{{ t.per_night }}</div>
             </div>
-            <a href="{{ url_for('villas.detail', slug=villa.slug) }}" class="btn btn-navy btn-sm" style="background:var(--navy);color:#fff;border-radius:var(--radius-sm);padding:10px 20px;font-size:.8rem;font-weight:600;">{{ t.btn_view }}</a>
+            <a href="{{ url_for('villas.detail', slug=villa.slug) }}" class="btn btn-ink btn-sm">{{ t.btn_view }}</a>
           </div>
         </div>
       </div>
       {% endfor %}
     </div>
-    <div style="text-align:center;margin-top:48px;" class="reveal">
+    <div style="text-align:center;margin-top:52px;" class="reveal">
       <a href="{{ url_for('villas.index') }}" class="btn btn-outline btn-lg">{{ t.btn_all }} <i class="fa fa-arrow-right"></i></a>
     </div>
   </div>
 </section>
 {% endif %}
 
-<!-- STATS -->
-<div class="stats-section">
+<!-- ══ STATS ══════════════════════════════════ -->
+<div class="stats-s">
   <div class="container">
     <div class="stats-grid">
-      <div><div class="stat-number" data-counter data-target="500" data-suffix="+">500+</div><div class="stat-label">{{ t.stat_villas }}</div></div>
-      <div><div class="stat-number" data-counter data-target="50" data-suffix="+">50+</div><div class="stat-label">{{ t.stat_countries }}</div></div>
-      <div><div class="stat-number" data-counter data-target="10000" data-suffix="+">10,000+</div><div class="stat-label">{{ t.stat_guests }}</div></div>
-      <div><div class="stat-number">24/7</div><div class="stat-label">{{ t.stat_service }}</div></div>
+      <div class="stat-item"><div class="stat-n" data-n="500" data-s="+">500+</div><div class="stat-l">{{ t.stat_villas }}</div></div>
+      <div class="stat-item"><div class="stat-n" data-n="50" data-s="+">50+</div><div class="stat-l">{{ t.stat_countries }}</div></div>
+      <div class="stat-item"><div class="stat-n" data-n="10000" data-s="+">10K+</div><div class="stat-l">{{ t.stat_guests }}</div></div>
+      <div class="stat-item"><div class="stat-n">24/7</div><div class="stat-l">{{ t.stat_service }}</div></div>
     </div>
   </div>
 </div>
 
-<!-- WHY US -->
-<section class="section" style="background:var(--beige);">
+<!-- ══ WHY US ══════════════════════════════════ -->
+<section class="section" style="background:var(--cream);">
   <div class="container">
-    <div class="section-header centered reveal" style="margin-bottom:48px;">
-      <span class="section-label">Why Choose Us</span>
-      <h2 class="section-title">The Bek Tour Experience</h2>
-      <p class="section-sub">We go beyond accommodation to craft complete luxury journeys</p>
-    </div>
-    <div class="why-grid reveal">
-      <div class="why-item">
-        <div class="why-num">01</div>
-        <div class="why-icon"><i class="fa fa-medal"></i></div>
-        <div class="why-title">Handpicked Excellence</div>
-        <div class="why-desc">Every villa is personally inspected and curated to meet our highest luxury standards. No compromises.</div>
+    <div class="why-row">
+      <div class="reveal">
+        <span class="eyebrow">{% if lang=='ru' %}Почему мы{% elif lang=='uz' %}Nima uchun biz{% else %}Why Choose Us{% endif %}</span>
+        <h2 class="sh-title" style="margin-bottom:40px;">{% if lang=='ru' %}Разница<br>Bek Tour{% elif lang=='uz' %}Bek Tour<br>farqi{% else %}The Bek Tour<br>Difference{% endif %}</h2>
+        <div class="why-list">
+          {% set whys = [
+            ('01', {'en':'Handpicked Excellence','ru':'Тщательный отбор','uz':'Sinchkov tanlov'}, {'en':'Every villa personally inspected. No compromises on quality.','ru':'Каждая вилла лично проверена. Никаких компромиссов.','uz':'Har bir villa shaxsan tekshirilgan. Sifatda murosasiz.'}),
+            ('02', {'en':'Best Price Guarantee','ru':'Гарантия лучшей цены','uz':'Eng yaxshi narx kafolati'}, {'en':'Direct owner relationships mean you always get the fairest rate.','ru':'Прямые отношения с владельцами — честная цена.','uz':'Egalari bilan to\'g\'ridan-to\'g\'ri munosabatlar — adolatli narx.'}),
+            ('03', {'en':'24/7 Concierge','ru':'Консьерж 24/7','uz':'24/7 konsyerj'}, {'en':'Our luxury travel experts are always just one message away.','ru':'Наши эксперты всегда на связи.','uz':'Mutaxassislarimiz doimo bir xabar masofasida.'}),
+            ('04', {'en':'Global Local Expertise','ru':'Глобальная местная экспертиза','uz':'Global mahalliy tajriba'}, {'en':'Deep knowledge in 50+ countries combined with world-class service.','ru':'Глубокие знания в 50+ странах и сервис мирового класса.','uz':'50+ mamlakatda chuqur bilim va jahon darajasidagi xizmat.'}),
+          ] %}
+          {% for num, title, desc in whys %}
+          <div class="why-item delay-{{ loop.index }}">
+            <div class="why-n">{{ num }}</div>
+            <div class="why-text">
+              <h3>{{ title[lang] if lang in title else title['en'] }}</h3>
+              <p>{{ desc[lang] if lang in desc else desc['en'] }}</p>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
       </div>
-      <div class="why-item">
-        <div class="why-num">02</div>
-        <div class="why-icon"><i class="fa fa-shield-alt"></i></div>
-        <div class="why-title">Best Price Guarantee</div>
-        <div class="why-desc">Direct partnerships with property owners ensure you always receive the fairest and most competitive rate.</div>
-      </div>
-      <div class="why-item">
-        <div class="why-num">03</div>
-        <div class="why-icon"><i class="fa fa-headset"></i></div>
-        <div class="why-title">24/7 Concierge</div>
-        <div class="why-desc">Our dedicated luxury travel experts are available around the clock — from booking to checkout and beyond.</div>
+      <div class="reveal delay-2">
+        <div class="why-img">
+          <img src="https://picsum.photos/seed/why-luxury/700/800" alt="Why Bek Tour" loading="lazy">
+          <div class="why-img-badge">
+            <div class="why-img-badge-n">4.9★</div>
+            <div class="why-img-badge-l">{% if lang=='ru' %}Средняя оценка{% elif lang=='uz' %}O\'rtacha reyting{% else %}Average Rating{% endif %}</div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- SERVICES -->
-<section class="section">
+<!-- ══ SERVICES ═══════════════════════════════ -->
+<section class="section" style="background:var(--white);">
   <div class="container">
-    <div class="section-header centered reveal">
-      <span class="section-label">Services</span>
-      <h2 class="section-title">{{ t.serv_title }}</h2>
-      <p class="section-sub">{{ t.serv_sub }}</p>
+    <div class="sh centered reveal">
+      <span class="eyebrow">{% if lang=='ru' %}Услуги{% elif lang=='uz' %}Xizmatlar{% else %}Services{% endif %}</span>
+      <h2 class="sh-title">{{ t.serv_title }}</h2>
+      <p class="sh-sub">{{ t.serv_sub }}</p>
     </div>
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:24px;">
-      {% set services_data = [
-        ('transfer', 'fa-car', t.serv_transfer, 'From $50', 'Airport pickup, private vehicles, 24/7 availability'),
-        ('car', 'fa-car-side', t.serv_car, 'From $150/day', 'Ferrari, Rolls-Royce, Range Rover & more'),
-        ('yacht', 'fa-ship', t.serv_yacht, 'From $500/day', 'Private yacht charters for any occasion'),
-        ('guide', 'fa-map-marked-alt', t.serv_guide, 'From $80/day', 'Licensed multilingual cultural experts'),
-      ] %}
-      {% for slug, icon, name, price, desc in services_data %}
-      <a href="{{ url_for('services.index') }}#{{ slug }}" class="reveal reveal-delay-{{ loop.index }}" style="display:block;background:var(--white);border-radius:var(--radius-lg);padding:32px 28px;box-shadow:var(--shadow-sm);transition:all .4s ease;text-decoration:none;border:1px solid var(--grey-100);" onmouseover="this.style.transform='translateY(-6px)';this.style.boxShadow='0 16px 60px rgba(0,0,0,.1)';this.style.borderColor='var(--gold)'" onmouseout="this.style.transform='';this.style.boxShadow='var(--shadow-sm)';this.style.borderColor='var(--grey-100)'">
-        <div style="width:56px;height:56px;border-radius:var(--radius);background:rgba(212,175,55,.1);color:var(--gold);display:flex;align-items:center;justify-content:center;font-size:1.3rem;margin-bottom:18px;"><i class="fa {{ icon }}"></i></div>
-        <div style="font-weight:700;font-size:1rem;color:var(--navy);margin-bottom:4px;">{{ name }}</div>
-        <div style="font-size:.76rem;color:var(--gold);font-weight:700;margin-bottom:10px;">{{ price }}</div>
-        <div style="font-size:.8rem;color:var(--grey-400);line-height:1.65;">{{ desc }}</div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:2px;border-radius:var(--r-xl);overflow:hidden;background:rgba(6,24,38,.06);" class="reveal">
+      {% for icon, name_key, price, link in [('fa-car','serv_transfer','$50','#transfer'),('fa-car-side','serv_car','$150/d','#car'),('fa-ship','serv_yacht','$500/d','#yacht'),('fa-map-marked-alt','serv_guide','$80/d','#guide')] %}
+      <a href="{{ url_for('services.index') }}{{ link }}" style="display:block;padding:40px 32px;background:var(--white);transition:all .3s;text-decoration:none;" onmouseover="this.style.background='var(--ink)';this.querySelectorAll('.s-icon').forEach(e=>e.style.background='rgba(200,164,93,.15)');this.querySelectorAll('.s-icon i').forEach(e=>e.style.color='var(--gold)');this.querySelectorAll('.s-title').forEach(e=>e.style.color='var(--white)');this.querySelectorAll('.s-price').forEach(e=>e.style.color='rgba(255,255,255,.4)');" onmouseout="this.style.background='var(--white)';this.querySelectorAll('.s-icon').forEach(e=>e.style.background='rgba(6,24,38,.06)');this.querySelectorAll('.s-icon i').forEach(e=>e.style.color='var(--gold)');this.querySelectorAll('.s-title').forEach(e=>e.style.color='var(--ink)');this.querySelectorAll('.s-price').forEach(e=>e.style.color='var(--muted)');">
+        <div class="s-icon" style="width:52px;height:52px;border-radius:14px;background:rgba(6,24,38,.06);color:var(--gold);display:flex;align-items:center;justify-content:center;font-size:1.2rem;margin-bottom:20px;transition:all .3s;"><i class="fa {{ icon }}" style="transition:color .3s;"></i></div>
+        <div class="s-title" style="font-weight:700;font-size:.95rem;color:var(--ink);margin-bottom:6px;transition:color .3s;">{{ t[name_key] }}</div>
+        <div class="s-price" style="font-size:.75rem;color:var(--muted);font-weight:600;transition:color .3s;">{% if lang=='ru' %}От{% elif lang=='uz' %}dan{% else %}From{% endif %} {{ price }}</div>
       </a>
       {% endfor %}
     </div>
   </div>
 </section>
 
-<!-- GALLERY -->
-<section class="section" style="background:var(--beige);padding-bottom:80px;">
+<!-- ══ GALLERY ══════════════════════════════════ -->
+<section class="section" style="background:var(--cream);">
   <div class="container">
-    <div class="section-header centered reveal">
-      <span class="section-label">Gallery</span>
-      <h2 class="section-title">Life at Bek Tour</h2>
-      <p class="section-sub">Moments of pure luxury from around the world</p>
+    <div class="sh centered reveal">
+      <span class="eyebrow">{% if lang=='ru' %}Галерея{% elif lang=='uz' %}Galereya{% else %}Gallery{% endif %}</span>
+      <h2 class="sh-title">{% if lang=='ru' %}Жизнь с Bek Tour{% elif lang=='uz' %}Bek Tour bilan hayot{% else %}Life at Bek Tour{% endif %}</h2>
     </div>
-    <div class="gallery-grid reveal">
-      <div class="gallery-item tall"><img src="https://picsum.photos/seed/gal1/600/800" alt="" loading="lazy"></div>
-      <div class="gallery-item"><img src="https://picsum.photos/seed/gal2/600/400" alt="" loading="lazy"></div>
-      <div class="gallery-item wide"><img src="https://picsum.photos/seed/gal3/800/400" alt="" loading="lazy"></div>
-      <div class="gallery-item"><img src="https://picsum.photos/seed/gal4/600/400" alt="" loading="lazy"></div>
-      <div class="gallery-item"><img src="https://picsum.photos/seed/gal5/600/400" alt="" loading="lazy"></div>
+    <div class="gallery-masonry reveal">
+      <div class="gal-item a1"><img src="https://picsum.photos/seed/gal1lux/600/800" alt="" loading="lazy"></div>
+      <div class="gal-item a2"><img src="https://picsum.photos/seed/gal2lux/600/400" alt="" loading="lazy"></div>
+      <div class="gal-item a3"><img src="https://picsum.photos/seed/gal3lux/800/400" alt="" loading="lazy"></div>
+      <div class="gal-item a4"><img src="https://picsum.photos/seed/gal4lux/600/400" alt="" loading="lazy"></div>
+      <div class="gal-item a5"><img src="https://picsum.photos/seed/gal5lux/600/400" alt="" loading="lazy"></div>
+      <div class="gal-item a6"><img src="https://picsum.photos/seed/gal6lux/600/400" alt="" loading="lazy"></div>
     </div>
   </div>
 </section>
 
-<!-- REVIEWS -->
-<section class="section">
+<!-- ══ REVIEWS ══════════════════════════════════ -->
+<section class="section" style="background:var(--white);">
   <div class="container">
-    <div class="section-header centered reveal">
-      <span class="section-label">Testimonials</span>
-      <h2 class="section-title">What Our Guests Say</h2>
-      <p class="section-sub">Real experiences from luxury travelers worldwide</p>
+    <div class="sh centered reveal">
+      <span class="eyebrow">{% if lang=='ru' %}Отзывы{% elif lang=='uz' %}Sharhlar{% else %}Testimonials{% endif %}</span>
+      <h2 class="sh-title">{% if lang=='ru' %}Что говорят наши гости{% elif lang=='uz' %}Mehmonlarimiz nima deydi{% else %}What Our Guests Say{% endif %}</h2>
     </div>
     <div class="reviews-grid">
-      {% set reviews = [
-        ('The most exceptional travel experience of my life. Bek Tour arranged everything flawlessly.', 5, 'Alexandra M.', 'London, UK'),
-        ('Our Bali villa was beyond description. The concierge team was available 24/7 and anticipated every need.', 5, 'Mohammed Al-Rashid', 'Dubai, UAE'),
-        ('From airport transfer to yacht charter, everything was perfection. Will book again without hesitation.', 5, 'Sophia Laurent', 'Paris, France'),
+      {% for letter, name, loc, text_en, text_ru, text_uz in [
+        ('A','Alexandra M.','London, UK','The most exceptional travel experience of my life. Every detail was perfect.','Лучший опыт путешествия в моей жизни. Каждая деталь была идеальна.','Hayotimdagi eng ajoyib sayohat tajribasi. Har bir detal mukammal edi.'),
+        ('M','Mohammed Al-Rashid','Dubai, UAE','Our Bali villa was beyond imagination. 24/7 concierge anticipated every need.','Наша вилла на Бали была выше всяких ожиданий. Консьерж предугадывал каждое желание.','Balidag\'i villam tasavvurimdan tashqari edi. Konsyerj har bir ehtiyojni oldindan ko\'rdi.'),
+        ('S','Sophia Laurent','Paris, France','From airport to yacht — everything was perfection. Will return without hesitation.','От аэропорта до яхты — всё было идеально. Вернусь без сомнений.','Aeroport dari yaxtaga — hamma narsa mukammal. Ikkilanmasdan qaytaman.'),
       ] %}
-      {% for text, stars, name, location in reviews %}
-      <div class="review-card reveal reveal-delay-{{ loop.index }}">
-        <div class="review-stars">{% for i in range(stars) %}★{% endfor %}</div>
-        <div class="review-text">"{{ text }}"</div>
-        <div class="review-author">
-          <div class="review-avatar">{{ name[0] }}</div>
+      <div class="rv-card reveal delay-{{ loop.index }}">
+        <div class="rv-stars">★★★★★</div>
+        <div class="rv-text">{% if lang=='ru' %}{{ text_ru }}{% elif lang=='uz' %}{{ text_uz }}{% else %}{{ text_en }}{% endif %}</div>
+        <div class="rv-author">
+          <div class="rv-av">{{ letter }}</div>
           <div>
-            <div class="review-name">{{ name }}</div>
-            <div class="review-location">{{ location }}</div>
+            <div class="rv-name">{{ name }}</div>
+            <div class="rv-from">{{ loc }}</div>
           </div>
         </div>
       </div>
@@ -257,116 +296,121 @@
   </div>
 </section>
 
-<!-- TEAM -->
-<section class="section" style="background:var(--beige);">
+<!-- ══ TEAM ══════════════════════════════════════ -->
+<section class="section" style="background:var(--cream);">
   <div class="container">
-    <div class="section-header centered reveal">
-      <span class="section-label">Our Team</span>
-      <h2 class="section-title">The People Behind Bek Tour</h2>
+    <div class="sh centered reveal">
+      <span class="eyebrow">{% if lang=='ru' %}Команда{% elif lang=='uz' %}Jamoa{% else %}Our Team{% endif %}</span>
+      <h2 class="sh-title">{% if lang=='ru' %}Люди за Bek Tour{% elif lang=='uz' %}Bek Tour ortida odamlar{% else %}The People Behind Bek Tour{% endif %}</h2>
     </div>
     <div class="team-grid">
-      {% for i, name, role, bio in [(1,'Bek Tashmatov','Founder & CEO','15 years in luxury hospitality'),(2,'Sarah Johnson','Head of Properties','Expert villa curator'),(3,'Ahmed Al-Rashid','Middle East Director','GCC luxury specialist'),(4,'Maria Santos','Guest Relations','Creating perfect experiences')] %}
-      <div class="team-card reveal reveal-delay-{{ loop.index }}">
-        <div class="team-img"><img src="https://picsum.photos/seed/team{{ i }}/200/200" alt="{{ name }}" loading="lazy"></div>
-        <div class="team-name">{{ name }}</div>
-        <div class="team-role">{{ role }}</div>
-        <div class="team-bio">{{ bio }}</div>
+      {% for i, name, role_en, role_ru, role_uz in [(1,'Bek Tashmatov','Founder & CEO','Основатель и CEO','Asoschisi va CEO'),(2,'Sarah Johnson','Head of Properties','Руководитель объектов','Mulklar rahbari'),(3,'Ahmed Al-Rashid','Middle East Director','Директор Ближнего Востока','Yaqin Sharq direktori'),(4,'Maria Santos','Guest Relations','Связи с гостями','Mehmonlar bilan munosabatlar')] %}
+      <div class="team-card reveal delay-{{ loop.index }}">
+        <div class="team-card-img"><img src="https://picsum.photos/seed/team{{ i }}lux/400/500" alt="{{ name }}" loading="lazy"></div>
+        <div class="team-card-name">{{ name }}</div>
+        <div class="team-card-role">{% if lang=='ru' %}{{ role_ru }}{% elif lang=='uz' %}{{ role_uz }}{% else %}{{ role_en }}{% endif %}</div>
       </div>
       {% endfor %}
     </div>
   </div>
 </section>
 
-<!-- FAQ -->
-<section class="section">
+<!-- ══ FAQ ════════════════════════════════════════ -->
+<section class="section" style="background:var(--white);">
   <div class="container">
-    <div class="section-header centered reveal" style="margin-bottom:48px;">
-      <span class="section-label">FAQ</span>
-      <h2 class="section-title">Frequently Asked Questions</h2>
+    <div class="sh centered reveal" style="margin-bottom:48px;">
+      <span class="eyebrow">FAQ</span>
+      <h2 class="sh-title">{% if lang=='ru' %}Частые вопросы{% elif lang=='uz' %}Ko\'p so\'raladigan savollar{% else %}Frequently Asked Questions{% endif %}</h2>
     </div>
-    <div class="faq-list reveal">
+    <div class="faq-wrap reveal">
       {% set faqs = [
-        ('How do I book a villa?', 'Simply browse our collection, select your preferred villa, choose your dates and submit a booking request. Our team will confirm within 2 hours.'),
-        ('What is your cancellation policy?', 'We offer flexible cancellation on most properties. Free cancellation up to 7 days before check-in on standard bookings.'),
-        ('Do you offer airport transfers?', 'Yes! We provide private luxury transfers from any airport worldwide. Book alongside your villa for a seamless arrival experience.'),
-        ('Can travel agencies join the B2B program?', 'Absolutely. Our B2B program offers up to 20% commission, credit limits, and dedicated account management. Apply on our B2B page.'),
-        ('Are all villas personally inspected?', 'Yes. Every property in our collection has been personally visited and vetted by our team to ensure it meets our premium standards.'),
+        ({'en':'How do I book a villa?','ru':'Как забронировать виллу?','uz':'Villani qanday bron qilish mumkin?'},
+         {'en':'Browse our collection, choose your villa and dates, then submit a request. We confirm within 2 hours.','ru':'Просмотрите нашу коллекцию, выберите виллу и даты, затем отправьте запрос. Подтверждаем в течение 2 часов.','uz':'Kolleksiyamizni ko\'rib chiqing, villangiz va sanalarni tanlang, so\'ng so\'rov yuboring. 2 soat ichida tasdiqlaymiz.'}),
+        ({'en':'What is your cancellation policy?','ru':'Какова политика отмены?','uz':'Bekor qilish siyosati qanday?'},
+         {'en':'Free cancellation up to 7 days before check-in on standard bookings. Flexible options available.','ru':'Бесплатная отмена до 7 дней до заезда. Доступны гибкие варианты.','uz':'Standart bronlarda kirish kunidan 7 kun oldin bepul bekor qilish. Moslashuvchan variantlar mavjud.'}),
+        ({'en':'Do you offer airport transfers?','ru':'Предоставляете ли вы трансфер из аэропорта?','uz':'Aeroport transferi xizmatini taqdim etasizmi?'},
+         {'en':'Yes! Private luxury transfers from any airport worldwide. Book alongside your villa for a seamless experience.','ru':'Да! Частные люксовые трансферы из любого аэропорта. Бронируйте вместе с виллой.','uz':'Ha! Dunyoning istalgan aeroportidan shaxsiy hashamatli transfer. Villa bilan birga bron qiling.'}),
+        ({'en':'Can agencies join the B2B program?','ru':'Могут ли агентства присоединиться к B2B программе?','uz':'Agentliklar B2B dasturiga qo\'shila oladimi?'},
+         {'en':'Absolutely. Up to 20% commission, credit limits, and a dedicated account manager. Apply on our B2B page.','ru':'Конечно. До 20% комиссии, кредитный лимит, персональный менеджер.','uz':'Albatta. 20% gacha komissiya, kredit limiti va shaxsiy menejer. B2B sahifamizda ariza bering.'}),
+        ({'en':'Are all villas personally inspected?','ru':'Все ли виллы лично проверяются?','uz':'Barcha villalar shaxsan tekshiriladimi?'},
+         {'en':'Yes — every property is visited and verified by our team to guarantee premium quality.','ru':'Да — каждый объект посещается и проверяется нашей командой.','uz':'Ha — har bir mulk jamoamiz tomonidan tashrif buyuriladi va tekshiriladi.'}),
       ] %}
       {% for q, a in faqs %}
-      <div class="faq-item">
-        <div class="faq-question">{{ q }}<span class="faq-icon"><i class="fa fa-plus"></i></span></div>
-        <div class="faq-answer">{{ a }}</div>
+      <div class="faq-i">
+        <div class="faq-q">
+          {{ q[lang] if lang in q else q['en'] }}
+          <span class="faq-ico"><i class="fa fa-plus"></i></span>
+        </div>
+        <div class="faq-a">{{ a[lang] if lang in a else a['en'] }}</div>
       </div>
       {% endfor %}
     </div>
   </div>
 </section>
 
-<!-- NEWSLETTER -->
-<div class="newsletter-section">
-  <div class="container">
-    <span class="section-label" style="color:var(--gold);">Newsletter</span>
-    <h2 style="font-family:var(--font-serif);color:var(--white);margin-bottom:12px;">Get Exclusive Offers</h2>
-    <p style="color:rgba(255,255,255,.5);font-size:.95rem;">Join 15,000+ luxury travelers. Be first to know about new villas and special deals.</p>
-    <form class="newsletter-form" onsubmit="event.preventDefault();showToast('Thank you for subscribing!');">
-      <input type="email" class="newsletter-input" placeholder="your@email.com" required>
-      <button type="submit" class="newsletter-btn"><i class="fa fa-paper-plane"></i> Subscribe</button>
+<!-- ══ NEWSLETTER ════════════════════════════════ -->
+<div class="nl-section">
+  <div class="container reveal">
+    <span class="eyebrow">Newsletter</span>
+    <h2 style="font-family:var(--f-serif);color:var(--white);margin-bottom:12px;">{% if lang=='ru' %}Получайте эксклюзивные предложения{% elif lang=='uz' %}Eksklyuziv takliflarni oling{% else %}Get Exclusive Offers{% endif %}</h2>
+    <p style="color:rgba(255,255,255,.38);font-size:.9rem;">{% if lang=='ru' %}Присоединяйтесь к 15,000+ путешественникам{% elif lang=='uz' %}15,000+ sayohatchilarga qo\'shiling{% else %}Join 15,000+ luxury travelers{% endif %}</p>
+    <form class="nl-form" onsubmit="event.preventDefault();toast('{% if lang=='ru' %}Спасибо за подписку!{% elif lang=='uz' %}Obuna uchun rahmat!{% else %}Thank you for subscribing!{% endif %}')">
+      <input type="email" class="nl-input" placeholder="{% if lang=='ru' %}Ваш email{% elif lang=='uz' %}Emailingiz{% else %}your@email.com{% endif %}" required>
+      <button type="submit" class="btn btn-gold btn-pill">{% if lang=='ru' %}Подписаться{% elif lang=='uz' %}Obuna bo\'lish{% else %}Subscribe{% endif %}</button>
     </form>
   </div>
 </div>
 
-<!-- B2B CTA -->
-<section style="background:var(--beige);padding:80px 0;">
+<!-- ══ B2B CTA ════════════════════════════════════ -->
+<section class="section" style="background:var(--cream);">
   <div class="container">
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;">
       <div class="reveal">
-        <span class="section-label">For Travel Agencies</span>
-        <h2 class="section-title">{{ t.b2b_title }}</h2>
-        <p style="color:var(--grey-400);margin:16px 0 28px;line-height:1.8;">{{ t.b2b_sub }}</p>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:28px;">
-          {% for num, label in [('20%','Commission'),('200+','Partners'),('$0','Setup Fee'),('24h','Activation')] %}
-          <div style="padding:16px;background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow-sm);">
-            <div style="font-family:var(--font-serif);font-size:1.8rem;color:var(--gold);font-weight:700;">{{ num }}</div>
-            <div style="font-size:.72rem;color:var(--grey-400);text-transform:uppercase;letter-spacing:.06em;margin-top:4px;">{{ label }}</div>
+        <span class="eyebrow">B2B</span>
+        <h2 class="sh-title">{{ t.b2b_title }}</h2>
+        <p class="sh-sub" style="margin-top:14px;margin-bottom:32px;">{{ t.b2b_sub }}</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:36px;">
+          {% for n, l_en, l_ru, l_uz in [('20%','Commission','Комиссия','Komissiya'),('200+','Partners','Партнёров','Hamkorlar'),('$0','Setup Fee','Без регистрации','Ro\'yxat to\'lovsiz'),('24h','Activation','Активация','Faollashtirish')] %}
+          <div style="padding:18px;background:var(--white);border-radius:var(--r);box-shadow:var(--s1);border:1px solid rgba(6,24,38,.07);">
+            <div style="font-family:var(--f-serif);font-size:2rem;color:var(--gold);font-weight:600;">{{ n }}</div>
+            <div style="font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-top:4px;">{% if lang=='ru' %}{{ l_ru }}{% elif lang=='uz' %}{{ l_uz }}{% else %}{{ l_en }}{% endif %}</div>
           </div>
           {% endfor %}
         </div>
         <a href="{{ url_for('b2b.register') }}" class="btn btn-gold btn-lg">{{ t.btn_partner }} <i class="fa fa-arrow-right"></i></a>
       </div>
-      <div class="reveal" style="background:var(--navy);border-radius:var(--radius-xl);padding:40px;">
-        <h3 style="color:var(--white);font-size:1.2rem;margin-bottom:6px;">Quick Inquiry</h3>
-        <p style="color:rgba(255,255,255,.35);font-size:.78rem;margin-bottom:22px;">We reply within 2 hours</p>
+      <div class="reveal delay-2" style="background:var(--ink);border-radius:var(--r-xl);padding:44px;">
+        <h3 style="font-family:var(--f-serif);color:var(--white);font-size:1.4rem;margin-bottom:6px;">{% if lang=='ru' %}Быстрый запрос{% elif lang=='uz' %}Tezkor so\'rov{% else %}Quick Inquiry{% endif %}</h3>
+        <p style="color:rgba(255,255,255,.3);font-size:.78rem;margin-bottom:24px;">{% if lang=='ru' %}Отвечаем в течение 2 часов{% elif lang=='uz' %}2 soat ichida javob beramiz{% else %}We reply within 2 hours{% endif %}</p>
         <div class="form-group">
-          <label class="form-label" style="color:rgba(255,255,255,.35);">Your Name</label>
-          <input type="text" class="form-control" placeholder="John Doe" style="background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.1);color:var(--white);">
+          <label class="form-label" style="color:rgba(255,255,255,.28);">{% if lang=='ru' %}Имя{% elif lang=='uz' %}Ism{% else %}Your Name{% endif %}</label>
+          <input class="form-ctrl" placeholder="John Doe" style="background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.1);color:var(--white);">
         </div>
         <div class="form-group">
-          <label class="form-label" style="color:rgba(255,255,255,.35);">Agency / Phone</label>
-          <input type="text" class="form-control" placeholder="Your Travel Agency" style="background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.1);color:var(--white);">
+          <label class="form-label" style="color:rgba(255,255,255,.28);">{% if lang=='ru' %}Агентство / Телефон{% elif lang=='uz' %}Agentlik / Telefon{% else %}Agency / Phone{% endif %}</label>
+          <input class="form-ctrl" placeholder="Your Travel Agency" style="background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.1);color:var(--white);">
         </div>
-        <button onclick="showToast('Message sent! We will contact you soon.')" class="btn btn-gold btn-block">Send Inquiry <i class="fa fa-paper-plane"></i></button>
+        <button onclick="toast('{% if lang=='ru' %}Сообщение отправлено!{% elif lang=='uz' %}Yuborildi!{% else %}Sent!{% endif %}')" class="btn btn-gold btn-block">{% if lang=='ru' %}Отправить{% elif lang=='uz' %}Yuborish{% else %}Send Inquiry{% endif %} <i class="fa fa-paper-plane"></i></button>
       </div>
     </div>
   </div>
 </section>
 
-<!-- Compare Bar -->
-<div class="compare-bar" id="compareBar">
-  <span style="font-size:.65rem;font-weight:700;letter-spacing:.1em;color:rgba(255,255,255,.3);white-space:nowrap;text-transform:uppercase;">Compare</span>
-  <div class="compare-items"></div>
-  <a href="#" class="btn btn-gold btn-sm" style="flex-shrink:0;">Compare Now</a>
-  <button onclick="clearCompare()" style="color:rgba(255,255,255,.3);font-size:.75rem;white-space:nowrap;cursor:pointer;">Clear</button>
+<!-- Compare bar -->
+<div class="cmp-bar" id="cmpBar">
+  <span class="cmp-label">Compare</span>
+  <div class="cmp-chips"></div>
+  <a href="#" class="btn btn-gold btn-sm btn-pill" style="flex-shrink:0;">Compare Now</a>
+  <button onclick="clearCmp()" style="color:rgba(255,255,255,.28);font-size:.75rem;cursor:pointer;">Clear</button>
 </div>
+
 {% endblock %}
 
 {% block extra_js %}
 <script>
-// Hero navbar mode
-document.getElementById('navbar')?.classList.add('hero-mode');
-// Date inputs
+// Hero date logic
+const ci = document.getElementById('heroCI'), co = document.getElementById('heroCO');
 const today = new Date().toISOString().split('T')[0];
-const ci = document.getElementById('checkIn');
-const co = document.getElementById('checkOut');
 if (ci) { ci.min = today; ci.addEventListener('change', () => { if (co) co.min = ci.value; }); }
 </script>
 {% endblock %}

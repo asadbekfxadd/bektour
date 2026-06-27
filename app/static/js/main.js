@@ -1,205 +1,203 @@
-/* BEK TOUR — Premium JS 2026 */
+/* BEK TOUR — Awwwards 2026 JS */
+'use strict';
 
-// ── Preloader ──────────────────────────────
-window.addEventListener('load', () => {
-  setTimeout(() => {
-    const p = document.getElementById('preloader');
-    if (p) p.classList.add('done');
-  }, 1800);
-});
+// ── Custom cursor ─────────────────────────────
+(function() {
+  const dot  = document.createElement('div');
+  const ring = document.createElement('div');
+  dot.className = 'cursor-dot';
+  ring.className = 'cursor-ring';
+  const wrap = document.createElement('div');
+  wrap.className = 'cursor';
+  wrap.appendChild(dot);
+  wrap.appendChild(ring);
+  document.body.appendChild(wrap);
 
-// ── Particles in hero ─────────────────────
-function createParticles() {
-  const container = document.querySelector('.hero-particles');
-  if (!container) return;
-  for (let i = 0; i < 20; i++) {
-    const p = document.createElement('div');
-    p.className = 'hero-particle';
-    p.style.left = Math.random() * 100 + '%';
-    p.style.animationDuration = (8 + Math.random() * 12) + 's';
-    p.style.animationDelay = (Math.random() * 8) + 's';
-    p.style.opacity = Math.random() * 0.6 + 0.2;
-    container.appendChild(p);
+  let mx = 0, my = 0, rx = 0, ry = 0;
+  document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+
+  function tick() {
+    rx += (mx - rx) * .14;
+    ry += (my - ry) * .14;
+    dot.style.left  = mx + 'px';
+    dot.style.top   = my + 'px';
+    ring.style.left = rx + 'px';
+    ring.style.top  = ry + 'px';
+    requestAnimationFrame(tick);
   }
-}
-createParticles();
+  tick();
+  document.addEventListener('mouseleave', () => wrap.style.opacity = '0');
+  document.addEventListener('mouseenter', () => wrap.style.opacity = '1');
+})();
 
-// ── Navbar scroll ─────────────────────────
-const navbar = document.getElementById('navbar');
-const isHeroPage = document.querySelector('.hero');
+// ── Preloader ─────────────────────────────────
+(function() {
+  const pl = document.getElementById('preloader');
+  if (!pl) return;
+  const pct = pl.querySelector('.pl-percent');
+  let n = 0;
+  const iv = setInterval(() => {
+    n = Math.min(n + Math.random() * 14 + 4, 100);
+    if (pct) pct.textContent = Math.floor(n) + '%';
+    if (n >= 100) { clearInterval(iv); setTimeout(() => pl.classList.add('out'), 400); }
+  }, 50);
+  window.addEventListener('load', () => { n = 100; setTimeout(() => pl.classList.add('out'), 600); });
+})();
 
-function updateNavbar() {
-  if (!navbar) return;
-  if (isHeroPage) {
-    if (window.scrollY > 60) {
-      navbar.classList.add('scrolled');
-      navbar.classList.remove('hero-mode');
-    } else {
-      navbar.classList.remove('scrolled');
-      navbar.classList.add('hero-mode');
-    }
+// ── Navbar ────────────────────────────────────
+const nav = document.querySelector('.nav');
+const isHero = !!document.querySelector('.hero');
+
+function syncNav() {
+  if (!nav) return;
+  if (isHero) {
+    nav.classList.toggle('glass', window.scrollY > 60);
+    nav.classList.toggle('dark', window.scrollY <= 60);
   } else {
-    navbar.classList.add('scrolled');
+    nav.classList.add('glass');
+    nav.classList.remove('dark');
   }
 }
-updateNavbar();
-window.addEventListener('scroll', updateNavbar);
+syncNav();
+window.addEventListener('scroll', syncNav, { passive: true });
 
-// ── Hamburger ─────────────────────────────
-const hamburger = document.getElementById('hamburger');
-const navMenu = document.getElementById('navMenu');
-if (hamburger && navMenu) {
-  hamburger.addEventListener('click', () => {
-    navMenu.classList.toggle('open');
-    document.body.style.overflow = navMenu.classList.contains('open') ? 'hidden' : '';
+// ── Hamburger ─────────────────────────────────
+const burger = document.getElementById('burger');
+const navLinks = document.getElementById('navLinks');
+if (burger && navLinks) {
+  burger.addEventListener('click', () => {
+    const open = navLinks.classList.toggle('open');
+    document.body.style.overflow = open ? 'hidden' : '';
   });
 }
 
-// ── Toast auto-dismiss ────────────────────
-document.querySelectorAll('.toast').forEach(t => setTimeout(() => t.remove(), 5000));
+// ── Reveal on scroll ──────────────────────────
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+}, { threshold: .1 });
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 
-// ── Reveal on scroll ──────────────────────
-const revealObserver = new IntersectionObserver((entries) => {
-  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); revealObserver.unobserve(e.target); } });
-}, { threshold: 0.1 });
-document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
-
-// ── Counter animation ─────────────────────
-function animateCounter(el) {
-  const target = parseInt(el.dataset.target || el.textContent);
-  const suffix = el.dataset.suffix || '';
-  let current = 0;
-  const step = target / 60;
-  const timer = setInterval(() => {
-    current = Math.min(current + step, target);
-    el.textContent = Math.floor(current).toLocaleString() + suffix;
-    if (current >= target) clearInterval(timer);
+// ── Stats counter ─────────────────────────────
+function runCounter(el) {
+  const end = parseInt(el.dataset.n || '0');
+  const suf = el.dataset.s || '';
+  let cur = 0;
+  const step = end / 60;
+  const iv = setInterval(() => {
+    cur = Math.min(cur + step, end);
+    el.textContent = Math.floor(cur).toLocaleString() + suf;
+    if (cur >= end) clearInterval(iv);
   }, 16);
 }
-const counterObserver = new IntersectionObserver((entries) => {
+const statsObs = new IntersectionObserver(entries => {
   entries.forEach(e => {
-    if (e.isIntersecting) {
-      e.target.querySelectorAll('[data-counter]').forEach(animateCounter);
-      counterObserver.unobserve(e.target);
-    }
+    if (e.isIntersecting) { e.target.querySelectorAll('[data-n]').forEach(runCounter); statsObs.unobserve(e.target); }
   });
-}, { threshold: 0.3 });
-document.querySelectorAll('.stats-section').forEach(el => counterObserver.observe(el));
+}, { threshold: .3 });
+document.querySelectorAll('.stats-s').forEach(s => statsObs.observe(s));
 
-// ── Favorites ─────────────────────────────
-const FAV_KEY = 'bektour_favs_v2';
-function getFavs() { try { return JSON.parse(localStorage.getItem(FAV_KEY) || '[]'); } catch { return []; } }
-function saveFavs(f) { localStorage.setItem(FAV_KEY, JSON.stringify(f)); }
+// ── Favorites ─────────────────────────────────
+const FK = 'bt_favs';
+const getFavs = () => { try { return JSON.parse(localStorage.getItem(FK) || '[]'); } catch { return []; } };
+const setFavs = v => localStorage.setItem(FK, JSON.stringify(v));
 
-function initFavorites() {
+function initFavs() {
   const favs = getFavs();
   document.querySelectorAll('[data-fav]').forEach(btn => {
-    const id = btn.dataset.fav;
-    if (favs.includes(id)) btn.classList.add('liked');
+    if (favs.includes(btn.dataset.fav)) btn.classList.add('liked');
     btn.addEventListener('click', e => {
-      e.preventDefault();
+      e.preventDefault(); e.stopPropagation();
+      const id = btn.dataset.fav;
       let list = getFavs();
-      const idx = list.indexOf(id);
-      if (idx === -1) { list.push(id); btn.classList.add('liked'); showToast('❤️ Added to favorites'); }
-      else { list.splice(idx, 1); btn.classList.remove('liked'); showToast('Removed from favorites'); }
-      saveFavs(list);
+      const i = list.indexOf(id);
+      if (i === -1) { list.push(id); btn.classList.add('liked'); toast('❤️ Added to favorites'); }
+      else { list.splice(i, 1); btn.classList.remove('liked'); toast('Removed from favorites'); }
+      setFavs(list);
     });
   });
 }
 
-// ── Compare ───────────────────────────────
-let comparing = [];
-const compareBar = document.getElementById('compareBar');
+// ── Compare ───────────────────────────────────
+let cmpList = [];
+const cmpBar = document.getElementById('cmpBar');
 
 function initCompare() {
-  document.querySelectorAll('[data-compare]').forEach(btn => {
+  document.querySelectorAll('[data-cmp]').forEach(btn => {
     btn.addEventListener('click', e => {
-      e.preventDefault();
-      const id = btn.dataset.compare;
-      const name = btn.dataset.name || 'Item';
-      const idx = comparing.findIndex(i => i.id === id);
-      if (idx === -1) {
-        if (comparing.length >= 3) { showToast('Max 3 items to compare'); return; }
-        comparing.push({ id, name });
-        btn.classList.add('compared');
-        showToast('Added to compare');
-      } else {
-        comparing.splice(idx, 1);
-        btn.classList.remove('compared');
-      }
-      updateCompareBar();
+      e.preventDefault(); e.stopPropagation();
+      const id = btn.dataset.cmp, name = btn.dataset.name || '';
+      const i = cmpList.findIndex(x => x.id === id);
+      if (i === -1) {
+        if (cmpList.length >= 3) { toast('Max 3 to compare'); return; }
+        cmpList.push({ id, name }); btn.classList.add('compared'); toast('Added to compare');
+      } else { cmpList.splice(i, 1); btn.classList.remove('compared'); }
+      updateCmpBar();
     });
   });
 }
 
-function updateCompareBar() {
-  if (!compareBar) return;
-  compareBar.classList.toggle('show', comparing.length > 0);
-  const el = compareBar.querySelector('.compare-items');
-  if (el) el.innerHTML = comparing.map(i =>
-    `<div class="compare-chip">${i.name}<span class="compare-chip-remove" onclick="removeCompare('${i.id}')">✕</span></div>`
+function updateCmpBar() {
+  if (!cmpBar) return;
+  cmpBar.classList.toggle('up', cmpList.length > 0);
+  const el = cmpBar.querySelector('.cmp-chips');
+  if (el) el.innerHTML = cmpList.map(x =>
+    `<div class="cmp-chip">${x.name}<span class="cmp-remove" onclick="removeCmp('${x.id}')">✕</span></div>`
   ).join('');
 }
 
-function removeCompare(id) {
-  comparing = comparing.filter(i => i.id !== id);
-  document.querySelectorAll(`[data-compare="${id}"]`).forEach(b => b.classList.remove('compared'));
-  updateCompareBar();
-}
+window.removeCmp = id => {
+  cmpList = cmpList.filter(x => x.id !== id);
+  document.querySelectorAll(`[data-cmp="${id}"]`).forEach(b => b.classList.remove('compared'));
+  updateCmpBar();
+};
+window.clearCmp = () => { cmpList = []; document.querySelectorAll('.compared').forEach(b => b.classList.remove('compared')); updateCmpBar(); };
 
-function clearCompare() {
-  comparing = [];
-  document.querySelectorAll('.compared').forEach(b => b.classList.remove('compared'));
-  updateCompareBar();
-}
-
-// ── Search tabs ───────────────────────────
+// ── Search tabs ───────────────────────────────
 function initTabs() {
-  document.querySelectorAll('.search-tab').forEach(tab => {
+  document.querySelectorAll('.s-tab').forEach(tab => {
     tab.addEventListener('click', () => {
-      document.querySelectorAll('.search-tab').forEach(t => t.classList.remove('active'));
-      tab.classList.add('active');
-      const input = document.getElementById('searchType');
-      if (input) input.value = tab.dataset.type || '';
+      document.querySelectorAll('.s-tab').forEach(t => t.classList.remove('on'));
+      tab.classList.add('on');
+      const inp = document.getElementById('sType');
+      if (inp) inp.value = tab.dataset.type || '';
     });
   });
 }
 
-// ── FAQ ───────────────────────────────────
+// ── FAQ ───────────────────────────────────────
 function initFAQ() {
-  document.querySelectorAll('.faq-question').forEach(q => {
+  document.querySelectorAll('.faq-q').forEach(q => {
     q.addEventListener('click', () => {
       const item = q.parentElement;
-      const wasOpen = item.classList.contains('open');
-      document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
-      if (!wasOpen) item.classList.add('open');
+      const was = item.classList.contains('open');
+      document.querySelectorAll('.faq-i').forEach(f => f.classList.remove('open'));
+      if (!was) item.classList.add('open');
     });
   });
 }
 
-// ── Toast ─────────────────────────────────
-function showToast(msg, type = 'success') {
-  const t = document.createElement('div');
-  t.className = `toast toast-${type}`;
-  t.innerHTML = `<i class="fa ${type==='success'?'fa-check-circle':'fa-exclamation-circle'}"></i>${msg}<button onclick="this.parentElement.remove()">✕</button>`;
-  let container = document.querySelector('.toasts');
-  if (!container) { container = document.createElement('div'); container.className = 'toasts'; document.body.appendChild(container); }
-  container.appendChild(t);
-  setTimeout(() => t.remove(), 3500);
+// ── Toast ─────────────────────────────────────
+function toast(msg, type = 'success') {
+  let box = document.querySelector('.toasts');
+  if (!box) { box = document.createElement('div'); box.className = 'toasts'; document.body.appendChild(box); }
+  const el = document.createElement('div');
+  el.className = `toast toast-${type}`;
+  el.innerHTML = `<i class="fa fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>${msg}<button onclick="this.parentElement.remove()">✕</button>`;
+  box.appendChild(el);
+  setTimeout(() => { el.style.opacity = '0'; setTimeout(() => el.remove(), 300); }, 3000);
 }
+window.toast = toast;
 
-// ── Smooth scroll for anchors ─────────────
+// ── Smooth anchor scroll ──────────────────────
 document.querySelectorAll('a[href^="#"]').forEach(a => {
   a.addEventListener('click', e => {
-    const target = document.querySelector(a.getAttribute('href'));
-    if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+    const t = document.querySelector(a.getAttribute('href'));
+    if (t) { e.preventDefault(); t.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
   });
 });
 
-// ── Init all ──────────────────────────────
-document.addEventListener('DOMContentLoaded', () => {
-  initFavorites();
-  initCompare();
-  initTabs();
-  initFAQ();
-});
+// ── Flashes ───────────────────────────────────
+document.querySelectorAll('.toast').forEach(t => setTimeout(() => t.remove(), 5000));
+
+// ── Init ──────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => { initFavs(); initCompare(); initTabs(); initFAQ(); });
