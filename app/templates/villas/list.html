@@ -1,0 +1,190 @@
+{% extends 'base.html' %}
+{% block title %}{{ t.nav_villas }} — Bek Tour{% endblock %}
+{% block extra_css %}
+<style>
+.search-layout { display:grid; grid-template-columns:268px 1fr; gap:28px; align-items:start; }
+.filters-panel { background:var(--white); border-radius:var(--radius); box-shadow:var(--shadow); padding:22px; position:sticky; top:calc(var(--header-h)+16px); }
+.filter-section { margin-bottom:22px; padding-bottom:20px; border-bottom:1px solid var(--grey-100); }
+.filter-section:last-child { border-bottom:none; margin-bottom:0; padding-bottom:0; }
+.filter-section-title { font-size:.7rem; font-weight:700; text-transform:uppercase; letter-spacing:.08em; color:var(--grey-500); margin-bottom:12px; }
+.price-inputs { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+.checkbox-list label { display:flex; align-items:center; gap:8px; font-size:.85rem; padding:5px 0; cursor:pointer; transition:color var(--transition); }
+.checkbox-list label:hover { color:var(--gold); }
+.checkbox-list input[type=checkbox] { width:15px; height:15px; accent-color:var(--gold); flex-shrink:0; }
+.results-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; flex-wrap:wrap; gap:10px; }
+.results-count { font-size:.875rem; color:var(--grey-500); }
+.results-count strong { color:var(--dark); font-size:1rem; }
+.view-toggle { display:flex; gap:4px; }
+.view-btn { width:34px; height:34px; border-radius:var(--radius-sm); border:1.5px solid var(--grey-300); display:flex; align-items:center; justify-content:center; color:var(--grey-500); transition:all var(--transition); cursor:pointer; }
+.view-btn.active, .view-btn:hover { border-color:var(--gold); color:var(--gold); }
+.empty-state { text-align:center; padding:80px 20px; }
+.empty-state i { font-size:3rem; color:var(--grey-300); display:block; margin-bottom:16px; }
+@media (max-width:900px) { .search-layout { grid-template-columns:1fr; } .filters-panel { position:static; } }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-hero">
+  <div class="container">
+    <span class="eyebrow">{{ t.nav_villas }}</span>
+    <h1>{{ t.feat_title }}</h1>
+    <p>{{ villas.total }} properties worldwide</p>
+  </div>
+</div>
+
+<div class="container section-sm">
+  <form method="GET" action="{{ url_for('villas.index') }}">
+    <div class="search-layout">
+
+      <!-- FILTERS -->
+      <aside class="filters-panel">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+          <span style="font-weight:700;font-size:.95rem;"><i class="fa fa-sliders-h" style="color:var(--gold);margin-right:6px;"></i>Filters</span>
+          <a href="{{ url_for('villas.index') }}" style="font-size:.78rem;color:var(--gold);font-weight:600;">Clear all</a>
+        </div>
+
+        <div class="filter-section">
+          <div class="filter-section-title">Search</div>
+          <div style="position:relative;">
+            <input type="text" name="q" value="{{ q or '' }}" placeholder="Villa name..." class="form-control" style="padding-left:34px;font-size:.875rem;">
+            <i class="fa fa-search" style="position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--grey-500);font-size:.8rem;"></i>
+          </div>
+        </div>
+
+        <div class="filter-section">
+          <div class="filter-section-title">Country</div>
+          <select name="country" class="form-control" onchange="this.form.submit()">
+            <option value="">All countries</option>
+            {% for c in countries %}
+            <option value="{{ c.id }}" {% if request.args.get('country')|int == c.id %}selected{% endif %}>{{ c.name_en }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="filter-section">
+          <div class="filter-section-title">Guests</div>
+          <select name="guests" class="form-control" onchange="this.form.submit()">
+            <option value="">Any</option>
+            <option value="2" {% if request.args.get('guests')=='2' %}selected{% endif %}>2+</option>
+            <option value="4" {% if request.args.get('guests')=='4' %}selected{% endif %}>4+</option>
+            <option value="6" {% if request.args.get('guests')=='6' %}selected{% endif %}>6+</option>
+            <option value="8" {% if request.args.get('guests')=='8' %}selected{% endif %}>8+</option>
+            <option value="10" {% if request.args.get('guests')=='10' %}selected{% endif %}>10+</option>
+          </select>
+        </div>
+
+        <div class="filter-section">
+          <div class="filter-section-title">Price / night (USD)</div>
+          <div class="price-inputs">
+            <input type="number" name="min_price" placeholder="Min" class="form-control" style="font-size:.875rem;" value="{{ request.args.get('min_price','') }}">
+            <input type="number" name="max_price" placeholder="Max" class="form-control" style="font-size:.875rem;" value="{{ request.args.get('max_price','') }}">
+          </div>
+        </div>
+
+        <div class="filter-section">
+          <div class="filter-section-title">Amenities</div>
+          <div class="checkbox-list">
+            <label><input type="checkbox" name="has_pool" value="1" {% if request.args.get('has_pool') %}checked{% endif %} onchange="this.form.submit()"> <i class="fa fa-swimming-pool" style="color:var(--gold);width:14px;"></i> Pool</label>
+            <label><input type="checkbox" name="has_beach" value="1" {% if request.args.get('has_beach') %}checked{% endif %} onchange="this.form.submit()"> <i class="fa fa-umbrella-beach" style="color:var(--gold);width:14px;"></i> Beachfront</label>
+            <label><input type="checkbox" name="has_wifi" value="1" {% if request.args.get('has_wifi') %}checked{% endif %} onchange="this.form.submit()"> <i class="fa fa-wifi" style="color:var(--gold);width:14px;"></i> WiFi</label>
+            <label><input type="checkbox" name="has_ac" value="1" {% if request.args.get('has_ac') %}checked{% endif %} onchange="this.form.submit()"> <i class="fa fa-snowflake" style="color:var(--gold);width:14px;"></i> Air Conditioning</label>
+            <label><input type="checkbox" name="has_parking" value="1" {% if request.args.get('has_parking') %}checked{% endif %} onchange="this.form.submit()"> <i class="fa fa-parking" style="color:var(--gold);width:14px;"></i> Parking</label>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-gold btn-block"><i class="fa fa-search"></i> Apply</button>
+      </aside>
+
+      <!-- RESULTS -->
+      <div>
+        <div class="results-top">
+          <div class="results-count">Found: <strong>{{ villas.total }}</strong> villas</div>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <select name="sort" class="form-control" style="width:auto;font-size:.8rem;padding:7px 28px 7px 10px;" onchange="this.form.submit()">
+              <option value="created_at">Newest</option>
+              <option value="price_asc" {% if request.args.get('sort')=='price_asc' %}selected{% endif %}>Price ↑</option>
+              <option value="price_desc" {% if request.args.get('sort')=='price_desc' %}selected{% endif %}>Price ↓</option>
+              <option value="rating" {% if request.args.get('sort')=='rating' %}selected{% endif %}>Rating</option>
+            </select>
+          </div>
+        </div>
+
+        {% if villas.items %}
+        <div class="cards-grid">
+          {% for villa in villas.items %}
+          <div class="prop-card">
+            <div class="prop-card-img">
+              <img src="https://picsum.photos/seed/v{{ villa.id }}/800/600" alt="{{ villa.title_en }}" loading="lazy">
+              {% if villa.is_featured %}<div class="prop-card-badge">Featured</div>{% endif %}
+              <div class="prop-card-actions">
+                <button class="prop-card-action-btn" data-fav-id="{{ villa.id }}" title="Favorite"><i class="fa fa-heart"></i></button>
+                <button class="prop-card-action-btn" data-cmp-id="{{ villa.id }}" data-cmp-name="{{ villa.title_en }}" title="Compare"><i class="fa fa-balance-scale"></i></button>
+              </div>
+            </div>
+            <div class="prop-card-body">
+              <div class="prop-card-type">Villa</div>
+              <div class="prop-card-location"><i class="fa fa-map-marker-alt"></i> {{ villa.city or '' }}{% if villa.country %}, {{ villa.country.name_en }}{% endif %}</div>
+              <h3 class="prop-card-title"><a href="{{ url_for('villas.detail', slug=villa.slug) }}">{{ villa.title_en }}</a></h3>
+              <div class="prop-card-meta">
+                {% if villa.bedrooms %}<span><i class="fa fa-bed"></i> {{ villa.bedrooms }}</span>{% endif %}
+                {% if villa.bathrooms %}<span><i class="fa fa-bath"></i> {{ villa.bathrooms }}</span>{% endif %}
+                {% if villa.guests %}<span><i class="fa fa-users"></i> {{ villa.guests }}</span>{% endif %}
+                {% if villa.has_pool %}<span><i class="fa fa-swimming-pool"></i></span>{% endif %}
+                {% if villa.has_beach %}<span><i class="fa fa-umbrella-beach"></i></span>{% endif %}
+              </div>
+              <div class="prop-card-footer">
+                <div class="prop-price">
+                  <span class="prop-price-from">{{ t.from_label }}</span>
+                  <span class="prop-price-amount">${{ villa.price_per_night }}</span>
+                  <span class="prop-price-per">{{ t.per_night }}</span>
+                </div>
+                <a href="{{ url_for('villas.detail', slug=villa.slug) }}" class="btn btn-primary btn-sm">{{ t.btn_view }}</a>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+
+        {% if villas.pages > 1 %}
+        <div class="pagination">
+          {% if villas.has_prev %}<a href="{{ url_for('villas.index', page=villas.prev_num, **request.args) }}" class="page-btn"><i class="fa fa-chevron-left"></i></a>{% endif %}
+          {% for p in villas.iter_pages(left_edge=1,right_edge=1,left_current=2,right_current=2) %}
+            {% if p %}<a href="{{ url_for('villas.index', page=p, **request.args) }}" class="page-btn {% if p==villas.page %}active{% endif %}">{{ p }}</a>
+            {% else %}<span class="page-btn" style="color:var(--grey-300)">…</span>{% endif %}
+          {% endfor %}
+          {% if villas.has_next %}<a href="{{ url_for('villas.index', page=villas.next_num, **request.args) }}" class="page-btn"><i class="fa fa-chevron-right"></i></a>{% endif %}
+        </div>
+        {% endif %}
+
+        {% else %}
+        <div class="empty-state">
+          <i class="fa fa-search"></i>
+          <h3 style="margin-bottom:8px;">No villas found</h3>
+          <p style="color:var(--grey-500);">Try changing your filters</p>
+          <a href="{{ url_for('villas.index') }}" class="btn btn-gold" style="margin-top:16px;">Clear filters</a>
+        </div>
+        {% endif %}
+      </div>
+
+    </div>
+  </form>
+</div>
+
+<!-- Compare bar -->
+<div class="compare-bar" id="compare-bar">
+  <span style="font-size:.75rem;font-weight:700;color:rgba(255,255,255,.4);white-space:nowrap;">COMPARE</span>
+  <div class="compare-items"></div>
+  <a href="#" class="btn btn-gold btn-sm" style="flex-shrink:0;">Compare Now</a>
+  <button onclick="clearCompare()" style="color:rgba(255,255,255,.4);font-size:.8rem;white-space:nowrap;">Clear</button>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function clearCompare() {
+  compareList = [];
+  document.querySelectorAll('.compared').forEach(b => b.classList.remove('compared'));
+  updateCompareBar();
+}
+</script>
+{% endblock %}

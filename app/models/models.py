@@ -18,10 +18,17 @@ class User(UserMixin, db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     bookings = db.relationship('Booking', backref='user', lazy='dynamic')
     agency = db.relationship('Agency', backref='owner', uselist=False)
-    def set_password(self, p): self.password_hash = generate_password_hash(p)
-    def check_password(self, p): return check_password_hash(self.password_hash, p)
+
+    def set_password(self, p):
+        self.password_hash = generate_password_hash(p)
+
+    def check_password(self, p):
+        return check_password_hash(self.password_hash, p)
+
     @property
-    def full_name(self): return ((self.first_name or '') + ' ' + (self.last_name or '')).strip() or self.email
+    def full_name(self):
+        return ((self.first_name or '') + ' ' + (self.last_name or '')).strip() or self.email
+
 
 class Country(db.Model):
     __tablename__ = 'countries'
@@ -32,6 +39,7 @@ class Country(db.Model):
     image = db.Column(db.String(255))
     is_popular = db.Column(db.Boolean, default=False)
     villas = db.relationship('Villa', backref='country', lazy='dynamic')
+
 
 class Villa(db.Model):
     __tablename__ = 'villas'
@@ -67,12 +75,14 @@ class Villa(db.Model):
     bookings = db.relationship('Booking', backref='villa', lazy='dynamic')
     reviews = db.relationship('Review', backref='villa', lazy='dynamic')
 
+
 class VillaImage(db.Model):
     __tablename__ = 'villa_images'
     id = db.Column(db.Integer, primary_key=True)
     villa_id = db.Column(db.Integer, db.ForeignKey('villas.id'), nullable=False)
     image_path = db.Column(db.String(255))
     order = db.Column(db.Integer, default=0)
+
 
 class Service(db.Model):
     __tablename__ = 'services'
@@ -89,6 +99,7 @@ class Service(db.Model):
     is_active = db.Column(db.Boolean, default=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
+
 class Agency(db.Model):
     __tablename__ = 'agencies'
     id = db.Column(db.Integer, primary_key=True)
@@ -103,6 +114,7 @@ class Agency(db.Model):
     status = db.Column(db.String(20), default='pending')
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     bookings = db.relationship('Booking', backref='agency', lazy='dynamic')
+
 
 class Booking(db.Model):
     __tablename__ = 'bookings'
@@ -124,6 +136,7 @@ class Booking(db.Model):
     payment_status = db.Column(db.String(20), default='pending')
     status = db.Column(db.String(20), default='new')
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
 
 class Review(db.Model):
     __tablename__ = 'reviews'
