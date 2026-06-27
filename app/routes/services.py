@@ -1,16 +1,13 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, session
 from app.models.models import Service
-
-
 from app.routes.main import TRANSLATIONS, TDict
-from flask import session as _session
+
+services_bp = Blueprint('services', __name__)
 
 @services_bp.context_processor
 def inject_lang():
-    lang = _session.get("lang", "en")
-    return dict(lang=lang, t=TDict(TRANSLATIONS.get(lang, TRANSLATIONS["en"])))
-
-services_bp = Blueprint('services', __name__)
+    lang = session.get('lang', 'en')
+    return dict(lang=lang, t=TDict(TRANSLATIONS.get(lang, TRANSLATIONS['en'])))
 
 @services_bp.route('/')
 def index():

@@ -1,17 +1,14 @@
-from flask import Blueprint, render_template, redirect, url_for, flash, request
+from flask import Blueprint, render_template, redirect, url_for, flash, request, session
 from flask_login import login_required, current_user
-from app.models.models import db, Villa, Country, Booking, User, Service
-
-
+from app.models.models import db, Villa, Booking, User
 from app.routes.main import TRANSLATIONS, TDict
-from flask import session as _session
+
+admin_bp = Blueprint('admin', __name__)
 
 @admin_bp.context_processor
 def inject_lang():
-    lang = _session.get("lang", "en")
-    return dict(lang=lang, t=TDict(TRANSLATIONS.get(lang, TRANSLATIONS["en"])))
-
-admin_bp = Blueprint('admin', __name__)
+    lang = session.get('lang', 'en')
+    return dict(lang=lang, t=TDict(TRANSLATIONS.get(lang, TRANSLATIONS['en'])))
 
 def admin_required(f):
     from functools import wraps
@@ -26,12 +23,8 @@ def admin_required(f):
 @login_required
 @admin_required
 def dashboard():
-    stats = {
-        'villas': Villa.query.count(),
-        'bookings': Booking.query.count(),
-        'users': User.query.count(),
-        'new': Booking.query.filter_by(status='new').count()
-    }
+    stats = {'villas': Villa.query.count(), 'bookings': Booking.query.count(),
+             'users': User.query.count(), 'new': Booking.query.filter_by(status='new').count()}
     bookings = Booking.query.order_by(Booking.created_at.desc()).limit(10).all()
     return render_template('admin/dashboard.html', stats=stats, bookings=bookings)
 
@@ -57,5 +50,5 @@ def booking_status(id):
     booking = Booking.query.get_or_404(id)
     booking.status = request.form.get('status')
     db.session.commit()
-    flash('Статус обновлён', 'success')
+    flash('Status updated', 'success')
     return redirect(url_for('admin.bookings'))
