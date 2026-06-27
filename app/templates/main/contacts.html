@@ -1,107 +1,117 @@
 {% extends 'base.html' %}
-{% block title %}Contacts — Bek Tour{% endblock %}
+{% block title %}{% if lang == 'ru' %}Контакты{% elif lang == 'uz' %}Aloqa{% else %}Contacts{% endif %} — Bek Tour{% endblock %}
 {% block extra_css %}
 <style>
-.contacts-layout { display:grid; grid-template-columns:1fr 1fr; gap:60px; align-items:start; }
-.contact-info-card { background:var(--white); border-radius:var(--radius); box-shadow:var(--shadow); padding:40px; }
-.contact-item { display:flex; gap:16px; margin-bottom:28px; }
-.contact-icon { width:48px; height:48px; border-radius:50%; background:var(--gold-light); color:var(--gold); display:flex; align-items:center; justify-content:center; font-size:1.1rem; flex-shrink:0; }
-.contact-text h4 { font-weight:700; margin-bottom:4px; }
-.contact-text a, .contact-text p { color:var(--grey-700); font-size:.9rem; line-height:1.6; }
-.contact-text a:hover { color:var(--gold); }
-.contact-form-card { background:var(--white); border-radius:var(--radius); box-shadow:var(--shadow); padding:40px; }
-.messengers { display:flex; gap:12px; margin-top:24px; }
-.messenger-btn { display:flex; align-items:center; gap:8px; padding:10px 18px; border-radius:var(--radius-sm); font-weight:600; font-size:.875rem; transition:all .2s; }
-.messenger-tg { background:#2CA5E0; color:#fff; }
-.messenger-tg:hover { background:#1a94cf; }
-.messenger-wa { background:#25D366; color:#fff; }
-.messenger-wa:hover { background:#1ab554; }
-@media (max-width:900px) { .contacts-layout { grid-template-columns:1fr; } }
+.contacts-layout { display:grid; grid-template-columns:1fr 1fr; gap:64px; align-items:start; }
+.contact-card { background:var(--white); border-radius:var(--radius-xl); box-shadow:var(--shadow); padding:44px; }
+.contact-item { display:flex; gap:18px; margin-bottom:30px; }
+.contact-item-icon { width:48px; height:48px; border-radius:var(--radius); background:rgba(212,175,55,.1); color:var(--gold); display:flex; align-items:center; justify-content:center; font-size:1.1rem; flex-shrink:0; }
+.contact-item h4 { font-weight:700; font-size:.92rem; color:var(--navy); margin-bottom:4px; }
+.contact-item a, .contact-item p { color:var(--grey-400); font-size:.875rem; line-height:1.6; }
+.contact-item a:hover { color:var(--gold); }
+.messenger-btns { display:flex; gap:10px; margin-top:24px; }
+.btn-telegram { background:#2CA5E0; color:#fff; padding:10px 20px; border-radius:var(--radius-sm); font-weight:600; font-size:.82rem; display:flex; align-items:center; gap:7px; transition:all .2s; }
+.btn-telegram:hover { background:#1a94cf; transform:translateY(-1px); }
+.btn-whatsapp { background:#25D366; color:#fff; padding:10px 20px; border-radius:var(--radius-sm); font-weight:600; font-size:.82rem; display:flex; align-items:center; gap:7px; transition:all .2s; }
+.btn-whatsapp:hover { background:#1ab554; transform:translateY(-1px); }
+@media (max-width:768px) { .contacts-layout { grid-template-columns:1fr; } .contact-card { padding:28px; } }
 </style>
 {% endblock %}
+
 {% block content %}
-<div class="page-hero">
+<div class="page-hero" style="text-align:center;">
   <div class="container">
-    <h1>Contact Us</h1>
-    <p>We're here to help you plan your perfect villa experience</p>
+    <span class="section-label">{% if lang == 'ru' %}Мы рядом{% elif lang == 'uz' %}Biz yaqinda{% else %}We Are Here{% endif %}</span>
+    <h1>{% if lang == 'ru' %}Свяжитесь с нами{% elif lang == 'uz' %}Biz bilan bog\'laning{% else %}Contact Us{% endif %}</h1>
+    <p>{% if lang == 'ru' %}Готовы помочь вам создать идеальное путешествие{% elif lang == 'uz' %}Sizga ideal sayohat yaratishda yordam berishga tayyormiz{% else %}Ready to help you create the perfect luxury journey{% endif %}</p>
   </div>
 </div>
+
 <section class="section">
   <div class="container">
     <div class="contacts-layout">
-      <div>
-        <div class="contact-info-card">
-          <h2 style="font-size:1.6rem;margin-bottom:28px;">Get in Touch</h2>
+      <div class="reveal">
+        <div class="contact-card">
+          <h2 style="font-family:var(--font-serif);font-size:1.8rem;margin-bottom:28px;color:var(--navy);">
+            {% if lang == 'ru' %}Наши контакты{% elif lang == 'uz' %}Bizning kontaktlarimiz{% else %}Get in Touch{% endif %}
+          </h2>
           <div class="contact-item">
-            <div class="contact-icon"><i class="fa fa-phone"></i></div>
-            <div class="contact-text">
-              <h4>Phone</h4>
+            <div class="contact-item-icon"><i class="fa fa-phone"></i></div>
+            <div>
+              <h4>{% if lang == 'ru' %}Телефон{% elif lang == 'uz' %}Telefon{% else %}Phone{% endif %}</h4>
               <a href="tel:+998901234567">+998 90 123 45 67</a><br>
               <a href="tel:+971501234567">+971 50 123 45 67 (UAE)</a>
             </div>
           </div>
           <div class="contact-item">
-            <div class="contact-icon"><i class="fa fa-envelope"></i></div>
-            <div class="contact-text">
+            <div class="contact-item-icon"><i class="fa fa-envelope"></i></div>
+            <div>
               <h4>Email</h4>
               <a href="mailto:info@bektour.com">info@bektour.com</a><br>
               <a href="mailto:b2b@bektour.com">b2b@bektour.com</a>
             </div>
           </div>
           <div class="contact-item">
-            <div class="contact-icon"><i class="fa fa-map-marker-alt"></i></div>
-            <div class="contact-text">
-              <h4>Office</h4>
+            <div class="contact-item-icon"><i class="fa fa-map-marker-alt"></i></div>
+            <div>
+              <h4>{% if lang == 'ru' %}Офис{% elif lang == 'uz' %}Ofis{% else %}Office{% endif %}</h4>
               <p>Tashkent, Uzbekistan<br>Dubai, UAE (representative)</p>
             </div>
           </div>
           <div class="contact-item">
-            <div class="contact-icon"><i class="fa fa-clock"></i></div>
-            <div class="contact-text">
-              <h4>Working Hours</h4>
-              <p>Mon–Fri: 9:00 – 20:00<br>Sat–Sun: 10:00 – 18:00</p>
+            <div class="contact-item-icon"><i class="fa fa-clock"></i></div>
+            <div>
+              <h4>{% if lang == 'ru' %}Часы работы{% elif lang == 'uz' %}Ish vaqti{% else %}Working Hours{% endif %}</h4>
+              <p>{% if lang == 'ru' %}Пн–Пт: 9:00–20:00<br>Сб–Вс: 10:00–18:00{% elif lang == 'uz' %}Du–Ju: 9:00–20:00<br>Shan–Yak: 10:00–18:00{% else %}Mon–Fri: 9:00–20:00<br>Sat–Sun: 10:00–18:00{% endif %}</p>
             </div>
           </div>
-          <div class="messengers">
-            <a href="https://t.me/bektop" target="_blank" class="messenger-btn messenger-tg"><i class="fab fa-telegram"></i> Telegram</a>
-            <a href="https://wa.me/998901234567" target="_blank" class="messenger-btn messenger-wa"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+          <div class="messenger-btns">
+            <a href="https://t.me/bektop" target="_blank" class="btn-telegram"><i class="fab fa-telegram"></i> Telegram</a>
+            <a href="https://wa.me/998901234567" target="_blank" class="btn-whatsapp"><i class="fab fa-whatsapp"></i> WhatsApp</a>
           </div>
         </div>
       </div>
-      <div class="contact-form-card">
-        <h2 style="font-size:1.6rem;margin-bottom:8px;">Send a Message</h2>
-        <p style="color:var(--grey-500);margin-bottom:28px;font-size:.9rem;">We reply within 2 hours during business hours</p>
-        <form method="POST" action="#">
-          <div class="form-row">
-            <div class="form-group">
-              <label class="form-label">Your name *</label>
-              <input type="text" class="form-control" placeholder="John Doe" required>
+
+      <div class="reveal">
+        <div class="contact-card">
+          <h2 style="font-family:var(--font-serif);font-size:1.8rem;margin-bottom:8px;color:var(--navy);">
+            {% if lang == 'ru' %}Отправить сообщение{% elif lang == 'uz' %}Xabar yuborish{% else %}Send a Message{% endif %}
+          </h2>
+          <p style="color:var(--grey-400);font-size:.85rem;margin-bottom:26px;">
+            {% if lang == 'ru' %}Отвечаем в течение 2 часов{% elif lang == 'uz' %}2 soat ichida javob beramiz{% else %}We reply within 2 hours{% endif %}
+          </p>
+          <form onsubmit="event.preventDefault();showToast('{% if lang == 'ru' %}Сообщение отправлено!{% elif lang == 'uz' %}Xabar yuborildi!{% else %}Message sent!{% endif %}')">
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">{% if lang == 'ru' %}Имя{% elif lang == 'uz' %}Ism{% else %}Name{% endif %} *</label>
+                <input type="text" class="form-control" placeholder="John Doe" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">{% if lang == 'ru' %}Телефон / Email{% elif lang == 'uz' %}Telefon / Email{% else %}Phone / Email{% endif %} *</label>
+                <input type="text" class="form-control" placeholder="+1 234 567 8900" required>
+              </div>
             </div>
             <div class="form-group">
-              <label class="form-label">Phone / Email *</label>
-              <input type="text" class="form-control" placeholder="+1 234 567 8900" required>
+              <label class="form-label">{% if lang == 'ru' %}Тема{% elif lang == 'uz' %}Mavzu{% else %}Subject{% endif %}</label>
+              <select class="form-control">
+                <option>{% if lang == 'ru' %}Бронирование виллы{% elif lang == 'uz' %}Villa bron qilish{% else %}Villa Booking{% endif %}</option>
+                <option>{% if lang == 'ru' %}Трансфер{% elif lang == 'uz' %}Transfer{% else %}Airport Transfer{% endif %}</option>
+                <option>{% if lang == 'ru' %}Аренда авто{% elif lang == 'uz' %}Avtomobil ijarasi{% else %}Car Rental{% endif %}</option>
+                <option>{% if lang == 'ru' %}Аренда яхты{% elif lang == 'uz' %}Yaxta ijarasi{% else %}Yacht Charter{% endif %}</option>
+                <option>{% if lang == 'ru' %}B2B партнёрство{% elif lang == 'uz' %}B2B hamkorlik{% else %}B2B Partnership{% endif %}</option>
+                <option>{% if lang == 'ru' %}Другое{% elif lang == 'uz' %}Boshqa{% else %}Other{% endif %}</option>
+              </select>
             </div>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Subject</label>
-            <select class="form-control">
-              <option>Villa Booking Inquiry</option>
-              <option>Airport Transfer</option>
-              <option>Car Rental</option>
-              <option>Yacht Charter</option>
-              <option>Private Guide</option>
-              <option>B2B Partnership</option>
-              <option>Other</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Message *</label>
-            <textarea class="form-control" placeholder="Tell us about your travel plans, dates, number of guests..." required style="min-height:130px;"></textarea>
-          </div>
-          <button type="submit" class="btn btn-gold btn-block btn-lg">
-            <i class="fa fa-paper-plane"></i> Send Message
-          </button>
-        </form>
+            <div class="form-group">
+              <label class="form-label">{% if lang == 'ru' %}Сообщение{% elif lang == 'uz' %}Xabar{% else %}Message{% endif %} *</label>
+              <textarea class="form-control" placeholder="{% if lang == 'ru' %}Расскажите о своих планах поездки...{% elif lang == 'uz' %}Sayohat rejalaringiz haqida gapiring...{% else %}Tell us about your travel plans...{% endif %}" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-gold btn-block btn-lg">
+              <i class="fa fa-paper-plane"></i>
+              {% if lang == 'ru' %}Отправить сообщение{% elif lang == 'uz' %}Xabar yuborish{% else %}Send Message{% endif %}
+            </button>
+          </form>
+        </div>
       </div>
     </div>
   </div>
