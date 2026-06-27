@@ -114,7 +114,7 @@
           {% for villa in villas.items %}
           <div class="prop-card">
             <div class="prop-card-img">
-              <img src="https://source.unsplash.com/800x600/?villa,luxury&sig={{ villa.id }}v" alt="{{ villa.title_en }}" loading="lazy">
+              <img src="https://picsum.photos/seed/v{{ villa.id }}/800/600" alt="{{ villa.title_en }}" loading="lazy">
               {% if villa.is_featured %}<div class="prop-card-badge">Featured</div>{% endif %}
               <div class="prop-card-actions">
                 <button class="prop-card-action-btn" data-fav-id="{{ villa.id }}" title="Favorite"><i class="fa fa-heart"></i></button>

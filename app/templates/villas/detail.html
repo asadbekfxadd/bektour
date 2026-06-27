@@ -60,11 +60,11 @@
     <div>
       <div class="gallery">
         <div class="gallery-main">
-          <img src="https://source.unsplash.com/1400x700/?luxury,villa,pool&sig={{ villa.id }}" alt="{{ villa.title_en }}" id="main-img">
+          <img src="https://picsum.photos/seed/main{{ villa.id }}/1400/700" alt="{{ villa.title_en }}" id="main-img">
         </div>
         <div class="gallery-thumbs">
           {% for i in range(5) %}
-          <div class="gallery-thumb" onclick="document.getElementById('main-img').src='https://source.unsplash.com/800x500/?villa,luxury&sig={{ villa.id }}{{ i }}'">
+          <div class="gallery-thumb" onclick="document.getElementById('main-img').src='https://picsum.photos/seed/th{{ villa.id }}/800/500{{ i }}'">
             <img src="https://source.unsplash.com/400x300/?villa,luxury&sig={{ villa.id }}{{ i }}" alt="">
           </div>
           {% endfor %}
@@ -171,7 +171,7 @@
       {% for v in similar %}
       <div class="villa-card">
         <div class="villa-card-img">
-          <img src="https://source.unsplash.com/800x600/?villa,luxury&sig={{ v.id }}s" alt="{{ v.title_en }}" loading="lazy">
+          <img src="https://picsum.photos/seed/sim{{ v.id }}/800/600" alt="{{ v.title_en }}" loading="lazy">
         </div>
         <div class="villa-card-body">
           <div class="villa-card-location"><i class="fa fa-map-marker-alt"></i> {{ v.city }}{% if v.country %}, {{ v.country.name_en }}{% endif %}</div>

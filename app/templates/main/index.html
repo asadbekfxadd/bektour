@@ -138,7 +138,7 @@
     <div class="countries-grid fade-up">
       {% for c in countries %}
       <a href="{{ url_for('villas.index') }}?country={{ c.id }}" class="country-card {% if loop.index == 1 %}tall{% endif %}">
-        <img src="https://source.unsplash.com/800x600/?{{ c.name_en }},luxury,villa&sig={{ c.id }}" alt="{{ c.name_en }}" loading="lazy">
+        <img src="https://picsum.photos/seed/country{{ c.id }}/800/600" alt="{{ c.name_en }}" loading="lazy">
         <div class="country-overlay"></div>
         <div class="country-info">
           <div class="country-name">{{ c.name_en }}</div>
@@ -164,7 +164,7 @@
       {% for villa in featured %}
       <div class="prop-card">
         <div class="prop-card-img">
-          <img src="https://source.unsplash.com/800x600/?villa,luxury,pool&sig={{ villa.id }}f" alt="{{ villa.title_en }}" loading="lazy">
+          <img src="https://picsum.photos/seed/villa{{ villa.id }}/800/600" alt="{{ villa.title_en }}" loading="lazy">
           <div class="prop-card-badge prop-card-badge-gold">Featured</div>
           <div class="prop-card-actions">
             <button class="prop-card-action-btn" data-fav-id="{{ villa.id }}" title="Favorite"><i class="fa fa-heart"></i></button>

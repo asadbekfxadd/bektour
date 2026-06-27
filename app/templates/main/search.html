@@ -95,7 +95,7 @@
           {% for villa in villas.items %}
           <div class="villa-card">
             <div class="villa-card-img">
-              <img src="https://source.unsplash.com/800x600/?luxury,villa,pool&sig={{ villa.id }}" alt="{{ villa.title_en }}" loading="lazy">
+              <img src="https://picsum.photos/seed/lux{{ villa.id }}/800/600" alt="{{ villa.title_en }}" loading="lazy">
               {% if villa.is_featured %}<div class="villa-card-badge">Featured</div>{% endif %}
               <button class="villa-card-wishlist"><i class="fa fa-heart"></i></button>
             </div>
