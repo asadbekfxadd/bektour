@@ -193,6 +193,13 @@
 </footer>
 
 <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+<script>
+// Fallback: always hide preloader after 2s even if JS fails
+setTimeout(function() {
+  var p = document.getElementById("preloader");
+  if (p) p.classList.add("hidden");
+}, 2000);
+</script>
 {% block extra_js %}{% endblock %}
 </body>
 </html>

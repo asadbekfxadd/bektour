@@ -46,9 +46,9 @@ TRANSLATIONS = {
         'serv_title': 'Всё что нужно', 'serv_sub': 'Полный роскошный опыт',
         'serv_transfer': 'Трансфер из аэропорта', 'serv_car': 'Аренда авто',
         'serv_yacht': 'Аренда яхты', 'serv_guide': 'Частный гид',
-        'b2b_title': 'Программа для агентств', 'b2b_sub': 'Специальные тарифы для турагентств по всему миру.',
+        'b2b_title': 'Программа для агентств', 'b2b_sub': 'Специальные тарифы для турагентств.',
         'btn_partner': 'Стать партнёром',
-        'footer_desc': 'Премиальная аренда вилл по всему миру. Ваш роскошный отдых начинается здесь.',
+        'footer_desc': 'Премиальная аренда вилл по всему миру.',
         'login': 'Войти', 'register': 'Регистрация', 'logout': 'Выйти',
         'profile': 'Профиль', 'admin': 'Админка', 'b2b': 'B2B',
     },
@@ -57,26 +57,32 @@ TRANSLATIONS = {
         'nav_about': 'Biz haqimizda', 'nav_contacts': 'Aloqa',
         'hero_eyebrow': 'Premium Villa Ijarasi',
         'hero_title': 'Sizning <em>Hashamatli</em><br>Villangiz Kutmoqda',
-        'hero_desc': '50+ mamlakatda tanlangan villalar. Shaxsiy hovuzlar, qirg\'oq joylashuvi, jahon darajasidagi xizmat.',
-        'btn_browse': 'Villalarni ko\'rish', 'btn_services': 'Xizmatlarimiz',
-        'search_dest': 'Yo\'nalish', 'search_checkin': 'Kirish',
+        'hero_desc': "50+ mamlakatda tanlangan villalar. Shaxsiy hovuzlar, qirg'oq joylashuvi.",
+        'btn_browse': "Villalarni ko'rish", 'btn_services': 'Xizmatlarimiz',
+        'search_dest': "Yo'nalish", 'search_checkin': 'Kirish',
         'search_guests': 'Mehmonlar', 'btn_search': 'Qidirish',
-        'dest_title': 'Top manzillar', 'dest_sub': 'Tropik orollardan Yevropa qirg\'oqlarigacha',
+        'dest_title': 'Top manzillar', 'dest_sub': "Tropik orollardan Yevropa qirg'oqlarigacha",
         'feat_title': 'Tanlangan villalar', 'feat_sub': 'Eng yaxshi hashamatli ob\'ektlar',
         'btn_view': 'Batafsil', 'btn_all': 'Barcha villalar',
         'from_label': 'DAN', 'per_night': '/ kecha',
         'stat_villas': 'Hashamatli villalar', 'stat_countries': 'Mamlakatlar',
         'stat_guests': 'Mamnun mehmonlar', 'stat_service': 'Konsyerj xizmati',
-        'serv_title': 'Sizga kerak bo\'lgan hamma narsa', 'serv_sub': 'To\'liq hashamatli tajriba',
+        'serv_title': 'Sizga kerak bo\'lgan hamma narsa', 'serv_sub': "To'liq hashamatli tajriba",
         'serv_transfer': 'Aeroport transferi', 'serv_car': 'Avtomobil ijarasi',
         'serv_yacht': 'Yaxta ijarasi', 'serv_guide': 'Shaxsiy gid',
-        'b2b_title': 'B2B Hamkorlik dasturi', 'b2b_sub': 'Butun dunyodagi sayohat agentliklari uchun maxsus narxlar.',
-        'btn_partner': 'Hamkor bo\'lish',
-        'footer_desc': 'Butun dunyoda premium villa ijarasi. Hashamatli dam olishingiz shu yerdan boshlanadi.',
-        'login': 'Kirish', 'register': 'Ro\'yxatdan o\'tish', 'logout': 'Chiqish',
+        'b2b_title': 'B2B Hamkorlik dasturi', 'b2b_sub': 'Sayohat agentliklari uchun maxsus narxlar.',
+        'btn_partner': "Hamkor bo'lish",
+        'footer_desc': 'Butun dunyoda premium villa ijarasi.',
+        'login': 'Kirish', 'register': "Ro'yxatdan o'tish", 'logout': 'Chiqish',
         'profile': 'Profil', 'admin': 'Admin', 'b2b': 'B2B',
     }
 }
+
+class TDict:
+    def __init__(self, d):
+        self._d = d
+    def __getattr__(self, key):
+        return self._d.get(key, key)
 
 @main_bp.route('/lang/<lang>')
 def set_lang(lang):
@@ -87,7 +93,7 @@ def set_lang(lang):
 @main_bp.context_processor
 def inject_lang():
     lang = session.get('lang', 'en')
-    return dict(lang=lang, t=TRANSLATIONS.get(lang, TRANSLATIONS['en']))
+    return dict(lang=lang, t=TDict(TRANSLATIONS.get(lang, TRANSLATIONS['en'])))
 
 @main_bp.route('/')
 def index():
@@ -103,11 +109,6 @@ def search():
     guests = request.args.get('guests', type=int)
     min_price = request.args.get('min_price', type=float)
     max_price = request.args.get('max_price', type=float)
-    has_pool = request.args.get('has_pool')
-    has_beach = request.args.get('has_beach')
-    has_wifi = request.args.get('has_wifi')
-    has_ac = request.args.get('has_ac')
-    has_parking = request.args.get('has_parking')
     sort = request.args.get('sort', 'created_at')
     page = request.args.get('page', 1, type=int)
 
@@ -117,14 +118,8 @@ def search():
     if guests: query = query.filter(Villa.guests >= guests)
     if min_price: query = query.filter(Villa.price_per_night >= min_price)
     if max_price: query = query.filter(Villa.price_per_night <= max_price)
-    if has_pool: query = query.filter(Villa.has_pool == True)
-    if has_beach: query = query.filter(Villa.has_beach == True)
-    if has_wifi: query = query.filter(Villa.has_wifi == True)
-    if has_ac: query = query.filter(Villa.has_ac == True)
-    if has_parking: query = query.filter(Villa.has_parking == True)
     if sort == 'price_asc': query = query.order_by(Villa.price_per_night.asc())
     elif sort == 'price_desc': query = query.order_by(Villa.price_per_night.desc())
-    elif sort == 'rating': query = query.order_by(Villa.rating.desc())
     else: query = query.order_by(Villa.created_at.desc())
 
     villas = query.paginate(page=page, per_page=12, error_out=False)

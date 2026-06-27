@@ -1,7 +1,13 @@
-from flask import Blueprint, render_template, request
+from flask import Blueprint, render_template, request, session
 from app.models.models import Villa, Review, Country, db
+from app.routes.main import TRANSLATIONS, TDict
 
 villas_bp = Blueprint('villas', __name__)
+
+@villas_bp.context_processor
+def inject_lang():
+    lang = session.get('lang', 'en')
+    return dict(lang=lang, t=TDict(TRANSLATIONS.get(lang, TRANSLATIONS['en'])))
 
 @villas_bp.route('/')
 def index():
@@ -44,9 +50,5 @@ def detail(slug):
     villa.views += 1
     db.session.commit()
     reviews = Review.query.filter_by(villa_id=villa.id, is_approved=True).all()
-    similar = Villa.query.filter(
-        Villa.country_id == villa.country_id,
-        Villa.id != villa.id,
-        Villa.is_active == True
-    ).limit(4).all()
+    similar = Villa.query.filter(Villa.country_id==villa.country_id, Villa.id!=villa.id, Villa.is_active==True).limit(4).all()
     return render_template('villas/detail.html', villa=villa, reviews=reviews, similar=similar)

@@ -2,6 +2,15 @@ from flask import Blueprint, render_template, redirect, url_for, flash, request
 from flask_login import login_user, logout_user, login_required, current_user
 from app.models.models import db, User
 
+
+from app.routes.main import TRANSLATIONS, TDict
+from flask import session as _session
+
+@auth_bp.context_processor
+def inject_lang():
+    lang = _session.get("lang", "en")
+    return dict(lang=lang, t=TDict(TRANSLATIONS.get(lang, TRANSLATIONS["en"])))
+
 auth_bp = Blueprint('auth', __name__)
 
 @auth_bp.route('/login', methods=['GET', 'POST'])

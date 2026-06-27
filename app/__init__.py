@@ -2,7 +2,6 @@ from flask import Flask, session
 from flask_login import LoginManager
 from flask_migrate import Migrate
 from app.models.models import db, User
-from app.translations import t as translate
 
 login_manager = LoginManager()
 migrate = Migrate()
@@ -19,15 +18,6 @@ def create_app():
     @login_manager.user_loader
     def load_user(user_id):
         return User.query.get(int(user_id))
-
-    # Make t() available in all templates
-    @app.context_processor
-    def inject_globals():
-        lang = session.get('lang', 'en')
-        return dict(
-            lang=lang,
-            t=lambda key: translate(key, lang)
-        )
 
     from app.routes.main import main_bp
     from app.routes.auth import auth_bp
