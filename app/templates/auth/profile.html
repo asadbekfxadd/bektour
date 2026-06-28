@@ -1,162 +1,50 @@
 {% extends 'base.html' %}
-{% block title %}My Profile — Bek Tour{% endblock %}
-{% block extra_css %}
-<style>
-.profile-layout { display:grid; grid-template-columns:260px 1fr; gap:32px; align-items:start; }
-.profile-sidebar { background:var(--white); border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden; position:sticky; top:calc(var(--header-h) + 16px); }
-.profile-avatar-block { background:linear-gradient(135deg,var(--dark),#2A1A00); padding:32px 20px; text-align:center; }
-.profile-avatar { width:72px; height:72px; border-radius:50%; background:var(--gold); color:var(--white); font-size:1.8rem; font-weight:700; display:flex; align-items:center; justify-content:center; margin:0 auto 12px; border:3px solid rgba(255,255,255,.2); }
-.profile-name { color:var(--white); font-weight:700; font-size:1rem; margin-bottom:4px; }
-.profile-email { color:rgba(255,255,255,.6); font-size:.8rem; }
-.profile-nav { padding:8px 0; }
-.profile-nav-item { display:flex; align-items:center; gap:12px; padding:12px 20px; font-size:.9rem; color:var(--grey-700); transition:all var(--transition); cursor:pointer; border-left:3px solid transparent; }
-.profile-nav-item:hover { background:var(--grey-100); }
-.profile-nav-item.active { background:var(--gold-light); color:var(--gold-dark); border-left-color:var(--gold); font-weight:600; }
-.tab-content { display:none; }
-.tab-content.active { display:block; }
-.content-card { background:var(--white); border-radius:var(--radius); box-shadow:var(--shadow); padding:28px; margin-bottom:20px; }
-.content-card h3 { font-size:1.15rem; margin-bottom:20px; padding-bottom:14px; border-bottom:1px solid var(--grey-100); }
-.booking-item { display:flex; align-items:center; gap:16px; padding:16px 0; border-bottom:1px solid var(--grey-100); }
-.booking-item:last-child { border-bottom:none; }
-.booking-thumb { width:64px; height:64px; border-radius:var(--radius-sm); overflow:hidden; flex-shrink:0; }
-.booking-thumb img { width:100%; height:100%; object-fit:cover; }
-.booking-info { flex:1; }
-.booking-info h4 { font-size:.95rem; font-weight:600; margin-bottom:4px; }
-.booking-info-meta { display:flex; gap:12px; font-size:.8rem; color:var(--grey-500); }
-.booking-right { text-align:right; }
-.booking-price-tag { font-weight:700; color:var(--gold-dark); font-size:1rem; }
-.booking-number { font-size:.75rem; color:var(--grey-500); margin-top:4px; }
-@media (max-width:900px) { .profile-layout { grid-template-columns:1fr; } .profile-sidebar { position:static; } }
-</style>
-{% endblock %}
+{% block title %}{% if lang=='ru' %}Профиль{% elif lang=='uz' %}Profil{% else %}Profile{% endif %} — Bek Tour{% endblock %}
 {% block content %}
-<div class="page-hero" style="padding:32px 0;">
-  <div class="container"><h1>My Account</h1></div>
+<div class="page-hero">
+  <div class="container">
+    <h1>{% if lang=='ru' %}Мой профиль{% elif lang=='uz' %}Mening profilim{% else %}My Profile{% endif %}</h1>
+    <p>{{ current_user.email }}</p>
+  </div>
 </div>
-<div class="container section-sm">
-  <div class="profile-layout">
-    <aside class="profile-sidebar">
-      <div class="profile-avatar-block">
-        <div class="profile-avatar">{{ (current_user.first_name or current_user.email)[0].upper() }}</div>
-        <div class="profile-name">{{ current_user.full_name }}</div>
-        <div class="profile-email">{{ current_user.email }}</div>
+<section style="padding:56px 0;">
+  <div class="container">
+    <div style="display:grid;grid-template-columns:280px 1fr;gap:28px;align-items:start;">
+      <div class="filter-panel">
+        <div style="text-align:center;margin-bottom:20px;">
+          <div style="width:72px;height:72px;border-radius:50%;background:var(--gold);color:var(--white);display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:2rem;margin:0 auto 12px;">{{ (current_user.first_name or current_user.email)[0].upper() }}</div>
+          <div style="font-weight:700;font-size:.95rem;">{{ current_user.full_name }}</div>
+          <div style="font-size:.76rem;color:var(--muted);">{{ current_user.email }}</div>
+        </div>
+        <a href="{{ url_for('main.index') }}" class="dash-nav-item">🏠 {% if lang=='ru' %}Главная{% elif lang=='uz' %}Asosiy{% else %}Home{% endif %}</a>
+        {% if current_user.role == 'admin' %}<a href="{{ url_for('admin.dashboard') }}" class="dash-nav-item">⚙️ Admin</a>{% endif %}
+        {% if current_user.role == 'agent' %}<a href="{{ url_for('b2b.dashboard') }}" class="dash-nav-item">🏢 B2B</a>{% endif %}
+        <a href="{{ url_for('auth.logout') }}" class="dash-nav-item" style="color:#e53e3e;">🚪 {% if lang=='ru' %}Выйти{% elif lang=='uz' %}Chiqish{% else %}Logout{% endif %}</a>
       </div>
-      <nav class="profile-nav">
-        <div class="profile-nav-item active" onclick="switchTab('bookings',this)">
-          <i class="fa fa-home"></i> My Bookings
-          <span class="badge badge-gold" style="margin-left:auto;">{{ bookings|length }}</span>
-        </div>
-        <div class="profile-nav-item" onclick="switchTab('settings',this)">
-          <i class="fa fa-user-edit"></i> Profile Settings
-        </div>
-        <div class="profile-nav-item" onclick="switchTab('security',this)">
-          <i class="fa fa-lock"></i> Security
-        </div>
-        {% if current_user.role == 'agent' %}
-        <hr style="border-color:var(--grey-100);margin:8px 0;">
-        <a href="{{ url_for('b2b.dashboard') }}" class="profile-nav-item" style="color:var(--gold);">
-          <i class="fa fa-building"></i> B2B Cabinet
-        </a>
-        {% endif %}
-        <hr style="border-color:var(--grey-100);margin:8px 0;">
-        <a href="{{ url_for('auth.logout') }}" class="profile-nav-item" style="color:#E53E3E;">
-          <i class="fa fa-sign-out-alt"></i> Logout
-        </a>
-      </nav>
-    </aside>
-    <div>
-      <div class="tab-content active" id="tab-bookings">
+      <div>
         <div class="content-card">
-          <h3><i class="fa fa-home" style="color:var(--gold);margin-right:8px;"></i>My Bookings</h3>
+          <h3>{% if lang=='ru' %}Мои бронирования{% elif lang=='uz' %}Mening bronlarim{% else %}My Bookings{% endif %}</h3>
           {% if bookings %}
           {% for b in bookings %}
-          <div class="booking-item">
-            <div class="booking-thumb">
-              <img src="https://source.unsplash.com/100x100/?villa,luxury" alt="">
+          <div class="booking-row">
+            <div style="flex:1;">
+              <div style="font-weight:600;font-size:.88rem;">{{ b.villa.title_en }}</div>
+              <div style="font-size:.76rem;color:var(--muted);">{{ b.check_in }} — {{ b.check_out }}</div>
             </div>
-            <div class="booking-info">
-              <h4>{{ b.villa.title_en }}</h4>
-              <div class="booking-info-meta">
-                <span><i class="fa fa-calendar"></i> {{ b.check_in }} — {{ b.check_out }}</span>
-                <span><i class="fa fa-users"></i> {{ b.guests }} guests</span>
-              </div>
-            </div>
-            <div class="booking-right">
-              <span class="badge {% if b.status == 'confirmed' %}badge-green{% elif b.status == 'cancelled' %}badge-red{% else %}badge-gold{% endif %}">
-                {{ b.status|title }}
-              </span>
-              <div class="booking-price-tag">${{ b.total_price }}</div>
-              <div class="booking-number">{{ b.booking_number }}</div>
-            </div>
+            <span class="badge {% if b.status=='confirmed' %}bdg-green{% elif b.status=='cancelled' %}bdg-red{% else %}bdg-gold{% endif %}">{{ b.status }}</span>
+            <div style="font-weight:700;color:var(--gold);">${{ b.total_price }}</div>
           </div>
           {% endfor %}
           {% else %}
-          <div style="text-align:center;padding:48px 20px;color:var(--grey-500);">
-            <i class="fa fa-home" style="font-size:2.5rem;color:var(--grey-300);display:block;margin-bottom:16px;"></i>
-            <h4 style="color:var(--dark);margin-bottom:8px;">No bookings yet</h4>
-            <p style="margin-bottom:20px;">Find your perfect villa</p>
-            <a href="{{ url_for('main.search') }}" class="btn btn-gold">Browse Villas</a>
+          <div style="text-align:center;padding:48px 20px;color:var(--muted);">
+            <div style="font-size:2.5rem;margin-bottom:14px;">🗺️</div>
+            <p>{% if lang=='ru' %}Бронирований пока нет{% elif lang=='uz' %}Hozircha bronlar yo\'q{% else %}No bookings yet{% endif %}</p>
+            <a href="{{ url_for('villas.index') }}" class="btn btn-gold btn-sm" style="margin-top:14px;">{% if lang=='ru' %}Найти жильё{% else %}Find a Stay{% endif %}</a>
           </div>
           {% endif %}
         </div>
       </div>
-      <div class="tab-content" id="tab-settings">
-        <div class="content-card">
-          <h3><i class="fa fa-user-edit" style="color:var(--gold);margin-right:8px;"></i>Profile Settings</h3>
-          <form method="POST" action="#">
-            <div class="form-row">
-              <div class="form-group">
-                <label class="form-label">First name</label>
-                <input type="text" class="form-control" value="{{ current_user.first_name or '' }}">
-              </div>
-              <div class="form-group">
-                <label class="form-label">Last name</label>
-                <input type="text" class="form-control" value="{{ current_user.last_name or '' }}">
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="form-label">Email</label>
-              <input type="email" class="form-control" value="{{ current_user.email }}" readonly style="background:var(--grey-100);">
-            </div>
-            <div class="form-group">
-              <label class="form-label">Phone</label>
-              <input type="tel" class="form-control" value="{{ current_user.phone or '' }}" placeholder="+1 234 567 8900">
-            </div>
-            <button type="submit" class="btn btn-gold">Save Changes</button>
-          </form>
-        </div>
-      </div>
-      <div class="tab-content" id="tab-security">
-        <div class="content-card">
-          <h3><i class="fa fa-lock" style="color:var(--gold);margin-right:8px;"></i>Change Password</h3>
-          <form method="POST" action="#">
-            <div class="form-group">
-              <label class="form-label">Current password</label>
-              <input type="password" class="form-control" placeholder="••••••••">
-            </div>
-            <div class="form-group">
-              <label class="form-label">New password</label>
-              <input type="password" class="form-control" placeholder="••••••••">
-            </div>
-            <div class="form-group">
-              <label class="form-label">Confirm new password</label>
-              <input type="password" class="form-control" placeholder="••••••••">
-            </div>
-            <button type="submit" class="btn btn-gold">Update Password</button>
-          </form>
-        </div>
-      </div>
     </div>
   </div>
-</div>
-{% endblock %}
-{% block extra_js %}
-<script>
-function switchTab(name, el) {
-  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.profile-nav-item').forEach(n => n.classList.remove('active'));
-  document.getElementById('tab-' + name).classList.add('active');
-  el.classList.add('active');
-}
-</script>
+</section>
 {% endblock %}

@@ -1,14 +1,8 @@
-from flask import Blueprint, render_template, redirect, url_for, flash, request, session
+from flask import Blueprint, render_template, redirect, url_for, flash, request
 from flask_login import login_required, current_user
 from app.models.models import db, Villa, Booking, User
-from app.routes.main import TRANSLATIONS, TDict
 
 admin_bp = Blueprint('admin', __name__)
-
-@admin_bp.context_processor
-def inject_lang():
-    lang = session.get('lang', 'en')
-    return dict(lang=lang, t=TDict(TRANSLATIONS.get(lang, TRANSLATIONS['en'])))
 
 def admin_required(f):
     from functools import wraps

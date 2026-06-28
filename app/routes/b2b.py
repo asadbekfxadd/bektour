@@ -1,14 +1,8 @@
-from flask import Blueprint, render_template, redirect, url_for, flash, request, session
+from flask import Blueprint, render_template, redirect, url_for, flash, request
 from flask_login import login_required, current_user
 from app.models.models import db, Agency, Booking
-from app.routes.main import TRANSLATIONS, TDict
 
 b2b_bp = Blueprint('b2b', __name__)
-
-@b2b_bp.context_processor
-def inject_lang():
-    lang = session.get('lang', 'en')
-    return dict(lang=lang, t=TDict(TRANSLATIONS.get(lang, TRANSLATIONS['en'])))
 
 @b2b_bp.route('/')
 @login_required

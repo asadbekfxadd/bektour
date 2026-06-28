@@ -1,208 +1,164 @@
 {% extends 'base.html' %}
 {% block title %}{{ villa.title_en }} — Bek Tour{% endblock %}
-{% block extra_css %}
-<style>
-.villa-layout { display:grid; grid-template-columns:1fr 380px; gap:36px; align-items:start; }
-.gallery { border-radius:var(--radius); overflow:hidden; margin-bottom:32px; }
-.gallery-main { height:500px; position:relative; }
-.gallery-main img { width:100%; height:100%; object-fit:cover; }
-.gallery-thumbs { display:grid; grid-template-columns:repeat(5,1fr); gap:4px; margin-top:4px; }
-.gallery-thumb { height:90px; overflow:hidden; cursor:pointer; border-radius:6px; border:2px solid transparent; transition:border-color .2s; }
-.gallery-thumb:hover { border-color:var(--gold); }
-.gallery-thumb img { width:100%; height:100%; object-fit:cover; }
-.villa-meta-bar { display:flex; gap:24px; flex-wrap:wrap; padding:20px 0; border-top:1px solid var(--grey-100); border-bottom:1px solid var(--grey-100); margin-bottom:32px; }
-.villa-meta-item { display:flex; align-items:center; gap:8px; font-size:.9rem; color:var(--grey-700); }
-.villa-meta-item i { color:var(--gold); width:18px; }
-.amenities-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:32px; }
-.amenity-item { display:flex; align-items:center; gap:10px; padding:12px 16px; background:var(--grey-100); border-radius:var(--radius-sm); font-size:.875rem; }
-.amenity-item i { color:var(--gold); width:18px; }
-.amenity-item.has { color:var(--dark); }
-.amenity-item.no { color:var(--grey-300); text-decoration:line-through; }
-.booking-card { background:var(--white); border-radius:var(--radius); box-shadow:var(--shadow-md); overflow:hidden; position:sticky; top:calc(var(--header-h)+16px); }
-.booking-card-header { background:linear-gradient(135deg,var(--dark),#2A1A00); padding:28px; color:var(--white); }
-.booking-price { font-family:var(--font-display); font-size:2.5rem; font-weight:700; }
-.booking-price small { font-size:1rem; opacity:.7; font-family:var(--font-body); font-weight:400; }
-.booking-card-body { padding:24px; }
-.date-row { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
-.price-breakdown { background:var(--grey-100); border-radius:var(--radius-sm); padding:16px; margin:16px 0; font-size:.875rem; }
-.price-row { display:flex; justify-content:space-between; margin-bottom:8px; color:var(--grey-700); }
-.price-row.total { font-weight:700; color:var(--dark); border-top:1px solid var(--grey-300); padding-top:8px; margin-top:8px; }
-.reviews-section { margin-top:48px; }
-.review-card { background:var(--white); border-radius:var(--radius); padding:24px; box-shadow:var(--shadow); margin-bottom:16px; border-left:4px solid var(--gold); }
-.review-header { display:flex; gap:12px; align-items:center; margin-bottom:12px; }
-.review-avatar { width:44px; height:44px; border-radius:50%; background:var(--gold); color:var(--white); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:1.1rem; flex-shrink:0; }
-@media (max-width:1024px) { .villa-layout { grid-template-columns:1fr; } .booking-card { position:static; } }
-@media (max-width:600px) { .gallery-main { height:260px; } .amenities-grid { grid-template-columns:1fr 1fr; } }
-</style>
-{% endblock %}
 {% block content %}
-<div class="container section-sm">
-  <div class="breadcrumb">
-    <a href="{{ url_for('main.index') }}">Home</a>
-    <span class="breadcrumb-sep">/</span>
-    <a href="{{ url_for('main.search') }}">Villas</a>
-    {% if villa.country %}
-    <span class="breadcrumb-sep">/</span>
-    <a href="{{ url_for('main.search') }}?country={{ villa.country_id }}">{{ villa.country.name_en }}</a>
-    {% endif %}
-    <span class="breadcrumb-sep">/</span>
-    <span>{{ villa.title_en }}</span>
-  </div>
-  <h1 style="margin-bottom:8px;">{{ villa.title_en }}</h1>
-  <div style="display:flex;align-items:center;gap:16px;margin-bottom:28px;flex-wrap:wrap;">
-    <div class="stars">{% for i in range(5) %}<i class="fa fa-star{% if i >= villa.rating|int %}-o{% endif %}"></i>{% endfor %}
-      <span style="color:var(--grey-500);font-size:.875rem;margin-left:4px;">{{ reviews|length }} reviews</span>
+<div class="page-hero">
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="{{ url_for('main.index') }}">{% if lang=='ru' %}Главная{% else %}Home{% endif %}</a>
+      <span class="breadcrumb-sep">/</span>
+      <a href="{{ url_for('villas.index') }}">{% if lang=='ru' %}Жильё{% else %}Stays{% endif %}</a>
+      <span class="breadcrumb-sep">/</span>
+      <span>{{ villa.title_en }}</span>
     </div>
-    <span style="color:var(--grey-500);font-size:.875rem;"><i class="fa fa-map-marker-alt" style="color:var(--gold);"></i> {{ villa.city }}{% if villa.country %}, {{ villa.country.name_en }}{% endif %}</span>
-    <span style="color:var(--grey-500);font-size:.875rem;"><i class="fa fa-eye" style="color:var(--gold);"></i> {{ villa.views }} views</span>
+    <h1 style="font-size:clamp(1.8rem,3.5vw,2.8rem);">{{ villa.title_en }}</h1>
+    <div style="display:flex;align-items:center;gap:14px;margin-top:10px;flex-wrap:wrap;">
+      <div class="stars">★★★★{% if villa.rating >= 4.5 %}★{% else %}☆{% endif %}</div>
+      <span style="color:rgba(255,255,255,.4);font-size:.82rem;">{{ reviews|length }} {% if lang=='ru' %}отзывов{% else %}reviews{% endif %}</span>
+      <span style="color:rgba(255,255,255,.4);font-size:.82rem;"><i class="fa fa-map-marker-alt" style="color:var(--gold);margin-right:4px;"></i>{{ villa.city }}{% if villa.country %}, {{ villa.country.name_en }}{% endif %}</span>
+    </div>
   </div>
-  <div class="villa-layout">
-    <div>
-      <div class="gallery">
-        <div class="gallery-main">
-          <img src="https://picsum.photos/seed/main{{ villa.id }}/1400/700" alt="{{ villa.title_en }}" id="main-img">
+</div>
+
+<section style="padding:48px 0 80px;">
+  <div class="container">
+    <div class="detail-grid">
+      <div>
+        <div class="detail-gallery">
+          <div class="detail-gallery-main">
+            <img src="https://picsum.photos/seed/detail{{ villa.id }}main/1200/700" alt="{{ villa.title_en }}" id="mainImg" loading="eager">
+          </div>
+          <div class="detail-thumbs">
+            {% for i in range(5) %}
+            <div class="detail-thumb" onclick="document.getElementById('mainImg').src='https://picsum.photos/seed/detail{{ villa.id }}th{{ i }}/800/500'">
+              <img src="https://picsum.photos/seed/detail{{ villa.id }}th{{ i }}/400/300" alt="" loading="lazy">
+            </div>
+            {% endfor %}
+          </div>
         </div>
-        <div class="gallery-thumbs">
-          {% for i in range(5) %}
-          <div class="gallery-thumb" onclick="document.getElementById('main-img').src='https://picsum.photos/seed/th{{ villa.id }}/800/500{{ i }}'">
-            <img src="https://source.unsplash.com/400x300/?villa,luxury&sig={{ villa.id }}{{ i }}" alt="">
+
+        <div class="detail-meta">
+          {% if villa.bedrooms %}<div class="detail-meta-item"><i class="fa fa-bed"></i><span><b>{{ villa.bedrooms }}</b> {% if lang=='ru' %}спален{% else %}bed{% endif %}</span></div>{% endif %}
+          {% if villa.bathrooms %}<div class="detail-meta-item"><i class="fa fa-bath"></i><span><b>{{ villa.bathrooms }}</b> {% if lang=='ru' %}ванных{% else %}bath{% endif %}</span></div>{% endif %}
+          {% if villa.guests %}<div class="detail-meta-item"><i class="fa fa-users"></i><span>{% if lang=='ru' %}до{% else %}up to{% endif %} <b>{{ villa.guests }}</b></span></div>{% endif %}
+          {% if villa.area %}<div class="detail-meta-item"><i class="fa fa-expand"></i><span><b>{{ villa.area }}</b> m²</span></div>{% endif %}
+          <div class="detail-meta-item"><i class="fa fa-eye"></i><span>{{ villa.views }} {% if lang=='ru' %}просмотров{% else %}views{% endif %}</span></div>
+        </div>
+
+        {% if villa.description_en %}
+        <div style="margin-bottom:28px;">
+          <h2 style="font-size:1.5rem;margin-bottom:14px;">{% if lang=='ru' %}О жилье{% else %}About{% endif %}</h2>
+          <p style="color:var(--muted);line-height:1.85;font-size:.95rem;">{{ villa.description_en }}</p>
+        </div>
+        {% endif %}
+
+        <div style="margin-bottom:32px;">
+          <h2 style="font-size:1.5rem;margin-bottom:18px;">{% if lang=='ru' %}Удобства{% else %}Amenities{% endif %}</h2>
+          <div class="amenity-grid">
+            <div class="amenity {% if not villa.has_pool %}no{% endif %}"><i class="fa fa-swimming-pool"></i> Pool</div>
+            <div class="amenity {% if not villa.has_beach %}no{% endif %}"><i class="fa fa-umbrella-beach"></i> Beach</div>
+            <div class="amenity {% if not villa.has_wifi %}no{% endif %}"><i class="fa fa-wifi"></i> WiFi</div>
+            <div class="amenity {% if not villa.has_ac %}no{% endif %}"><i class="fa fa-snowflake"></i> AC</div>
+            <div class="amenity {% if not villa.has_parking %}no{% endif %}"><i class="fa fa-parking"></i> Parking</div>
+            <div class="amenity"><i class="fa fa-concierge-bell"></i> Concierge</div>
+          </div>
+        </div>
+
+        {% if reviews %}
+        <div>
+          <h2 style="font-size:1.5rem;margin-bottom:20px;">{% if lang=='ru' %}Отзывы{% else %}Reviews{% endif %} ({{ reviews|length }})</h2>
+          {% for r in reviews %}
+          <div class="rv-card" style="margin-bottom:14px;">
+            <div class="rv-stars">{% for i in range(r.rating or 5) %}★{% endfor %}</div>
+            <div class="rv-text" style="font-style:normal;">{{ r.text }}</div>
+            <div class="rv-auth">
+              <div class="rv-av">{{ (r.user.first_name or 'G')[0].upper() if r.user else 'G' }}</div>
+              <div>
+                <div class="rv-name">{{ r.user.full_name if r.user else 'Guest' }}</div>
+              </div>
+            </div>
           </div>
           {% endfor %}
         </div>
+        {% endif %}
       </div>
-      <div class="villa-meta-bar">
-        {% if villa.bedrooms %}<div class="villa-meta-item"><i class="fa fa-bed"></i><span><strong>{{ villa.bedrooms }}</strong> Bedrooms</span></div>{% endif %}
-        {% if villa.bathrooms %}<div class="villa-meta-item"><i class="fa fa-bath"></i><span><strong>{{ villa.bathrooms }}</strong> Bathrooms</span></div>{% endif %}
-        {% if villa.guests %}<div class="villa-meta-item"><i class="fa fa-users"></i><span>Up to <strong>{{ villa.guests }}</strong> guests</span></div>{% endif %}
-        {% if villa.area %}<div class="villa-meta-item"><i class="fa fa-expand"></i><span><strong>{{ villa.area }}</strong> m²</span></div>{% endif %}
-      </div>
-      {% if villa.description_en %}
-      <div style="margin-bottom:32px;">
-        <h2 style="font-size:1.4rem;margin-bottom:16px;">About this villa</h2>
-        <p style="color:var(--grey-700);line-height:1.8;">{{ villa.description_en }}</p>
-      </div>
-      {% endif %}
-      <div style="margin-bottom:32px;">
-        <h2 style="font-size:1.4rem;margin-bottom:20px;">Amenities</h2>
-        <div class="amenities-grid">
-          <div class="amenity-item {{ 'has' if villa.has_pool else 'no' }}"><i class="fa fa-swimming-pool"></i> Private Pool</div>
-          <div class="amenity-item {{ 'has' if villa.has_beach else 'no' }}"><i class="fa fa-umbrella-beach"></i> Beachfront</div>
-          <div class="amenity-item {{ 'has' if villa.has_wifi else 'no' }}"><i class="fa fa-wifi"></i> WiFi</div>
-          <div class="amenity-item {{ 'has' if villa.has_ac else 'no' }}"><i class="fa fa-snowflake"></i> Air Conditioning</div>
-          <div class="amenity-item {{ 'has' if villa.has_parking else 'no' }}"><i class="fa fa-parking"></i> Parking</div>
-          <div class="amenity-item has"><i class="fa fa-concierge-bell"></i> Concierge</div>
-        </div>
-      </div>
-      <div class="reviews-section">
-        <h2 style="font-size:1.4rem;margin-bottom:20px;">Reviews ({{ reviews|length }})</h2>
-        {% for r in reviews %}
-        <div class="review-card">
-          <div class="review-header">
-            <div class="review-avatar">{{ (r.user.first_name or 'G')[0].upper() }}</div>
-            <div>
-              <div style="font-weight:600;font-size:.95rem;">{{ r.user.full_name if r.user else 'Guest' }}</div>
-              <div class="stars" style="font-size:.8rem;">{% for i in range(r.rating) %}<i class="fa fa-star"></i>{% endfor %}</div>
-            </div>
+
+      <!-- Booking card -->
+      <aside>
+        <div class="booking-card">
+          <div class="booking-card-head">
+            <div style="font-size:.6rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:6px;">{% if lang=='ru' %}Цена от{% else %}From{% endif %}</div>
+            <div class="booking-price">${{ villa.price_per_night }} <small>/ {% if lang=='ru' %}ночь{% else %}night{% endif %}</small></div>
+            {% if villa.price_per_week %}<div style="font-size:.8rem;color:rgba(255,255,255,.4);margin-top:6px;">${{ villa.price_per_week }} / {% if lang=='ru' %}неделя{% else %}week{% endif %}</div>{% endif %}
           </div>
-          <p style="font-size:.9rem;color:var(--grey-700);">{{ r.text }}</p>
-        </div>
-        {% else %}
-        <p style="color:var(--grey-500);">No reviews yet. Be the first!</p>
-        {% endfor %}
-      </div>
-    </div>
-    <aside>
-      <div class="booking-card">
-        <div class="booking-card-header">
-          <div style="font-size:.8rem;opacity:.7;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;">Price from</div>
-          <div class="booking-price">${{ villa.price_per_night }} <small>/ night</small></div>
-          {% if villa.price_per_week %}<div style="font-size:.85rem;opacity:.7;margin-top:8px;">${{ villa.price_per_week }} / week</div>{% endif %}
-        </div>
-        <div class="booking-card-body">
-          <form method="POST" action="{{ url_for('villas.detail', slug=villa.slug) }}">
-            <div class="date-row" style="margin-bottom:12px;">
+          <div class="booking-card-body">
+            <div class="form-row" style="margin-bottom:12px;">
               <div class="form-group" style="margin-bottom:0;">
-                <label class="form-label">Check In</label>
-                <input type="date" name="check_in" class="form-control" id="check-in" required onchange="calcPrice()">
+                <label class="form-lbl">{% if lang=='ru' %}Заезд{% else %}Check In{% endif %}</label>
+                <input type="date" class="form-ctrl" id="checkIn" onchange="calcPrice()">
               </div>
               <div class="form-group" style="margin-bottom:0;">
-                <label class="form-label">Check Out</label>
-                <input type="date" name="check_out" class="form-control" id="check-out" required onchange="calcPrice()">
+                <label class="form-lbl">{% if lang=='ru' %}Выезд{% else %}Check Out{% endif %}</label>
+                <input type="date" class="form-ctrl" id="checkOut" onchange="calcPrice()">
               </div>
             </div>
             <div class="form-group">
-              <label class="form-label">Guests</label>
-              <select name="guests" class="form-control" onchange="calcPrice()">
-                {% for i in range(1, (villa.guests or 10) + 1) %}
-                <option value="{{ i }}">{{ i }} guest{% if i > 1 %}s{% endif %}</option>
-                {% endfor %}
+              <label class="form-lbl">{% if lang=='ru' %}Гостей{% else %}Guests{% endif %}</label>
+              <select class="form-ctrl" onchange="calcPrice()">
+                {% for i in range(1,(villa.guests or 10)+1) %}<option value="{{ i }}">{{ i }}</option>{% endfor %}
               </select>
             </div>
-            <div class="price-breakdown" id="price-breakdown" style="display:none;">
-              <div class="price-row"><span id="nights-label">Nights</span><span id="nights-price">—</span></div>
-              <div class="price-row total"><span>Total</span><span id="total-price">—</span></div>
+            <div class="price-breakdown" id="priceBd" style="display:none;">
+              <div class="pb-row"><span id="nlabel">Nights</span><span id="nprice">—</span></div>
+              <div class="pb-row total"><span>Total</span><span id="ntotal">—</span></div>
             </div>
-            <a href="{{ url_for('main.contacts') }}" class="btn btn-gold btn-block btn-lg" style="margin-bottom:12px;">
-              <i class="fa fa-calendar-check"></i> Book Now
+            <a href="{{ url_for('main.contacts') }}" class="btn btn-gold btn-block btn-lg" style="margin-bottom:10px;margin-top:4px;">
+              <i class="fa fa-calendar-check"></i> {% if lang=='ru' %}Забронировать{% elif lang=='uz' %}Bron qilish{% else %}Book Now{% endif %}
             </a>
             <a href="https://t.me/bektop" target="_blank" class="btn btn-outline btn-block">
-              <i class="fab fa-telegram"></i> Ask on Telegram
+              <i class="fab fa-telegram"></i> Telegram
             </a>
-          </form>
-          <div style="margin-top:20px;font-size:.8rem;color:var(--grey-500);text-align:center;">
-            <i class="fa fa-shield-alt" style="color:var(--gold);"></i> Safe booking · Free cancellation
+            <div style="text-align:center;margin-top:16px;font-size:.74rem;color:var(--muted);">
+              <i class="fa fa-shield-alt" style="color:var(--gold);"></i>
+              {% if lang=='ru' %}Бесплатная отмена · Безопасное бронирование{% else %}Free cancellation · Secure booking{% endif %}
+            </div>
           </div>
         </div>
-      </div>
-      <div style="background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px;margin-top:20px;">
-        <h4 style="font-size:.95rem;margin-bottom:14px;"><i class="fa fa-tag" style="color:var(--gold);margin-right:6px;"></i>Pricing</h4>
-        <table style="width:100%;font-size:.875rem;">
-          <tr style="border-bottom:1px solid var(--grey-100);"><td style="padding:8px 0;color:var(--grey-500);">Per night</td><td style="font-weight:700;text-align:right;">${{ villa.price_per_night }}</td></tr>
-          {% if villa.price_per_week %}<tr style="border-bottom:1px solid var(--grey-100);"><td style="padding:8px 0;color:var(--grey-500);">Per week</td><td style="font-weight:700;text-align:right;">${{ villa.price_per_week }}</td></tr>{% endif %}
-          {% if villa.price_per_month %}<tr><td style="padding:8px 0;color:var(--grey-500);">Per month</td><td style="font-weight:700;text-align:right;">${{ villa.price_per_month }}</td></tr>{% endif %}
-        </table>
-      </div>
-    </aside>
-  </div>
-  {% if similar %}
-  <div style="margin-top:64px;">
-    <h2 style="font-size:1.5rem;margin-bottom:24px;">Similar Villas</h2>
-    <div class="villas-grid">
-      {% for v in similar %}
-      <div class="villa-card">
-        <div class="villa-card-img">
-          <img src="https://picsum.photos/seed/sim{{ v.id }}/800/600" alt="{{ v.title_en }}" loading="lazy">
+
+        {% if similar %}
+        <div style="margin-top:24px;">
+          <h3 style="font-family:var(--sans);font-size:.88rem;font-weight:700;margin-bottom:14px;color:var(--ink);">{% if lang=='ru' %}Похожие объекты{% else %}Similar Stays{% endif %}</h3>
+          {% for v in similar %}
+          <a href="{{ url_for('villas.detail', slug=v.slug) }}" style="display:flex;gap:12px;padding:10px;background:var(--white);border-radius:var(--r-sm);margin-bottom:8px;border:1px solid var(--line);transition:border-color .2s;" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--line)'">
+            <img src="https://picsum.photos/seed/sim{{ v.id }}/120/80" style="width:60px;height:50px;object-fit:cover;border-radius:7px;flex-shrink:0;" alt="{{ v.title_en }}">
+            <div>
+              <div style="font-size:.78rem;font-weight:600;color:var(--ink);line-height:1.3;">{{ v.title_en }}</div>
+              <div style="font-size:.72rem;color:var(--gold);font-weight:700;margin-top:3px;">${{ v.price_per_night }}/{% if lang=='ru' %}ночь{% else %}night{% endif %}</div>
+            </div>
+          </a>
+          {% endfor %}
         </div>
-        <div class="villa-card-body">
-          <div class="villa-card-location"><i class="fa fa-map-marker-alt"></i> {{ v.city }}{% if v.country %}, {{ v.country.name_en }}{% endif %}</div>
-          <h3 class="villa-card-title"><a href="{{ url_for('villas.detail', slug=v.slug) }}">{{ v.title_en }}</a></h3>
-          <div class="villa-card-footer">
-            <div class="villa-price"><span class="villa-price-from">FROM</span><span class="villa-price-amount">${{ v.price_per_night }}</span><span class="villa-price-per">/ night</span></div>
-            <a href="{{ url_for('villas.detail', slug=v.slug) }}" class="btn btn-primary btn-sm">View</a>
-          </div>
-        </div>
-      </div>
-      {% endfor %}
+        {% endif %}
+      </aside>
     </div>
   </div>
-  {% endif %}
-</div>
+</section>
 {% endblock %}
 {% block extra_js %}
 <script>
-const pricePerNight = {{ villa.price_per_night | float }};
-document.getElementById('check-in').min = new Date().toISOString().split('T')[0];
-function calcPrice() {
-  const ci = document.getElementById('check-in').value;
-  const co = document.getElementById('check-out').value;
-  if (!ci || !co) return;
-  const nights = Math.round((new Date(co) - new Date(ci)) / 86400000);
-  if (nights <= 0) return;
-  const total = nights * pricePerNight;
-  document.getElementById('nights-label').textContent = nights + ' night' + (nights > 1 ? 's' : '');
-  document.getElementById('nights-price').textContent = '$' + total.toLocaleString();
-  document.getElementById('total-price').textContent = '$' + total.toLocaleString();
-  document.getElementById('price-breakdown').style.display = 'block';
+const price = {{ villa.price_per_night|float }};
+document.getElementById('checkIn').min = new Date().toISOString().split('T')[0];
+function calcPrice(){
+  const ci = document.getElementById('checkIn').value;
+  const co = document.getElementById('checkOut').value;
+  if(!ci||!co) return;
+  const n = Math.round((new Date(co)-new Date(ci))/86400000);
+  if(n<=0) return;
+  const total = n * price;
+  const bd = document.getElementById('priceBd');
+  document.getElementById('nlabel').textContent = n+' night'+(n>1?'s':'');
+  document.getElementById('nprice').textContent = '$'+total.toLocaleString();
+  document.getElementById('ntotal').textContent = '$'+total.toLocaleString();
+  bd.style.display='block';
 }
 </script>
 {% endblock %}

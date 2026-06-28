@@ -1,4 +1,40 @@
 {% extends 'base.html' %}
+{% block title %}Villas — Admin — Bek Tour{% endblock %}
 {% block content %}
-<div class="container section-sm"><h1>Page</h1></div>
+<div class="page-hero"><div class="container"><h1>Manage Properties</h1><p>{{ villas|length }} total</p></div></div>
+<section style="padding:48px 0;">
+  <div class="container">
+    <div style="display:flex;gap:10px;margin-bottom:24px;">
+      <a href="{{ url_for('admin.dashboard') }}" class="btn btn-outline btn-sm"><i class="fa fa-arrow-left"></i> Dashboard</a>
+    </div>
+    <div class="villas-grid">
+      {% for villa in villas %}
+      <div class="vcard">
+        <div class="vcard-img">
+          <img src="https://picsum.photos/seed/adm{{ villa.id }}/600/400" alt="{{ villa.title_en }}" loading="lazy">
+          {% if villa.is_featured %}<div class="vcard-badge vb-gold">Featured</div>{% endif %}
+          {% if not villa.is_active %}<div class="vcard-badge" style="background:#e53e3e;color:white;left:auto;right:13px;">Inactive</div>{% endif %}
+        </div>
+        <div class="vcard-body">
+          <div class="vcard-loc"><i class="fa fa-map-marker-alt"></i> {{ villa.city }}</div>
+          <div class="vcard-title">{{ villa.title_en }}</div>
+          <div class="vcard-meta">
+            {% if villa.bedrooms %}<span><i class="fa fa-bed"></i>{{ villa.bedrooms }}</span>{% endif %}
+            {% if villa.guests %}<span><i class="fa fa-users"></i>{{ villa.guests }}</span>{% endif %}
+          </div>
+          <div class="vcard-foot">
+            <div><div class="vcard-price">${{ villa.price_per_night }}</div><div class="vcard-per">/night</div></div>
+            <a href="{{ url_for('villas.detail', slug=villa.slug) }}" class="btn btn-ink btn-sm">View</a>
+          </div>
+        </div>
+      </div>
+      {% else %}
+      <div style="grid-column:1/-1;text-align:center;padding:60px;color:var(--muted);">
+        <div style="font-size:3rem;margin-bottom:14px;">🏠</div>
+        <p>No properties yet</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
 {% endblock %}

@@ -4,8 +4,8 @@
 <style>
 .search-layout { display:grid; grid-template-columns:280px 1fr; gap:28px; align-items:start; }
 .results-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:22px; flex-wrap:wrap; gap:10px; }
-.results-count { font-size:.88rem; color:var(--grey-400); }
-.results-count strong { color:var(--navy); font-size:1rem; }
+.results-count { font-size:.88rem; color:var(--muted); }
+.results-count strong { color:var(--ink); font-size:1rem; }
 .empty-state { text-align:center; padding:80px 20px; }
 .empty-icon { font-size:3rem; margin-bottom:16px; opacity:.3; }
 @media (max-width:900px) { .search-layout { grid-template-columns:1fr; } .filter-panel { position:static; } }
@@ -34,7 +34,7 @@
             <span class="filter-group-label">{% if lang == 'ru' %}Поиск{% elif lang == 'uz' %}Qidirish{% else %}Search{% endif %}</span>
             <div style="position:relative;">
               <input type="text" name="q" value="{{ q or '' }}" placeholder="{% if lang == 'ru' %}Название виллы...{% elif lang == 'uz' %}Villa nomi...{% else %}Villa name...{% endif %}" class="form-control" style="padding-left:34px;font-size:.84rem;">
-              <i class="fa fa-search" style="position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--grey-400);font-size:.78rem;"></i>
+              <i class="fa fa-search" style="position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:.78rem;"></i>
             </div>
           </div>
           <div class="filter-group">
@@ -121,7 +121,7 @@
             {% if villas.has_prev %}<a href="{{ url_for('villas.index', page=villas.prev_num, **request.args) }}" class="page-btn"><i class="fa fa-chevron-left"></i></a>{% endif %}
             {% for p in villas.iter_pages(left_edge=1,right_edge=1,left_current=2,right_current=2) %}
               {% if p %}<a href="{{ url_for('villas.index', page=p, **request.args) }}" class="page-btn {% if p==villas.page %}active{% endif %}">{{ p }}</a>
-              {% else %}<span class="page-btn" style="color:var(--grey-200)">…</span>{% endif %}
+              {% else %}<span class="page-btn" style="color:var(--muted)">…</span>{% endif %}
             {% endfor %}
             {% if villas.has_next %}<a href="{{ url_for('villas.index', page=villas.next_num, **request.args) }}" class="page-btn"><i class="fa fa-chevron-right"></i></a>{% endif %}
           </div>
@@ -129,8 +129,8 @@
           {% else %}
           <div class="empty-state">
             <div class="empty-icon">🔍</div>
-            <h3 style="color:var(--navy);margin-bottom:8px;">{% if lang == 'ru' %}Виллы не найдены{% elif lang == 'uz' %}Villalar topilmadi{% else %}No villas found{% endif %}</h3>
-            <p style="color:var(--grey-400);margin-bottom:20px;">{% if lang == 'ru' %}Попробуйте изменить фильтры{% elif lang == 'uz' %}Filtrlarni o\'zgartirib ko\'ring{% else %}Try adjusting your filters{% endif %}</p>
+            <h3 style="color:var(--ink);margin-bottom:8px;">{% if lang == 'ru' %}Виллы не найдены{% elif lang == 'uz' %}Villalar topilmadi{% else %}No villas found{% endif %}</h3>
+            <p style="color:var(--muted);margin-bottom:20px;">{% if lang == 'ru' %}Попробуйте изменить фильтры{% elif lang == 'uz' %}Filtrlarni o\'zgartirib ko\'ring{% else %}Try adjusting your filters{% endif %}</p>
             <a href="{{ url_for('villas.index') }}" class="btn btn-gold">{% if lang == 'ru' %}Сбросить фильтры{% elif lang == 'uz' %}Filtrlarni tozalash{% else %}Clear filters{% endif %}</a>
           </div>
           {% endif %}

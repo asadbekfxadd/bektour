@@ -1,13 +1,7 @@
-from flask import Blueprint, render_template, request, session
+from flask import Blueprint, render_template, request
 from app.models.models import Villa, Review, Country, db
-from app.routes.main import TRANSLATIONS, TDict
 
 villas_bp = Blueprint('villas', __name__)
-
-@villas_bp.context_processor
-def inject_lang():
-    lang = session.get('lang', 'en')
-    return dict(lang=lang, t=TDict(TRANSLATIONS.get(lang, TRANSLATIONS['en'])))
 
 @villas_bp.route('/')
 def index():

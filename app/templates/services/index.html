@@ -2,17 +2,17 @@
 {% block title %}{% if lang == 'ru' %}Услуги{% elif lang == 'uz' %}Xizmatlar{% else %}Services{% endif %} — Bek Tour{% endblock %}
 {% block extra_css %}
 <style>
-.services-hero { background:var(--navy); padding:80px 0 60px; padding-top:calc(var(--nav-h)+60px); text-align:center; position:relative; }
+.services-hero { background:var(--ink); padding:80px 0 60px; padding-top:calc(var(--nav-h)+60px); text-align:center; position:relative; }
 .services-hero::after { content:''; position:absolute; bottom:0; left:0; right:0; height:1px; background:linear-gradient(90deg,transparent,var(--gold),transparent); }
 .service-section { padding:80px 0; }
 .service-section:nth-child(even) { background:var(--beige); }
 .service-layout { display:grid; grid-template-columns:1fr 1fr; gap:70px; align-items:center; }
 .service-layout.reverse { direction:rtl; }
 .service-layout.reverse > * { direction:ltr; }
-.service-img { border-radius:var(--radius-xl); overflow:hidden; height:420px; }
+.service-img { border-radius:var(--r-xl); overflow:hidden; height:420px; }
 .service-img img { width:100%; height:100%; object-fit:cover; }
 .service-features { margin:20px 0 28px; }
-.service-feature { display:flex; align-items:center; gap:12px; padding:10px 0; border-bottom:1px solid var(--grey-100); font-size:.875rem; color:var(--grey-600); }
+.service-feature { display:flex; align-items:center; gap:12px; padding:10px 0; border-bottom:1px solid var(--muted); font-size:.875rem; color:var(--muted); }
 .service-feature:last-child { border-bottom:none; }
 .service-feature-icon { width:32px; height:32px; border-radius:50%; background:rgba(212,175,55,.1); color:var(--gold); display:flex; align-items:center; justify-content:center; font-size:.8rem; flex-shrink:0; }
 .price-badge { display:inline-flex; align-items:center; gap:8px; background:rgba(212,175,55,.1); border:1px solid rgba(212,175,55,.2); color:var(--gold-dark); padding:8px 18px; border-radius:24px; font-weight:700; font-size:.85rem; margin-bottom:20px; }
@@ -76,7 +76,7 @@
         <span class="section-label">{{ title[lang] if lang in title else title['en'] }}</span>
         <h2 style="font-family:var(--font-serif);font-size:2.2rem;margin-bottom:12px;">{{ title[lang] if lang in title else title['en'] }}</h2>
         <div class="price-badge"><i class="fa fa-tag"></i> {{ price[lang] if lang in price else price['en'] }}</div>
-        <p style="color:var(--grey-400);line-height:1.8;margin-bottom:20px;font-size:.95rem;">{{ desc[lang] if lang in desc else desc['en'] }}</p>
+        <p style="color:var(--muted);line-height:1.8;margin-bottom:20px;font-size:.95rem;">{{ desc[lang] if lang in desc else desc['en'] }}</p>
         <div class="service-features">
           {% for feat in features %}
           <div class="service-feature">
@@ -96,7 +96,7 @@
 </section>
 {% endfor %}
 
-<section style="background:var(--navy);padding:80px 0;text-align:center;">
+<section style="background:var(--ink);padding:80px 0;text-align:center;">
   <div class="container reveal">
     <span class="section-label">{% if lang == 'ru' %}Индивидуальный пакет{% elif lang == 'uz' %}Maxsus paket{% else %}Custom Package{% endif %}</span>
     <h2 style="color:var(--white);font-family:var(--font-serif);margin-bottom:14px;">
