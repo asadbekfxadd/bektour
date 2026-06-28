@@ -1,0 +1,8 @@
+/* Custom cursor - works on all backgrounds */
+*, *::before, *::after { cursor: none !important; }
+.cur { position: fixed; pointer-events: none; z-index: 99999; top: 0; left: 0; }
+.cur-dot { position: absolute; width: 10px; height: 10px; background: var(--gold, #C8A45D); border-radius: 50%; transform: translate(-50%, -50%); transition: transform .15s ease, width .2s ease, height .2s ease; }
+.cur-ring { position: absolute; width: 38px; height: 38px; border: 1.5px solid rgba(200, 164, 93, 0.55); border-radius: 50%; transform: translate(-50%, -50%); transition: width .25s ease, height .25s ease, border-color .2s; }
+.cur-hovering .cur-dot { transform: translate(-50%, -50%) scale(0.4); }
+.cur-hovering .cur-ring { width: 54px; height: 54px; border-color: var(--gold, #C8A45D); }
+@media (hover: none) { .cur { display: none !important; } *, *::before, *::after { cursor: auto !important; } }

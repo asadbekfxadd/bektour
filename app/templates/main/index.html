@@ -1,170 +1,244 @@
 {% extends 'base.html' %}
 {% set is_hero = true %}
-{% block title %}{% if lang=='ru' %}Роскошная аренда вилл по всему миру{% elif lang=='uz' %}Dunyo bo\'yicha hashamatli villa ijarasi{% else %}Luxury Villa Rentals Worldwide{% endif %} — Bek Tour{% endblock %}
+{% block title %}{% if lang=='ru' %}Туры в Узбекистан — Великий Шёлковый Путь{% elif lang=='uz' %}O'zbekistonga turlar — Buyuk Ipak Yo'li{% else %}Tours to Uzbekistan — The Great Silk Road{% endif %}{% endblock %}
 
 {% block content %}
 
-<!-- ══ HERO ══════════════════════════════════ -->
+<!-- HERO -->
 <section class="hero">
   <div class="hero-media">
-    <img src="https://picsum.photos/seed/hero-luxury-travel/1920/1080" alt="Luxury Travel" loading="eager">
+    <img src="https://picsum.photos/seed/samarkand-registan/1920/1080" alt="Uzbekistan - Registan Samarkand" loading="eager">
   </div>
-  <div class="hero-vignette"></div>
-  <div class="hero-noise"></div>
+  <div class="hero-grad"></div>
   <div class="container">
     <div class="hero-content">
-      <div class="hero-tag"><i class="fa fa-crown"></i> {{ t.hero_eyebrow }}</div>
-      <h1>{{ t.hero_title | safe }}</h1>
-      <p class="hero-sub">{{ t.hero_desc }}</p>
-      <div class="hero-ctas">
-        <a href="{{ url_for('villas.index') }}" class="btn btn-gold btn-xl"><i class="fa fa-home"></i> {{ t.btn_browse }}</a>
-        <a href="{{ url_for('services.index') }}" class="btn btn-outline-w btn-xl">{{ t.btn_services }}</a>
+      <div class="hero-tag"><i class="fa fa-mosque"></i>
+        {% if lang=='ru' %}Великий Шёлковый Путь{% elif lang=='uz' %}Buyuk Ipak Yo'li{% else %}The Great Silk Road{% endif %}
+      </div>
+      <h1>
+        {% if lang=='ru' %}Откройте <em>Душу</em><br>Узбекистана{% elif lang=='uz' %}O'zbekiston <em>Ruhini</em><br>Kashf Eting{% else %}Discover the <em>Soul</em><br>of Uzbekistan{% endif %}
+      </h1>
+      <p class="hero-sub">
+        {% if lang=='ru' %}Сaмарканд, Бухара, Хива — города, где история оживает. Роскошные отели, частные гиды и незабываемые маршруты по Шёлковому пути.{% elif lang=='uz' %}Samarqand, Buxoro, Xiva — tarix jonlanadigan shaharlar. Hashamatli mehmonxonalar, shaxsiy gidlar va unutilmas Ipak yo'li marshrутlari.{% else %}Samarkand, Bukhara, Khiva — cities where history comes alive. Luxury hotels, private guides, and unforgettable Silk Road journeys.{% endif %}
+      </p>
+      <div class="hero-btns">
+        <a href="{{ url_for('villas.index') }}" class="btn btn-gold btn-xl"><i class="fa fa-search"></i>
+          {% if lang=='ru' %}Найти тур{% elif lang=='uz' %}Tur topish{% else %}Find a Tour{% endif %}
+        </a>
+        <a href="{{ url_for('main.about') }}" class="btn btn-outline-w btn-xl">
+          {% if lang=='ru' %}О нас{% elif lang=='uz' %}Biz haqimizda{% else %}About Us{% endif %}
+        </a>
       </div>
       <div class="hero-stats">
-        <div>
-          <div class="hero-stat-n" data-n="500" data-s="+">500+</div>
-          <div class="hero-stat-l">{{ t.stat_villas }}</div>
-        </div>
-        <div>
-          <div class="hero-stat-n" data-n="50" data-s="+">50+</div>
-          <div class="hero-stat-l">{{ t.stat_countries }}</div>
-        </div>
-        <div>
-          <div class="hero-stat-n" data-n="10000" data-s="+">10K+</div>
-          <div class="hero-stat-l">{{ t.stat_guests }}</div>
-        </div>
-        <div>
-          <div class="hero-stat-n">24/7</div>
-          <div class="hero-stat-l">{{ t.stat_service }}</div>
-        </div>
-      </div>
-      <!-- Search -->
-      <div class="search-wrap">
-        <div class="search-tabs">
-          <div class="s-tab on" data-type="villa"><i class="fa fa-home"></i> Villas</div>
-          <div class="s-tab" data-type="yacht"><i class="fa fa-ship"></i> Yachts</div>
-          <div class="s-tab" data-type="car"><i class="fa fa-car"></i> Cars</div>
-          <div class="s-tab" data-type="transfer"><i class="fa fa-shuttle-van"></i> Transfer</div>
-        </div>
-        <form class="search-bar" action="{{ url_for('villas.index') }}" method="GET">
-          <input type="hidden" name="type" id="sType" value="villa">
-          <div class="s-field">
-            <span class="s-label">{{ t.search_dest }}</span>
-            <select name="country" style="min-width:100px;">
-              <option value="">{% if lang=='ru' %}Любая страна{% elif lang=='uz' %}Istalgan mamlakat{% else %}Any country{% endif %}</option>
-              {% for c in countries %}<option value="{{ c.id }}">{{ c.name_en }}</option>{% endfor %}
-            </select>
-          </div>
-          <div class="s-field">
-            <span class="s-label">{{ t.search_checkin }}</span>
-            <input type="date" name="check_in" id="heroCI">
-          </div>
-          <div class="s-field">
-            <span class="s-label">{% if lang=='ru' %}Выезд{% elif lang=='uz' %}Chiqish{% else %}Check Out{% endif %}</span>
-            <input type="date" name="check_out" id="heroCO">
-          </div>
-          <div class="s-field">
-            <span class="s-label">{{ t.search_guests }}</span>
-            <select name="guests">
-              <option value="">{% if lang=='ru' %}Любое{% elif lang=='uz' %}Istalgan{% else %}Any{% endif %}</option>
-              <option value="2">2</option><option value="4">4</option>
-              <option value="6">6</option><option value="8">8+</option>
-            </select>
-          </div>
-          <button type="submit" class="btn btn-gold btn-pill" style="padding:0 28px;flex-shrink:0;">
-            <i class="fa fa-search"></i> {{ t.btn_search }}
-          </button>
-        </form>
+        <div class="hs-item"><div class="hs-n" data-n="25" data-s="+">25+</div><div class="hs-l">{% if lang=='ru' %}Лет опыта{% elif lang=='uz' %}Yillik tajriba{% else %}Years Experience{% endif %}</div></div>
+        <div class="hs-item"><div class="hs-n" data-n="50000" data-s="+">50K+</div><div class="hs-l">{% if lang=='ru' %}Туристов{% elif lang=='uz' %}Sayyohlar{% else %}Happy Travelers{% endif %}</div></div>
+        <div class="hs-item"><div class="hs-n" data-n="14" data-s="">14</div><div class="hs-l">{% if lang=='ru' %}Областей Узбекистана{% elif lang=='uz' %}Viloyat{% else %}Uzbekistan Regions{% endif %}</div></div>
+        <div class="hs-item"><div class="hs-n">4.9★</div><div class="hs-l">{% if lang=='ru' %}Рейтинг{% elif lang=='uz' %}Reyting{% else %}Rating{% endif %}</div></div>
       </div>
     </div>
   </div>
-  <div class="hero-scroll">
-    <div class="hero-scroll-line"></div>
+  <div class="hero-scroll-ind">
+    <div class="hero-scroll-ind-line"></div>
     Scroll
   </div>
 </section>
 
-<!-- ══ DESTINATIONS ══════════════════════════ -->
-{% if countries %}
-<section class="section" style="background:var(--cream);">
+<!-- TRIP CALCULATOR -->
+<section class="calc-section">
   <div class="container">
-    <div class="sh reveal">
-      <span class="eyebrow">{% if lang=='ru' %}Направления{% elif lang=='uz' %}Yo\'nalishlar{% else %}Destinations{% endif %}</span>
-      <h2 class="sh-title">{{ t.dest_title }}</h2>
-      <p class="sh-sub">{{ t.dest_sub }}</p>
-    </div>
-    <div class="dest-editorial reveal">
-      {% for c in countries %}
-      {% if loop.index == 1 %}
-      <a href="{{ url_for('villas.index') }}?country={{ c.id }}" class="dest-card main">
-        <img src="https://picsum.photos/seed/dest{{ c.id }}main/900/700" alt="{{ c.name_en }}" loading="lazy">
-        <div class="dest-card-overlay"></div>
-        <div class="dest-card-info">
-          <div class="dest-card-name">{{ c.name_en }}</div>
-          <div class="dest-card-count">{{ c.villas.count() }} {% if lang=='ru' %}объектов{% elif lang=='uz' %}mulk{% else %}properties{% endif %}</div>
+    <div class="calc-box">
+      <h2 class="calc-title">
+        {% if lang=='ru' %}Рассчитайте своё путешествие{% elif lang=='uz' %}Sayohatingizni hisoblang{% else %}Plan Your Journey{% endif %}
+      </h2>
+      <p class="calc-sub">
+        {% if lang=='ru' %}Выберите город, количество ночей и нужные услуги — получите мгновенную оценку стоимости{% elif lang=='uz' %}Shahar, tunlar soni va kerakli xizmatlarni tanlang — darhol narx baholashini oling{% else %}Choose your city, nights, and services — get an instant price estimate{% endif %}
+      </p>
+      <div class="calc-grid">
+        <div class="calc-field">
+          <span class="calc-field-label">{% if lang=='ru' %}Город{% elif lang=='uz' %}Shahar{% else %}Destination{% endif %}</span>
+          <select id="calcCity">
+            <option value="samarkand">Samarkand</option>
+            <option value="bukhara">Bukhara</option>
+            <option value="tashkent">Tashkent</option>
+            <option value="khiva">Khiva</option>
+            <option value="fergana">Fergana Valley</option>
+            <option value="shahrisabz">Shahrisabz</option>
+            <option value="namangan">Namangan</option>
+            <option value="andijan">Andijan</option>
+            <option value="nukus">Nukus (Aral Sea)</option>
+            <option value="termez">Termez</option>
+            <option value="urgench">Urgench</option>
+            <option value="jizzakh">Jizzakh</option>
+          </select>
         </div>
-      </a>
-      <div class="dest-right">
-      {% elif loop.index <= 3 %}
-      <a href="{{ url_for('villas.index') }}?country={{ c.id }}" class="dest-card">
-        <img src="https://picsum.photos/seed/dest{{ c.id }}side/600/350" alt="{{ c.name_en }}" loading="lazy">
-        <div class="dest-card-overlay"></div>
-        <div class="dest-card-info">
-          <div class="dest-card-name">{{ c.name_en }}</div>
-          <div class="dest-card-count">{{ c.villas.count() }} {% if lang=='ru' %}объектов{% elif lang=='uz' %}mulk{% else %}properties{% endif %}</div>
+        <div class="calc-field">
+          <span class="calc-field-label">{% if lang=='ru' %}Ночей{% elif lang=='uz' %}Tunlar{% else %}Nights{% endif %}</span>
+          <select id="calcNights">
+            <option value="2">2 {% if lang=='ru' %}ночи{% elif lang=='uz' %}tun{% else %}nights{% endif %}</option>
+            <option value="3" selected>3 {% if lang=='ru' %}ночи{% elif lang=='uz' %}tun{% else %}nights{% endif %}</option>
+            <option value="5">5 {% if lang=='ru' %}ночей{% elif lang=='uz' %}tun{% else %}nights{% endif %}</option>
+            <option value="7">7 {% if lang=='ru' %}ночей{% elif lang=='uz' %}tun{% else %}nights{% endif %}</option>
+            <option value="10">10 {% if lang=='ru' %}ночей{% elif lang=='uz' %}tun{% else %}nights{% endif %}</option>
+            <option value="14">14 {% if lang=='ru' %}ночей{% elif lang=='uz' %}tun{% else %}nights{% endif %}</option>
+          </select>
         </div>
-      </a>
-      {% if loop.index == 3 %}</div>{% endif %}
-      {% endif %}
-      {% endfor %}
-    </div>
-    <div style="text-align:center;margin-top:40px;" class="reveal">
-      <a href="{{ url_for('villas.index') }}" class="btn btn-outline btn-lg">
-        {% if lang=='ru' %}Все направления{% elif lang=='uz' %}Barcha yo\'nalishlar{% else %}All Destinations{% endif %}
-        <i class="fa fa-arrow-right"></i>
-      </a>
+        <div class="calc-field">
+          <span class="calc-field-label">{% if lang=='ru' %}Гостей{% elif lang=='uz' %}Mehmonlar{% else %}Guests{% endif %}</span>
+          <select id="calcGuests">
+            <option value="1">1</option>
+            <option value="2" selected>2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="6">6</option>
+            <option value="8">8</option>
+          </select>
+        </div>
+        <div class="calc-field">
+          <span class="calc-field-label">{% if lang=='ru' %}Тип жилья{% elif lang=='uz' %}Uy-joy turi{% else %}Accommodation{% endif %}</span>
+          <select id="calcAccType" onchange="document.getElementById('calcAccType').dataset.changed='1'">
+            <option value="hotel">{% if lang=='ru' %}Отель{% elif lang=='uz' %}Mehmonxona{% else %}Hotel{% endif %}</option>
+            <option value="villa">{% if lang=='ru' %}Вилла / Апартаменты{% elif lang=='uz' %}Villa / Apartamentlar{% else %}Villa / Apartment{% endif %}</option>
+          </select>
+        </div>
+      </div>
+      <p style="font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;">
+        {% if lang=='ru' %}Выберите услуги:{% elif lang=='uz' %}Xizmatlarni tanlang:{% else %}Select Services:{% endif %}
+      </p>
+      <div class="calc-services">
+        <div class="calc-svc on" data-svc="hotel"><i class="fa fa-hotel"></i><span>{% if lang=='ru' %}Отель{% elif lang=='uz' %}Mehmonxona{% else %}Hotel{% endif %}</span></div>
+        <div class="calc-svc" data-svc="villa"><i class="fa fa-home"></i><span>Villa</span></div>
+        <div class="calc-svc" data-svc="car"><i class="fa fa-car-side"></i><span>{% if lang=='ru' %}Авто{% elif lang=='uz' %}Avtomobil{% else %}Car{% endif %}</span></div>
+        <div class="calc-svc on" data-svc="guide"><i class="fa fa-map-marked-alt"></i><span>{% if lang=='ru' %}Гид{% elif lang=='uz' %}Gid{% else %}Guide{% endif %}</span></div>
+        <div class="calc-svc" data-svc="transfer"><i class="fa fa-shuttle-van"></i><span>Transfer</span></div>
+        <div class="calc-svc" data-svc="visa"><i class="fa fa-passport"></i><span>Visa</span></div>
+        <div class="calc-svc" data-svc="flight"><i class="fa fa-plane"></i><span>{% if lang=='ru' %}Перелёт{% elif lang=='uz' %}Parvoz{% else %}Flight{% endif %}</span></div>
+      </div>
+      <div class="calc-result">
+        <div>
+          <div class="calc-total-lbl">{% if lang=='ru' %}Оценочная стоимость{% elif lang=='uz' %}Taxminiy narx{% else %}Estimated Total{% endif %}</div>
+          <div class="calc-total" id="calcTotal">$0</div>
+          <div class="calc-breakdown" id="calcBreakdown"></div>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <a href="{{ url_for('main.contacts') }}" class="btn btn-gold btn-lg"><i class="fa fa-calendar-check"></i>
+            {% if lang=='ru' %}Забронировать{% elif lang=='uz' %}Bron qilish{% else %}Book Now{% endif %}
+          </a>
+          <a href="https://t.me/bektop" target="_blank" class="btn btn-outline-w btn-lg" style="color:var(--white);border-color:rgba(255,255,255,.25);">
+            <i class="fab fa-telegram"></i> Telegram
+          </a>
+        </div>
+      </div>
     </div>
   </div>
 </section>
-{% endif %}
 
-<!-- ══ FEATURED VILLAS ═══════════════════════ -->
+<!-- UZBEKISTAN REGIONS -->
+<section class="section" style="background:var(--cream);">
+  <div class="container">
+    <div style="margin-bottom:56px;" class="reveal">
+      <span class="eyebrow">{% if lang=='ru' %}14 областей{% elif lang=='uz' %}14 viloyat{% else %}14 Regions{% endif %}</span>
+      <h2>{% if lang=='ru' %}Откройте каждый уголок Узбекистана{% elif lang=='uz' %}O'zbekistonning har bir burchagini kashf eting{% else %}Explore Every Corner of Uzbekistan{% endif %}</h2>
+      <p class="lead" style="margin-top:14px;max-width:580px;">{% if lang=='ru' %}От голубых куполов Самарканда до песков Аральского моря — каждый регион хранит свою историю.{% elif lang=='uz' %}Samarqandning moviy gumbazlaridan Orol dengizining qumloqlarigacha — har bir mintaqa o'z tarixini saqlaydi.{% else %}From the blue domes of Samarkand to the sands of the Aral Sea — every region holds its own story.{% endif %}</p>
+    </div>
+    <div class="regions-grid reveal">
+      <!-- Samarkand - tall main -->
+      <a href="{{ url_for('main.search') }}?q=Samarkand" class="region-card tall">
+        <img src="https://picsum.photos/seed/samarkand-registan-big/800/900" alt="Samarkand" loading="lazy">
+        <div class="region-veil"></div>
+        <div class="region-info">
+          <span class="region-tag">UNESCO World Heritage</span>
+          <div class="region-name">Samarkand</div>
+          <div class="region-sub">{% if lang=='ru' %}Жемчужина Шёлкового Пути{% elif lang=='uz' %}Ipak Yo'lining marvarid{% else %}Pearl of the Silk Road{% endif %}</div>
+        </div>
+      </a>
+      <!-- Right side 4 cards -->
+      <a href="{{ url_for('main.search') }}?q=Bukhara" class="region-card">
+        <img src="https://picsum.photos/seed/bukhara-city/700/400" alt="Bukhara" loading="lazy">
+        <div class="region-veil"></div>
+        <div class="region-info">
+          <span class="region-tag">2500+ years old</span>
+          <div class="region-name">Bukhara</div>
+          <div class="region-sub">{% if lang=='ru' %}Священный город{% elif lang=='uz' %}Muqaddas shahar{% else %}The Sacred City{% endif %}</div>
+        </div>
+      </a>
+      <a href="{{ url_for('main.search') }}?q=Tashkent" class="region-card">
+        <img src="https://picsum.photos/seed/tashkent-modern/700/400" alt="Tashkent" loading="lazy">
+        <div class="region-veil"></div>
+        <div class="region-info">
+          <div class="region-name">Tashkent</div>
+          <div class="region-sub">{% if lang=='ru' %}Столица & Амирсай{% elif lang=='uz' %}Poytaxt & Amirsoy{% else %}Capital & Amirsay{% endif %}</div>
+        </div>
+      </a>
+      <a href="{{ url_for('main.search') }}?q=Khiva" class="region-card">
+        <img src="https://picsum.photos/seed/khiva-ichan/700/400" alt="Khiva" loading="lazy">
+        <div class="region-veil"></div>
+        <div class="region-info">
+          <span class="region-tag">Open Air Museum</span>
+          <div class="region-name">Khiva</div>
+          <div class="region-sub">{% if lang=='ru' %}Живой музей под открытым небом{% elif lang=='uz' %}Ochiq havo muzeyi{% else %}Living Open-Air Museum{% endif %}</div>
+        </div>
+      </a>
+      <a href="{{ url_for('main.search') }}?q=Fergana" class="region-card">
+        <img src="https://picsum.photos/seed/fergana-valley/700/400" alt="Fergana Valley" loading="lazy">
+        <div class="region-veil"></div>
+        <div class="region-info">
+          <div class="region-name">Fergana Valley</div>
+          <div class="region-sub">{% if lang=='ru' %}Шёлк, специи, традиции{% elif lang=='uz' %}Ipak, ziravorlar, an'analar{% else %}Silk, Spices & Traditions{% endif %}</div>
+        </div>
+      </a>
+    </div>
+    <!-- More regions -->
+    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-top:12px;" class="reveal">
+      {% for city, flag, desc_en, desc_ru, desc_uz in [
+        ('Shahrisabz','🕌','Birthplace of Timur','Родина Тамерлана','Temurning vatani'),
+        ('Nukus','🌊','Aral Sea & Art','Аральское море и искусство','Orol dengizi va san\'at'),
+        ('Termez','🏛','Buddhist Monuments','Буддийские памятники','Buddist yodgorliklar'),
+        ('Namangan','🍑','Silk & Peaches','Шёлк и персики','Ipak va shaftollar'),
+        ('Andijan','📖','Babur\'s Land','Земля Бабура','Bobur yurti'),
+      ] %}
+      <a href="{{ url_for('main.search') }}?q={{ city }}" style="background:var(--white);border-radius:14px;padding:18px 16px;border:1px solid var(--line);transition:all .25s;display:block;text-align:center;" onmouseover="this.style.borderColor='var(--gold)';this.style.transform='translateY(-3px)';" onmouseout="this.style.borderColor='var(--line)';this.style.transform='';">
+        <div style="font-size:1.8rem;margin-bottom:8px;">{{ flag }}</div>
+        <div style="font-weight:700;font-size:.88rem;color:var(--ink);margin-bottom:4px;">{{ city }}</div>
+        <div style="font-size:.72rem;color:var(--muted);">{% if lang=='ru' %}{{ desc_ru }}{% elif lang=='uz' %}{{ desc_uz }}{% else %}{{ desc_en }}{% endif %}</div>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- FEATURED VILLAS/HOTELS -->
 {% if featured %}
 <section class="section" style="background:var(--white);">
   <div class="container">
-    <div class="sh centered reveal">
-      <span class="eyebrow">Featured</span>
-      <h2 class="sh-title">{{ t.feat_title }}</h2>
-      <p class="sh-sub">{{ t.feat_sub }}</p>
+    <div class="reveal" style="margin-bottom:52px;">
+      <span class="eyebrow">{% if lang=='ru' %}Жильё{% elif lang=='uz' %}Turar joy{% else %}Accommodation{% endif %}</span>
+      <h2>{{ t.feat_title }}</h2>
     </div>
-    <div class="cards-grid">
+    <div class="villas-grid">
       {% for villa in featured %}
-      <div class="pcard reveal delay-{{ loop.index0 % 3 + 1 }}">
-        <div class="pcard-img">
-          <img src="https://picsum.photos/seed/villa{{ villa.id }}hero/800/600" alt="{{ villa.title_en }}" loading="lazy">
-          <div class="pcard-badges">
-            <span class="pcard-badge pb-gold">Featured</span>
-          </div>
-          <div class="pcard-acts">
-            <button class="pcard-act" data-fav="{{ villa.id }}" title="Favorite"><i class="fa fa-heart"></i></button>
-            <button class="pcard-act" data-cmp="{{ villa.id }}" data-name="{{ villa.title_en }}" title="Compare"><i class="fa fa-balance-scale"></i></button>
+      <div class="vcard reveal d{{ loop.index0 % 3 + 1 }}">
+        <div class="vcard-img">
+          <img src="https://picsum.photos/seed/uzhotel{{ villa.id }}/800/600" alt="{{ villa.title_en }}" loading="lazy">
+          {% if villa.is_featured %}<div class="vcard-badge vb-gold">Featured</div>{% endif %}
+          <div class="vcard-acts">
+            <button class="vcard-act" data-fav="{{ villa.id }}" title="Save"><i class="fa fa-heart"></i></button>
+            <button class="vcard-act" data-cmp="{{ villa.id }}" data-name="{{ villa.title_en }}" title="Compare"><i class="fa fa-balance-scale"></i></button>
           </div>
         </div>
-        <div class="pcard-body">
-          <div class="pcard-tag">Villa</div>
-          <div class="pcard-loc"><i class="fa fa-map-marker-alt"></i> {{ villa.city or '' }}{% if villa.country %}, {{ villa.country.name_en }}{% endif %}</div>
-          <div class="pcard-title"><a href="{{ url_for('villas.detail', slug=villa.slug) }}">{{ villa.title_en }}</a></div>
-          <div class="pcard-meta">
+        <div class="vcard-body">
+          <div class="vcard-tag">{% if lang=='ru' %}Размещение{% elif lang=='uz' %}Turar joy{% else %}Accommodation{% endif %}</div>
+          <div class="vcard-loc"><i class="fa fa-map-marker-alt"></i> {{ villa.city or '' }}{% if villa.country %}, {{ villa.country.name_en }}{% endif %}</div>
+          <div class="vcard-title"><a href="{{ url_for('villas.detail', slug=villa.slug) }}">{{ villa.title_en }}</a></div>
+          <div class="vcard-meta">
             {% if villa.bedrooms %}<span><i class="fa fa-bed"></i>{{ villa.bedrooms }}</span>{% endif %}
             {% if villa.guests %}<span><i class="fa fa-users"></i>{{ villa.guests }}</span>{% endif %}
             {% if villa.has_pool %}<span><i class="fa fa-swimming-pool"></i>Pool</span>{% endif %}
-            {% if villa.has_beach %}<span><i class="fa fa-umbrella-beach"></i>Beach</span>{% endif %}
           </div>
-          <div class="pcard-foot">
+          <div class="vcard-foot">
             <div>
-              <div class="pcard-price-label">{{ t.from_label }}</div>
-              <div class="pcard-price">${{ villa.price_per_night }}</div>
-              <div class="pcard-price-per">{{ t.per_night }}</div>
+              <div class="vcard-pl">{{ t.from_label }}</div>
+              <div class="vcard-price">${{ villa.price_per_night }}</div>
+              <div class="vcard-per">{{ t.per_night }}</div>
             </div>
             <a href="{{ url_for('villas.detail', slug=villa.slug) }}" class="btn btn-ink btn-sm">{{ t.btn_view }}</a>
           </div>
@@ -172,56 +246,58 @@
       </div>
       {% endfor %}
     </div>
-    <div style="text-align:center;margin-top:52px;" class="reveal">
+    <div style="text-align:center;margin-top:44px;" class="reveal">
       <a href="{{ url_for('villas.index') }}" class="btn btn-outline btn-lg">{{ t.btn_all }} <i class="fa fa-arrow-right"></i></a>
     </div>
   </div>
 </section>
 {% endif %}
 
-<!-- ══ STATS ══════════════════════════════════ -->
-<div class="stats-s">
+<!-- STATS -->
+<div class="stats-strip">
   <div class="container">
-    <div class="stats-grid">
-      <div class="stat-item"><div class="stat-n" data-n="500" data-s="+">500+</div><div class="stat-l">{{ t.stat_villas }}</div></div>
-      <div class="stat-item"><div class="stat-n" data-n="50" data-s="+">50+</div><div class="stat-l">{{ t.stat_countries }}</div></div>
-      <div class="stat-item"><div class="stat-n" data-n="10000" data-s="+">10K+</div><div class="stat-l">{{ t.stat_guests }}</div></div>
-      <div class="stat-item"><div class="stat-n">24/7</div><div class="stat-l">{{ t.stat_service }}</div></div>
+    <div class="stats-row">
+      <div class="stat-col"><div class="stat-n" data-n="25" data-s="+">25+</div><div class="stat-l">{% if lang=='ru' %}Лет опыта{% elif lang=='uz' %}Yillik tajriba{% else %}Years Experience{% endif %}</div></div>
+      <div class="stat-col"><div class="stat-n" data-n="50000" data-s="+">50K+</div><div class="stat-l">{% if lang=='ru' %}Туристов{% elif lang=='uz' %}Sayyohlar{% else %}Happy Travelers{% endif %}</div></div>
+      <div class="stat-col"><div class="stat-n" data-n="120" data-s="+">120+</div><div class="stat-l">{% if lang=='ru' %}Маршрутов{% elif lang=='uz' %}Marshrutlar{% else %}Tour Routes{% endif %}</div></div>
+      <div class="stat-col"><div class="stat-n" data-n="14" data-s="">14</div><div class="stat-l">{% if lang=='ru' %}Областей Узбекистана{% elif lang=='uz' %}O'zbekiston viloyatlari{% else %}Uzbekistan Regions{% endif %}</div></div>
     </div>
   </div>
 </div>
 
-<!-- ══ WHY US ══════════════════════════════════ -->
+<!-- HISTORY SECTION -->
 <section class="section" style="background:var(--cream);">
   <div class="container">
-    <div class="why-row">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start;">
       <div class="reveal">
-        <span class="eyebrow">{% if lang=='ru' %}Почему мы{% elif lang=='uz' %}Nima uchun biz{% else %}Why Choose Us{% endif %}</span>
-        <h2 class="sh-title" style="margin-bottom:40px;">{% if lang=='ru' %}Разница<br>Bek Tour{% elif lang=='uz' %}Bek Tour<br>farqi{% else %}The Bek Tour<br>Difference{% endif %}</h2>
-        <div class="why-list">
-          {% set whys = [
-            ('01', {'en':'Handpicked Excellence','ru':'Тщательный отбор','uz':'Sinchkov tanlov'}, {'en':'Every villa personally inspected. No compromises on quality.','ru':'Каждая вилла лично проверена. Никаких компромиссов.','uz':'Har bir villa shaxsan tekshirilgan. Sifatda murosasiz.'}),
-            ('02', {'en':'Best Price Guarantee','ru':'Гарантия лучшей цены','uz':'Eng yaxshi narx kafolati'}, {'en':'Direct owner relationships mean you always get the fairest rate.','ru':'Прямые отношения с владельцами — честная цена.','uz':'Egalari bilan to\'g\'ridan-to\'g\'ri munosabatlar — adolatli narx.'}),
-            ('03', {'en':'24/7 Concierge','ru':'Консьерж 24/7','uz':'24/7 konsyerj'}, {'en':'Our luxury travel experts are always just one message away.','ru':'Наши эксперты всегда на связи.','uz':'Mutaxassislarimiz doimo bir xabar masofasida.'}),
-            ('04', {'en':'Global Local Expertise','ru':'Глобальная местная экспертиза','uz':'Global mahalliy tajriba'}, {'en':'Deep knowledge in 50+ countries combined with world-class service.','ru':'Глубокие знания в 50+ странах и сервис мирового класса.','uz':'50+ mamlakatda chuqur bilim va jahon darajasidagi xizmat.'}),
+        <span class="eyebrow">{% if lang=='ru' %}История{% elif lang=='uz' %}Tarix{% else %}History{% endif %}</span>
+        <h2 style="margin-bottom:32px;">{% if lang=='ru' %}2500 лет истории на каждом шагу{% elif lang=='uz' %}Har bir qadamda 2500 yillik tarix{% else %}2,500 Years of History at Every Step{% endif %}</h2>
+        <div class="timeline">
+          {% for year, t_en, t_ru, t_uz in [
+            ('VI BC', 'Samarkand founded as Maracanda — one of the oldest cities in the world', 'Самарканд основан как Мараканда — один из старейших городов мира', 'Samarqand Marakanda sifatida asos solingan — dunyodagi eng qadimgi shaharlardan biri'),
+            ('329 BC', 'Alexander the Great conquers Samarkand and marvels at its beauty', 'Александр Македонский завоёвывает Самарканд и восхищается его красотой', 'Iskandar Zulqarnayn Samarqandni zabt etib, uning go\'zalligidan hayratga tushadi'),
+            ('VIII century', 'The Silk Road reaches its golden age — merchants from China to Rome', 'Шёлковый путь достигает золотого века — купцы от Китая до Рима', 'Ipak Yo\'li oltin davriga yetadi — Xitoydan Rimgacha savdogarlar'),
+            ('XIV century', 'Tamerlane (Amir Timur) creates a great empire with Samarkand as capital', 'Тамерлан создаёт великую империю со столицей в Самарканде', 'Amir Temur poytaxti Samarqand bo\'lgan buyuk imperiya yaratadi'),
+            ('2001', 'Silk Road cities listed as UNESCO World Heritage Sites', 'Города Шёлкового пути внесены в список ЮНЕСКО', 'Ipak Yo\'li shaharlari YuNESKO ro\'yxatiga kiritildi'),
           ] %}
-          {% for num, title, desc in whys %}
-          <div class="why-item delay-{{ loop.index }}">
-            <div class="why-n">{{ num }}</div>
-            <div class="why-text">
-              <h3>{{ title[lang] if lang in title else title['en'] }}</h3>
-              <p>{{ desc[lang] if lang in desc else desc['en'] }}</p>
-            </div>
+          <div class="tl-item">
+            <div class="tl-year">{{ year }}</div>
+            <div class="tl-title">{% if lang=='ru' %}{{ t_ru[:50] }}{% elif lang=='uz' %}{{ t_uz[:50] }}{% else %}{{ t_en[:50] }}{% endif %}</div>
+            <div class="tl-text">{% if lang=='ru' %}{{ t_ru }}{% elif lang=='uz' %}{{ t_uz }}{% else %}{{ t_en }}{% endif %}</div>
           </div>
           {% endfor %}
         </div>
       </div>
-      <div class="reveal delay-2">
-        <div class="why-img">
-          <img src="https://picsum.photos/seed/why-luxury/700/800" alt="Why Bek Tour" loading="lazy">
-          <div class="why-img-badge">
-            <div class="why-img-badge-n">4.9★</div>
-            <div class="why-img-badge-l">{% if lang=='ru' %}Средняя оценка{% elif lang=='uz' %}O\'rtacha reyting{% else %}Average Rating{% endif %}</div>
+      <div class="reveal d2" style="position:sticky;top:calc(var(--nav)+24px);">
+        <div style="border-radius:24px;overflow:hidden;height:520px;margin-bottom:16px;">
+          <img src="https://picsum.photos/seed/uzbek-mosaic-history/700/700" alt="Uzbekistan History" loading="lazy" style="width:100%;height:100%;object-fit:cover;">
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          <div style="border-radius:14px;overflow:hidden;height:160px;">
+            <img src="https://picsum.photos/seed/tilya-kori/400/300" alt="Tilya-Kori" loading="lazy" style="width:100%;height:100%;object-fit:cover;">
+          </div>
+          <div style="border-radius:14px;overflow:hidden;height:160px;">
+            <img src="https://picsum.photos/seed/ark-bukhara/400/300" alt="Ark Bukhara" loading="lazy" style="width:100%;height:100%;object-fit:cover;">
           </div>
         </div>
       </div>
@@ -229,66 +305,25 @@
   </div>
 </section>
 
-<!-- ══ SERVICES ═══════════════════════════════ -->
+<!-- REVIEWS -->
 <section class="section" style="background:var(--white);">
   <div class="container">
-    <div class="sh centered reveal">
-      <span class="eyebrow">{% if lang=='ru' %}Услуги{% elif lang=='uz' %}Xizmatlar{% else %}Services{% endif %}</span>
-      <h2 class="sh-title">{{ t.serv_title }}</h2>
-      <p class="sh-sub">{{ t.serv_sub }}</p>
-    </div>
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:2px;border-radius:var(--r-xl);overflow:hidden;background:rgba(6,24,38,.06);" class="reveal">
-      {% for icon, name_key, price, link in [('fa-car','serv_transfer','$50','#transfer'),('fa-car-side','serv_car','$150/d','#car'),('fa-ship','serv_yacht','$500/d','#yacht'),('fa-map-marked-alt','serv_guide','$80/d','#guide')] %}
-      <a href="{{ url_for('services.index') }}{{ link }}" style="display:block;padding:40px 32px;background:var(--white);transition:all .3s;text-decoration:none;" onmouseover="this.style.background='var(--ink)';this.querySelectorAll('.s-icon').forEach(e=>e.style.background='rgba(200,164,93,.15)');this.querySelectorAll('.s-icon i').forEach(e=>e.style.color='var(--gold)');this.querySelectorAll('.s-title').forEach(e=>e.style.color='var(--white)');this.querySelectorAll('.s-price').forEach(e=>e.style.color='rgba(255,255,255,.4)');" onmouseout="this.style.background='var(--white)';this.querySelectorAll('.s-icon').forEach(e=>e.style.background='rgba(6,24,38,.06)');this.querySelectorAll('.s-icon i').forEach(e=>e.style.color='var(--gold)');this.querySelectorAll('.s-title').forEach(e=>e.style.color='var(--ink)');this.querySelectorAll('.s-price').forEach(e=>e.style.color='var(--muted)');">
-        <div class="s-icon" style="width:52px;height:52px;border-radius:14px;background:rgba(6,24,38,.06);color:var(--gold);display:flex;align-items:center;justify-content:center;font-size:1.2rem;margin-bottom:20px;transition:all .3s;"><i class="fa {{ icon }}" style="transition:color .3s;"></i></div>
-        <div class="s-title" style="font-weight:700;font-size:.95rem;color:var(--ink);margin-bottom:6px;transition:color .3s;">{{ t[name_key] }}</div>
-        <div class="s-price" style="font-size:.75rem;color:var(--muted);font-weight:600;transition:color .3s;">{% if lang=='ru' %}От{% elif lang=='uz' %}dan{% else %}From{% endif %} {{ price }}</div>
-      </a>
-      {% endfor %}
-    </div>
-  </div>
-</section>
-
-<!-- ══ GALLERY ══════════════════════════════════ -->
-<section class="section" style="background:var(--cream);">
-  <div class="container">
-    <div class="sh centered reveal">
-      <span class="eyebrow">{% if lang=='ru' %}Галерея{% elif lang=='uz' %}Galereya{% else %}Gallery{% endif %}</span>
-      <h2 class="sh-title">{% if lang=='ru' %}Жизнь с Bek Tour{% elif lang=='uz' %}Bek Tour bilan hayot{% else %}Life at Bek Tour{% endif %}</h2>
-    </div>
-    <div class="gallery-masonry reveal">
-      <div class="gal-item a1"><img src="https://picsum.photos/seed/gal1lux/600/800" alt="" loading="lazy"></div>
-      <div class="gal-item a2"><img src="https://picsum.photos/seed/gal2lux/600/400" alt="" loading="lazy"></div>
-      <div class="gal-item a3"><img src="https://picsum.photos/seed/gal3lux/800/400" alt="" loading="lazy"></div>
-      <div class="gal-item a4"><img src="https://picsum.photos/seed/gal4lux/600/400" alt="" loading="lazy"></div>
-      <div class="gal-item a5"><img src="https://picsum.photos/seed/gal5lux/600/400" alt="" loading="lazy"></div>
-      <div class="gal-item a6"><img src="https://picsum.photos/seed/gal6lux/600/400" alt="" loading="lazy"></div>
-    </div>
-  </div>
-</section>
-
-<!-- ══ REVIEWS ══════════════════════════════════ -->
-<section class="section" style="background:var(--white);">
-  <div class="container">
-    <div class="sh centered reveal">
+    <div class="reveal" style="margin-bottom:52px;text-align:center;">
       <span class="eyebrow">{% if lang=='ru' %}Отзывы{% elif lang=='uz' %}Sharhlar{% else %}Testimonials{% endif %}</span>
-      <h2 class="sh-title">{% if lang=='ru' %}Что говорят наши гости{% elif lang=='uz' %}Mehmonlarimiz nima deydi{% else %}What Our Guests Say{% endif %}</h2>
+      <h2>{% if lang=='ru' %}Что говорят наши путешественники{% elif lang=='uz' %}Sayyohlarimiz nima deydi{% else %}What Our Travelers Say{% endif %}</h2>
     </div>
     <div class="reviews-grid">
-      {% for letter, name, loc, text_en, text_ru, text_uz in [
-        ('A','Alexandra M.','London, UK','The most exceptional travel experience of my life. Every detail was perfect.','Лучший опыт путешествия в моей жизни. Каждая деталь была идеальна.','Hayotimdagi eng ajoyib sayohat tajribasi. Har bir detal mukammal edi.'),
-        ('M','Mohammed Al-Rashid','Dubai, UAE','Our Bali villa was beyond imagination. 24/7 concierge anticipated every need.','Наша вилла на Бали была выше всяких ожиданий. Консьерж предугадывал каждое желание.','Balidag\'i villam tasavvurimdan tashqari edi. Konsyerj har bir ehtiyojni oldindan ko\'rdi.'),
-        ('S','Sophia Laurent','Paris, France','From airport to yacht — everything was perfection. Will return without hesitation.','От аэропорта до яхты — всё было идеально. Вернусь без сомнений.','Aeroport dari yaxtaga — hamma narsa mukammal. Ikkilanmasdan qaytaman.'),
+      {% for l, name, from_, t_en, t_ru, t_uz in [
+        ('J','James Wilson','New York, USA','Uzbekistan was the most surprising trip of my life. The Registan at sunset is something no photo can capture. Bek Tour handled every detail perfectly.','Узбекистан стал самым удивительным путешествием в моей жизни. Регистан на закате — это то, что не передать ни на одном фото.','O\'zbekiston hayotimdagi eng ajoyib sayohat bo\'ldi. Quyosh botishida Registon — birorta ham fotosuratda aks ettirb bo\'lmaydigan narsa.'),
+        ('M','Maria Petrova','Moscow, Russia','Самарканд и Бухара превзошли все ожидания. Частный гид Bek Tour знал каждую деталь истории. Планируем вернуться в Хиву!','Samarkand and Bukhara exceeded all expectations. The private guide knew every historical detail. Planning to return for Khiva!','Samarqand va Buxoro barcha kutganimizdan oshib ketdi. Shaxsiy gid tarixning har bir tafsilotini bilardi.'),
+        ('A','Ahmed Al-Farsi','Dubai, UAE','As a Gulf traveler, Uzbekistan was a revelation — the Islamic architecture is breathtaking. Bek Tour made everything seamless from visa to hotel.','Как гость из Залива, Узбекистан стал откровением — исламская архитектура поражает. Bek Tour всё организовал идеально.','Ko\'rfaz sayyohi sifatida O\'zbekiston ochilish bo\'ldi — islom me\'morchiligi hayratlanarli. Bek Tour vizadan mehmonxonagacha hamma narsani tartibga keltirdi.'),
       ] %}
-      <div class="rv-card reveal delay-{{ loop.index }}">
+      <div class="rv reveal d{{ loop.index }}">
         <div class="rv-stars">★★★★★</div>
-        <div class="rv-text">{% if lang=='ru' %}{{ text_ru }}{% elif lang=='uz' %}{{ text_uz }}{% else %}{{ text_en }}{% endif %}</div>
-        <div class="rv-author">
-          <div class="rv-av">{{ letter }}</div>
-          <div>
-            <div class="rv-name">{{ name }}</div>
-            <div class="rv-from">{{ loc }}</div>
-          </div>
+        <div class="rv-text">{% if lang=='ru' %}{{ t_ru }}{% elif lang=='uz' %}{{ t_uz }}{% else %}{{ t_en }}{% endif %}</div>
+        <div class="rv-auth">
+          <div class="rv-av">{{ l }}</div>
+          <div><div class="rv-name">{{ name }}</div><div class="rv-from">{{ from_ }}</div></div>
         </div>
       </div>
       {% endfor %}
@@ -296,51 +331,27 @@
   </div>
 </section>
 
-<!-- ══ TEAM ══════════════════════════════════════ -->
+<!-- FAQ -->
 <section class="section" style="background:var(--cream);">
   <div class="container">
-    <div class="sh centered reveal">
-      <span class="eyebrow">{% if lang=='ru' %}Команда{% elif lang=='uz' %}Jamoa{% else %}Our Team{% endif %}</span>
-      <h2 class="sh-title">{% if lang=='ru' %}Люди за Bek Tour{% elif lang=='uz' %}Bek Tour ortida odamlar{% else %}The People Behind Bek Tour{% endif %}</h2>
-    </div>
-    <div class="team-grid">
-      {% for i, name, role_en, role_ru, role_uz in [(1,'Bek Tashmatov','Founder & CEO','Основатель и CEO','Asoschisi va CEO'),(2,'Sarah Johnson','Head of Properties','Руководитель объектов','Mulklar rahbari'),(3,'Ahmed Al-Rashid','Middle East Director','Директор Ближнего Востока','Yaqin Sharq direktori'),(4,'Maria Santos','Guest Relations','Связи с гостями','Mehmonlar bilan munosabatlar')] %}
-      <div class="team-card reveal delay-{{ loop.index }}">
-        <div class="team-card-img"><img src="https://picsum.photos/seed/team{{ i }}lux/400/500" alt="{{ name }}" loading="lazy"></div>
-        <div class="team-card-name">{{ name }}</div>
-        <div class="team-card-role">{% if lang=='ru' %}{{ role_ru }}{% elif lang=='uz' %}{{ role_uz }}{% else %}{{ role_en }}{% endif %}</div>
-      </div>
-      {% endfor %}
-    </div>
-  </div>
-</section>
-
-<!-- ══ FAQ ════════════════════════════════════════ -->
-<section class="section" style="background:var(--white);">
-  <div class="container">
-    <div class="sh centered reveal" style="margin-bottom:48px;">
+    <div style="text-align:center;margin-bottom:48px;" class="reveal">
       <span class="eyebrow">FAQ</span>
-      <h2 class="sh-title">{% if lang=='ru' %}Частые вопросы{% elif lang=='uz' %}Ko\'p so\'raladigan savollar{% else %}Frequently Asked Questions{% endif %}</h2>
+      <h2>{% if lang=='ru' %}Частые вопросы о туризме в Узбекистан{% elif lang=='uz' %}O\'zbekistonga turizm haqida ko\'p so\'raladigan savollar{% else %}FAQ About Traveling to Uzbekistan{% endif %}</h2>
     </div>
     <div class="faq-wrap reveal">
       {% set faqs = [
-        ({'en':'How do I book a villa?','ru':'Как забронировать виллу?','uz':'Villani qanday bron qilish mumkin?'},
-         {'en':'Browse our collection, choose your villa and dates, then submit a request. We confirm within 2 hours.','ru':'Просмотрите нашу коллекцию, выберите виллу и даты, затем отправьте запрос. Подтверждаем в течение 2 часов.','uz':'Kolleksiyamizni ko\'rib chiqing, villangiz va sanalarni tanlang, so\'ng so\'rov yuboring. 2 soat ichida tasdiqlaymiz.'}),
-        ({'en':'What is your cancellation policy?','ru':'Какова политика отмены?','uz':'Bekor qilish siyosati qanday?'},
-         {'en':'Free cancellation up to 7 days before check-in on standard bookings. Flexible options available.','ru':'Бесплатная отмена до 7 дней до заезда. Доступны гибкие варианты.','uz':'Standart bronlarda kirish kunidan 7 kun oldin bepul bekor qilish. Moslashuvchan variantlar mavjud.'}),
-        ({'en':'Do you offer airport transfers?','ru':'Предоставляете ли вы трансфер из аэропорта?','uz':'Aeroport transferi xizmatini taqdim etasizmi?'},
-         {'en':'Yes! Private luxury transfers from any airport worldwide. Book alongside your villa for a seamless experience.','ru':'Да! Частные люксовые трансферы из любого аэропорта. Бронируйте вместе с виллой.','uz':'Ha! Dunyoning istalgan aeroportidan shaxsiy hashamatli transfer. Villa bilan birga bron qiling.'}),
-        ({'en':'Can agencies join the B2B program?','ru':'Могут ли агентства присоединиться к B2B программе?','uz':'Agentliklar B2B dasturiga qo\'shila oladimi?'},
-         {'en':'Absolutely. Up to 20% commission, credit limits, and a dedicated account manager. Apply on our B2B page.','ru':'Конечно. До 20% комиссии, кредитный лимит, персональный менеджер.','uz':'Albatta. 20% gacha komissiya, kredit limiti va shaxsiy menejer. B2B sahifamizda ariza bering.'}),
-        ({'en':'Are all villas personally inspected?','ru':'Все ли виллы лично проверяются?','uz':'Barcha villalar shaxsan tekshiriladimi?'},
-         {'en':'Yes — every property is visited and verified by our team to guarantee premium quality.','ru':'Да — каждый объект посещается и проверяется нашей командой.','uz':'Ha — har bir mulk jamoamiz tomonidan tashrif buyuriladi va tekshiriladi.'}),
+        ({'en':'Do I need a visa to visit Uzbekistan?','ru':'Нужна ли виза для посещения Узбекистана?','uz':'O\'zbekistonga borish uchun viza kerakmi?'},
+         {'en':'Citizens of 90+ countries can visit Uzbekistan visa-free. We provide complete visa support for all other nationalities.','ru':'Граждане 90+ стран могут посетить Узбекистан без визы. Мы обеспечиваем полную визовую поддержку для всех остальных.','uz':'90+ mamlakat fuqarolari O\'zbekistonga vizasiz borishi mumkin. Boshqa millat vakillari uchun to\'liq viza yordami ko\'rsatamiz.'}),
+        ({'en':'What is the best time to visit Uzbekistan?','ru':'Когда лучше всего посещать Узбекистан?','uz':'O\'zbekistonga borish uchun eng yaxshi vaqt qachon?'},
+         {'en':'Spring (March-May) and Autumn (September-November) are ideal. Summers can be very hot (40°C+) but Amirsay mountain resort near Tashkent offers cool escape.','ru':'Весна (март-май) и осень (сентябрь-ноябрь) — идеальное время. Летом бывает жарко (40°C+), но горный курорт Амирсай близ Ташкента предлагает прохладу.','uz':'Bahor (mart-may) va kuz (sentyabr-noyabr) ideal. Yozda juda issiq bo\'lishi mumkin (40°C+), lekin Toshkent yaqinidagi Amirsoy tog\' kurortida salqin.'}),
+        ({'en':'What are the must-see sites in Uzbekistan?','ru':'Что обязательно нужно посмотреть в Узбекистане?','uz':'O\'zbekistonda albatta ko\'rish kerak bo\'lgan joylar qaysilar?'},
+         {'en':'Registan Square (Samarkand), Itchan Kala Old City (Khiva), Kalon Minaret (Bukhara), Shahrisabz (Tamerlane\'s birthplace), Aral Sea, and Fergana Valley handicrafts.','ru':'Площадь Регистан (Самарканд), Старый город Ичан-Кала (Хива), Минарет Калон (Бухара), Шахрисабз, Аральское море и ремёсла Ферганской долины.','uz':'Registon maydoni (Samarqand), Ichan-Qal\'a (Xiva), Kalon minorasi (Buxoro), Shahrisabz, Orol dengizi va Farg\'ona vodiysi hunarmandchiligi.'}),
+        ({'en':'Can I combine Uzbekistan with other countries?','ru':'Можно ли совместить Узбекистан с другими странами?','uz':'O\'zbekistonni boshqa mamlakatlar bilan birlashtirish mumkinmi?'},
+         {'en':'Yes! We offer Silk Road combo tours: Uzbekistan + Tajikistan, Uzbekistan + Kazakhstan, or the full Central Asia circuit. Ask us for custom itineraries.','ru':'Да! Мы предлагаем комбо-туры по Шёлковому пути: Узбекистан + Таджикистан, Казахстан, или полный маршрут по Центральной Азии.','uz':'Ha! Biz Ipak yo\'li bo\'yicha kombinatsion turlar taklif etamiz: O\'zbekiston + Tojikiston, Qozog\'iston yoki to\'liq Markaziy Osiyo marshrutlari.'}),
       ] %}
       {% for q, a in faqs %}
       <div class="faq-i">
-        <div class="faq-q">
-          {{ q[lang] if lang in q else q['en'] }}
-          <span class="faq-ico"><i class="fa fa-plus"></i></span>
-        </div>
+        <div class="faq-q">{{ q[lang] if lang in q else q['en'] }}<span class="faq-ico"><i class="fa fa-plus"></i></span></div>
         <div class="faq-a">{{ a[lang] if lang in a else a['en'] }}</div>
       </div>
       {% endfor %}
@@ -348,49 +359,51 @@
   </div>
 </section>
 
-<!-- ══ NEWSLETTER ════════════════════════════════ -->
-<div class="nl-section">
+<!-- NEWSLETTER -->
+<div class="nl-wrap">
   <div class="container reveal">
     <span class="eyebrow">Newsletter</span>
-    <h2 style="font-family:var(--f-serif);color:var(--white);margin-bottom:12px;">{% if lang=='ru' %}Получайте эксклюзивные предложения{% elif lang=='uz' %}Eksklyuziv takliflarni oling{% else %}Get Exclusive Offers{% endif %}</h2>
-    <p style="color:rgba(255,255,255,.38);font-size:.9rem;">{% if lang=='ru' %}Присоединяйтесь к 15,000+ путешественникам{% elif lang=='uz' %}15,000+ sayohatchilarga qo\'shiling{% else %}Join 15,000+ luxury travelers{% endif %}</p>
-    <form class="nl-form" onsubmit="event.preventDefault();toast('{% if lang=='ru' %}Спасибо за подписку!{% elif lang=='uz' %}Obuna uchun rahmat!{% else %}Thank you for subscribing!{% endif %}')">
-      <input type="email" class="nl-input" placeholder="{% if lang=='ru' %}Ваш email{% elif lang=='uz' %}Emailingiz{% else %}your@email.com{% endif %}" required>
-      <button type="submit" class="btn btn-gold btn-pill">{% if lang=='ru' %}Подписаться{% elif lang=='uz' %}Obuna bo\'lish{% else %}Subscribe{% endif %}</button>
+    <h2 style="font-family:var(--f-s);color:var(--white);margin-bottom:12px;">{% if lang=='ru' %}Узнавайте первыми о турах{% elif lang=='uz' %}Turlar haqida birinchi bilib turing{% else %}Be First to Know About New Tours{% endif %}</h2>
+    <p style="color:rgba(255,255,255,.35);font-size:.9rem;">{% if lang=='ru' %}Эксклюзивные предложения и сезонные скидки на туры по Узбекистану{% elif lang=='uz' %}O\'zbekiston bo\'yicha turlar uchun eksklyuziv takliflar va mavsumiy chegirmalar{% else %}Exclusive deals and seasonal discounts on Uzbekistan tours{% endif %}</p>
+    <form class="nl-form" onsubmit="event.preventDefault();toast('{% if lang=='ru' %}Спасибо! Будем держать вас в курсе.{% elif lang=='uz' %}Rahmat!{% else %}Thank you! We\'ll keep you updated.{% endif %}')">
+      <input type="email" class="nl-in" placeholder="{% if lang=='ru' %}Ваш email{% elif lang=='uz' %}Emailingiz{% else %}your@email.com{% endif %}" required>
+      <button type="submit" class="nl-btn">{% if lang=='ru' %}Подписаться{% elif lang=='uz' %}Obuna{% else %}Subscribe{% endif %}</button>
     </form>
   </div>
 </div>
 
-<!-- ══ B2B CTA ════════════════════════════════════ -->
+<!-- B2B CTA -->
 <section class="section" style="background:var(--cream);">
   <div class="container">
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:70px;align-items:center;">
       <div class="reveal">
         <span class="eyebrow">B2B</span>
-        <h2 class="sh-title">{{ t.b2b_title }}</h2>
-        <p class="sh-sub" style="margin-top:14px;margin-bottom:32px;">{{ t.b2b_sub }}</p>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:36px;">
-          {% for n, l_en, l_ru, l_uz in [('20%','Commission','Комиссия','Komissiya'),('200+','Partners','Партнёров','Hamkorlar'),('$0','Setup Fee','Без регистрации','Ro\'yxat to\'lovsiz'),('24h','Activation','Активация','Faollashtirish')] %}
-          <div style="padding:18px;background:var(--white);border-radius:var(--r);box-shadow:var(--s1);border:1px solid rgba(6,24,38,.07);">
-            <div style="font-family:var(--f-serif);font-size:2rem;color:var(--gold);font-weight:600;">{{ n }}</div>
-            <div style="font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-top:4px;">{% if lang=='ru' %}{{ l_ru }}{% elif lang=='uz' %}{{ l_uz }}{% else %}{{ l_en }}{% endif %}</div>
+        <h2 style="margin-bottom:16px;">{{ t.b2b_title }}</h2>
+        <p class="lead" style="margin-bottom:32px;">{{ t.b2b_sub }}</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:32px;">
+          {% for n,l_en,l_ru,l_uz in [('20%','Commission','Комиссия','Komissiya'),('200+','Partners','Партнёров','Hamkorlar'),('$0','Setup','Без взносов','To\'lovsiz'),('24h','Activation','Активация','Faollashtirish')] %}
+          <div style="padding:16px;background:var(--white);border-radius:14px;box-shadow:0 2px 12px rgba(6,24,38,.05);">
+            <div style="font-family:var(--f-s);font-size:1.9rem;color:var(--gold);font-weight:600;">{{ n }}</div>
+            <div style="font-size:.66rem;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-top:4px;">{% if lang=='ru' %}{{ l_ru }}{% elif lang=='uz' %}{{ l_uz }}{% else %}{{ l_en }}{% endif %}</div>
           </div>
           {% endfor %}
         </div>
         <a href="{{ url_for('b2b.register') }}" class="btn btn-gold btn-lg">{{ t.btn_partner }} <i class="fa fa-arrow-right"></i></a>
       </div>
-      <div class="reveal delay-2" style="background:var(--ink);border-radius:var(--r-xl);padding:44px;">
-        <h3 style="font-family:var(--f-serif);color:var(--white);font-size:1.4rem;margin-bottom:6px;">{% if lang=='ru' %}Быстрый запрос{% elif lang=='uz' %}Tezkor so\'rov{% else %}Quick Inquiry{% endif %}</h3>
-        <p style="color:rgba(255,255,255,.3);font-size:.78rem;margin-bottom:24px;">{% if lang=='ru' %}Отвечаем в течение 2 часов{% elif lang=='uz' %}2 soat ichida javob beramiz{% else %}We reply within 2 hours{% endif %}</p>
+      <div class="reveal d2" style="background:var(--ink);border-radius:24px;padding:40px;">
+        <h3 style="font-family:var(--f-s);color:var(--white);font-size:1.5rem;margin-bottom:8px;">{% if lang=='ru' %}Быстрый запрос{% elif lang=='uz' %}Tezkor so\'rov{% else %}Quick Inquiry{% endif %}</h3>
+        <p style="color:rgba(255,255,255,.3);font-size:.78rem;margin-bottom:22px;">{% if lang=='ru' %}Ответим в течение 2 часов{% elif lang=='uz' %}2 soat ichida javob beramiz{% else %}We reply within 2 hours{% endif %}</p>
         <div class="form-group">
-          <label class="form-label" style="color:rgba(255,255,255,.28);">{% if lang=='ru' %}Имя{% elif lang=='uz' %}Ism{% else %}Your Name{% endif %}</label>
+          <label class="form-lbl" style="color:rgba(255,255,255,.28);">{% if lang=='ru' %}Имя{% elif lang=='uz' %}Ism{% else %}Name{% endif %}</label>
           <input class="form-ctrl" placeholder="John Doe" style="background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.1);color:var(--white);">
         </div>
         <div class="form-group">
-          <label class="form-label" style="color:rgba(255,255,255,.28);">{% if lang=='ru' %}Агентство / Телефон{% elif lang=='uz' %}Agentlik / Telefon{% else %}Agency / Phone{% endif %}</label>
-          <input class="form-ctrl" placeholder="Your Travel Agency" style="background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.1);color:var(--white);">
+          <label class="form-lbl" style="color:rgba(255,255,255,.28);">{% if lang=='ru' %}Телефон или Email{% elif lang=='uz' %}Telefon yoki Email{% else %}Phone or Email{% endif %}</label>
+          <input class="form-ctrl" placeholder="+998 XX XXX XX XX" style="background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.1);color:var(--white);">
         </div>
-        <button onclick="toast('{% if lang=='ru' %}Сообщение отправлено!{% elif lang=='uz' %}Yuborildi!{% else %}Sent!{% endif %}')" class="btn btn-gold btn-block">{% if lang=='ru' %}Отправить{% elif lang=='uz' %}Yuborish{% else %}Send Inquiry{% endif %} <i class="fa fa-paper-plane"></i></button>
+        <button onclick="toast('{% if lang=='ru' %}Отправлено!{% elif lang=='uz' %}Yuborildi!{% else %}Sent!{% endif %}')" class="btn btn-gold btn-block">
+          {% if lang=='ru' %}Отправить{% elif lang=='uz' %}Yuborish{% else %}Send{% endif %} <i class="fa fa-paper-plane"></i>
+        </button>
       </div>
     </div>
   </div>
@@ -398,9 +411,9 @@
 
 <!-- Compare bar -->
 <div class="cmp-bar" id="cmpBar">
-  <span class="cmp-label">Compare</span>
+  <span style="font-size:.6rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.28);">Compare</span>
   <div class="cmp-chips"></div>
-  <a href="#" class="btn btn-gold btn-sm btn-pill" style="flex-shrink:0;">Compare Now</a>
+  <a href="#" class="btn btn-gold btn-sm" style="flex-shrink:0;">Compare Now</a>
   <button onclick="clearCmp()" style="color:rgba(255,255,255,.28);font-size:.75rem;cursor:pointer;">Clear</button>
 </div>
 
@@ -408,9 +421,9 @@
 
 {% block extra_js %}
 <script>
-// Hero date logic
-const ci = document.getElementById('heroCI'), co = document.getElementById('heroCO');
-const today = new Date().toISOString().split('T')[0];
-if (ci) { ci.min = today; ci.addEventListener('change', () => { if (co) co.min = ci.value; }); }
+const ci=document.querySelector('#calcCity');
+// Date min
+const today=new Date().toISOString().split('T')[0];
+document.querySelectorAll('input[type=date]').forEach(d=>{d.min=today;});
 </script>
 {% endblock %}

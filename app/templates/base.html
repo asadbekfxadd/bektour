@@ -3,98 +3,88 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{% block title %}Bek Tour{% endblock %} | Luxury Travel</title>
-  <meta name="description" content="{% block meta_desc %}Premium villa rentals & luxury travel experiences worldwide{% endblock %}">
-  <meta name="theme-color" content="#061826">
+  <title>{% block title %}Visit Uzbekistan{% endblock %} — Bek Tour</title>
+  <meta name="description" content="{% block meta_desc %}Discover Uzbekistan - Silk Road tours, luxury hotels, car rentals and visa assistance{% endblock %}">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
   {% block extra_css %}{% endblock %}
 </head>
 <body>
 
-<!-- PRELOADER -->
-<div id="preloader">
-  <div class="pl-logo">✈ BEK TOUR</div>
-  <div class="pl-sub">Luxury Travel Worldwide</div>
-  <div class="pl-track"><div class="pl-bar"></div></div>
-  <div class="pl-percent">0%</div>
+<!-- Custom cursor -->
+<div class="cur" id="cur">
+  <div class="cur-ring" id="curRing"></div>
+  <div class="cur-dot" id="curDot"></div>
 </div>
 
-<!-- NAVBAR -->
-<nav class="nav {% if not is_hero %}glass{% else %}dark{% endif %}" id="navbar">
+<!-- Preloader -->
+<div id="preloader">
+  <div class="pl-wrap">
+    <div class="pl-logo">✈</div>
+    <div class="pl-brand">BEK TOUR</div>
+    <div class="pl-tagline">{% if lang=='ru' %}Откройте Узбекистан{% elif lang=='uz' %}O'zbekistonni kashf eting{% else %}Discover Uzbekistan{% endif %}</div>
+    <div class="pl-track"><div class="pl-fill" id="plFill"></div></div>
+    <div class="pl-pct" id="plPct">0%</div>
+  </div>
+</div>
+
+<!-- Navbar -->
+<header class="header" id="header">
   <div class="container">
-    <div class="nav-inner">
-      <a href="{{ url_for('main.index') }}" class="nav-logo">
-        <div class="nav-logo-mark">✈</div>
-        <div class="nav-logo-text">BEK <span class="nav-logo-accent">TOUR</span></div>
+    <div class="hd-inner">
+      <a href="{{ url_for('main.index') }}" class="logo">
+        <span class="logo-icon">✈</span>
+        <span class="logo-name">BEK<em>TOUR</em></span>
       </a>
-
-      <ul class="nav-links" id="navLinks">
-        <li><a href="{{ url_for('main.index') }}" class="nav-link">{{ t.nav_home }}</a></li>
-        <li><a href="{{ url_for('villas.index') }}" class="nav-link">{{ t.nav_villas }}</a></li>
-        <li class="nav-drop">
-          <a href="{{ url_for('services.index') }}" class="nav-link">
-            {{ t.nav_services }}<i class="fa fa-chevron-down nav-drop-chevron"></i>
-          </a>
-          <div class="nav-mega">
-            <a href="{{ url_for('services.index') }}#transfer" class="nav-mega-item">
-              <div class="nav-mega-icon"><i class="fa fa-car"></i></div>
-              <div><b>{{ t.serv_transfer }}</b><span>From $50</span></div>
-            </a>
-            <a href="{{ url_for('services.index') }}#car" class="nav-mega-item">
-              <div class="nav-mega-icon"><i class="fa fa-car-side"></i></div>
-              <div><b>{{ t.serv_car }}</b><span>From $150/day</span></div>
-            </a>
-            <a href="{{ url_for('services.index') }}#yacht" class="nav-mega-item">
-              <div class="nav-mega-icon"><i class="fa fa-ship"></i></div>
-              <div><b>{{ t.serv_yacht }}</b><span>From $500/day</span></div>
-            </a>
-            <a href="{{ url_for('services.index') }}#guide" class="nav-mega-item">
-              <div class="nav-mega-icon"><i class="fa fa-map-marked-alt"></i></div>
-              <div><b>{{ t.serv_guide }}</b><span>From $80/day</span></div>
-            </a>
+      <nav class="nav" id="nav">
+        <a href="{{ url_for('main.index') }}" class="nav-a">{{ t.nav_home }}</a>
+        <a href="{{ url_for('villas.index') }}" class="nav-a">{{ t.nav_villas }}</a>
+        <div class="nav-drop">
+          <a href="{{ url_for('services.index') }}" class="nav-a">{{ t.nav_services }} <i class="fa fa-chevron-down nav-caret"></i></a>
+          <div class="nav-drop-menu">
+            <a href="{{ url_for('services.index') }}#transfer"><span class="ndm-ico"><i class="fa fa-car"></i></span>{{ t.serv_transfer }}</a>
+            <a href="{{ url_for('services.index') }}#car"><span class="ndm-ico"><i class="fa fa-car-side"></i></span>{{ t.serv_car }}</a>
+            <a href="{{ url_for('services.index') }}#yacht"><span class="ndm-ico"><i class="fa fa-ship"></i></span>{{ t.serv_yacht }}</a>
+            <a href="{{ url_for('services.index') }}#guide"><span class="ndm-ico"><i class="fa fa-map-marked-alt"></i></span>{{ t.serv_guide }}</a>
           </div>
-        </li>
-        <li><a href="{{ url_for('main.about') }}" class="nav-link">{{ t.nav_about }}</a></li>
-        <li><a href="{{ url_for('main.contacts') }}" class="nav-link">{{ t.nav_contacts }}</a></li>
-      </ul>
-
-      <div class="nav-actions">
+        </div>
+        <a href="{{ url_for('main.about') }}" class="nav-a">{{ t.nav_about }}</a>
+        <a href="{{ url_for('main.contacts') }}" class="nav-a">{{ t.nav_contacts }}</a>
+      </nav>
+      <div class="hd-right">
         <div class="lang-sw">
-          <a href="{{ url_for('main.set_lang', lang='en') }}" class="{% if lang=='en' %}on{% endif %}">EN</a>
-          <a href="{{ url_for('main.set_lang', lang='ru') }}" class="{% if lang=='ru' %}on{% endif %}">RU</a>
-          <a href="{{ url_for('main.set_lang', lang='uz') }}" class="{% if lang=='uz' %}on{% endif %}">UZ</a>
+          <a href="{{ url_for('main.set_lang', lang='en') }}" {% if lang=='en' %}class="on"{% endif %}>EN</a>
+          <a href="{{ url_for('main.set_lang', lang='ru') }}" {% if lang=='ru' %}class="on"{% endif %}>RU</a>
+          <a href="{{ url_for('main.set_lang', lang='uz') }}" {% if lang=='uz' %}class="on"{% endif %}>UZ</a>
         </div>
         {% if current_user.is_authenticated %}
-        <div class="nav-user">
-          <div class="nav-avatar">{{ (current_user.first_name or current_user.email)[0].upper() }}</div>
-          <div class="nav-user-dd">
+        <div class="user-dd">
+          <button class="user-av">{{ (current_user.first_name or current_user.email)[0].upper() }}</button>
+          <div class="user-dd-menu">
             <a href="{{ url_for('auth.profile') }}"><i class="fa fa-user"></i> {{ t.profile }}</a>
-            {% if current_user.role == 'admin' %}<a href="{{ url_for('admin.dashboard') }}"><i class="fa fa-cog"></i> {{ t.admin }}</a>{% endif %}
-            {% if current_user.role == 'agent' %}<a href="{{ url_for('b2b.dashboard') }}"><i class="fa fa-building"></i> B2B</a>{% endif %}
-            <a href="{{ url_for('auth.logout') }}" class="logout"><i class="fa fa-sign-out-alt"></i> {{ t.logout }}</a>
+            {% if current_user.role == 'admin' %}<a href="{{ url_for('admin.dashboard') }}"><i class="fa fa-cog"></i> Admin</a>{% endif %}
+            <a href="{{ url_for('auth.logout') }}" style="color:#e53e3e"><i class="fa fa-sign-out-alt"></i> {{ t.logout }}</a>
           </div>
         </div>
         {% else %}
-        <a href="{{ url_for('auth.login') }}" class="btn-nav-ghost">{{ t.login }}</a>
-        <a href="{{ url_for('auth.register') }}" class="btn-nav-outline">{{ t.register }}</a>
+        <a href="{{ url_for('auth.login') }}" class="btn-hd-ghost">{{ t.login }}</a>
         {% endif %}
-        <a href="{{ url_for('b2b.register') }}" class="btn-nav-gold"><i class="fa fa-handshake"></i> B2B</a>
-        <button class="burger" id="burger" aria-label="Menu"><span></span><span></span><span></span></button>
+        <a href="{{ url_for('b2b.register') }}" class="btn-hd-gold">B2B</a>
+        <button class="burger" id="burger"><span></span><span></span></button>
       </div>
     </div>
   </div>
-</nav>
+</header>
 
 {% with messages = get_flashed_messages(with_categories=true) %}
 {% if messages %}
-<div class="toasts">
-  {% for cat, msg in messages %}
-  <div class="toast toast-{{ cat }}">
-    <i class="fa fa-{% if cat=='success' %}check-circle{% else %}exclamation-circle{% endif %}"></i>
-    {{ msg }}<button onclick="this.parentElement.remove()">✕</button>
+<div class="toast-wrap">
+  {% for c, m in messages %}
+  <div class="toast toast-{{ c }}">
+    <i class="fa fa-{% if c=='success' %}check-circle{% else %}exclamation-circle{% endif %}"></i>
+    {{ m }}<button onclick="this.parentElement.remove()">×</button>
   </div>
   {% endfor %}
 </div>
@@ -103,62 +93,45 @@
 
 <main>{% block content %}{% endblock %}</main>
 
-<!-- FOOTER -->
 <footer class="footer">
-  <div class="footer-top">
-    <div class="container">
-      <div class="footer-grid">
-        <div>
-          <div class="footer-logo">✈ BEK <span>TOUR</span></div>
-          <p class="footer-desc">{{ t.footer_desc }}</p>
-          <div class="footer-socials">
-            <a href="#" class="footer-social" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-            <a href="#" class="footer-social" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
-            <a href="https://t.me/bektop" class="footer-social" aria-label="Telegram"><i class="fab fa-telegram"></i></a>
-            <a href="#" class="footer-social" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
-            <a href="#" class="footer-social" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
-          </div>
-        </div>
-        <div>
-          <div class="footer-heading">{{ t.nav_villas }}</div>
-          <ul class="footer-links">
-            <li><a href="{{ url_for('villas.index') }}">Maldives</a></li>
-            <li><a href="{{ url_for('villas.index') }}">Bali</a></li>
-            <li><a href="{{ url_for('villas.index') }}">Dubai</a></li>
-            <li><a href="{{ url_for('villas.index') }}">Santorini</a></li>
-            <li><a href="{{ url_for('villas.index') }}">Mykonos</a></li>
-          </ul>
-        </div>
-        <div>
-          <div class="footer-heading">{{ t.nav_services }}</div>
-          <ul class="footer-links">
-            <li><a href="{{ url_for('services.index') }}#transfer"><i class="fa fa-car"></i>{{ t.serv_transfer }}</a></li>
-            <li><a href="{{ url_for('services.index') }}#car"><i class="fa fa-car-side"></i>{{ t.serv_car }}</a></li>
-            <li><a href="{{ url_for('services.index') }}#yacht"><i class="fa fa-ship"></i>{{ t.serv_yacht }}</a></li>
-            <li><a href="{{ url_for('services.index') }}#guide"><i class="fa fa-map-marked-alt"></i>{{ t.serv_guide }}</a></li>
-          </ul>
-        </div>
-        <div>
-          <div class="footer-heading">{{ t.nav_contacts }}</div>
-          <ul class="footer-links">
-            <li><a href="tel:+998901234567"><i class="fa fa-phone"></i>+998 90 123 45 67</a></li>
-            <li><a href="mailto:info@bektour.com"><i class="fa fa-envelope"></i>info@bektour.com</a></li>
-            <li><a href="https://t.me/bektop"><i class="fab fa-telegram"></i>@bektop</a></li>
-            <li><a href="{{ url_for('b2b.register') }}"><i class="fa fa-handshake"></i>B2B Partners</a></li>
-          </ul>
-          <div class="footer-nl">
-            <input type="email" placeholder="{% if lang=='ru' %}Ваш email{% elif lang=='uz' %}Emailingiz{% else %}Your email{% endif %}">
-            <button onclick="toast('{% if lang=='ru' %}Спасибо за подписку!{% elif lang=='uz' %}Obuna uchun rahmat!{% else %}Thank you!{% endif %}')"><i class="fa fa-paper-plane"></i></button>
-          </div>
-        </div>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="footer-logo">✈ BEK TOUR</div>
+      <p>{{ t.footer_desc }}</p>
+      <div class="footer-soc">
+        <a href="#"><i class="fab fa-instagram"></i></a>
+        <a href="#"><i class="fab fa-facebook"></i></a>
+        <a href="https://t.me/bektop"><i class="fab fa-telegram"></i></a>
+        <a href="#"><i class="fab fa-whatsapp"></i></a>
+        <a href="#"><i class="fab fa-youtube"></i></a>
       </div>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col-title">{% if lang=='ru' %}Направления{% elif lang=='uz' %}Yo'nalishlar{% else %}Destinations{% endif %}</div>
+      <a href="{{ url_for('main.search') }}?q=Tashkent">Tashkent</a>
+      <a href="{{ url_for('main.search') }}?q=Samarkand">Samarkand</a>
+      <a href="{{ url_for('main.search') }}?q=Bukhara">Bukhara</a>
+      <a href="{{ url_for('main.search') }}?q=Khiva">Khiva</a>
+      <a href="{{ url_for('main.search') }}?q=Fergana">Fergana</a>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col-title">{{ t.nav_services }}</div>
+      <a href="{{ url_for('services.index') }}#transfer">{{ t.serv_transfer }}</a>
+      <a href="{{ url_for('services.index') }}#car">{{ t.serv_car }}</a>
+      <a href="{{ url_for('services.index') }}#yacht">{{ t.serv_yacht }}</a>
+      <a href="{{ url_for('services.index') }}#guide">{{ t.serv_guide }}</a>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col-title">{{ t.nav_contacts }}</div>
+      <a href="tel:+998901234567"><i class="fa fa-phone"></i> +998 90 123 45 67</a>
+      <a href="mailto:info@bektour.uz"><i class="fa fa-envelope"></i> info@bektour.uz</a>
+      <a href="https://t.me/bektop"><i class="fab fa-telegram"></i> Telegram</a>
+      <a href="{{ url_for('b2b.register') }}"><i class="fa fa-handshake"></i> B2B Partners</a>
     </div>
   </div>
   <div class="footer-bottom">
-    <div class="container">
-      <p>© 2024 Bek Tour. {% if lang=='ru' %}Все права защищены.{% elif lang=='uz' %}Barcha huquqlar himoyalangan.{% else %}All rights reserved.{% endif %}</p>
-      <p>Luxury Villa & Yacht Rentals Worldwide</p>
-    </div>
+    <span>© 2024 Bek Tour. {% if lang=='ru' %}Все права защищены{% elif lang=='uz' %}Barcha huquqlar himoyalangan{% else %}All rights reserved{% endif %}.</span>
+    <span>{% if lang=='ru' %}Ваш гид по Узбекистану{% elif lang=='uz' %}O'zbekistonni o'rganish uchun qo'llanma{% else %}Your Guide to Uzbekistan{% endif %}</span>
   </div>
 </footer>
 
