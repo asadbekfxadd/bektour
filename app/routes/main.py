@@ -1,4 +1,5 @@
 from flask import Blueprint, render_template, request, session, redirect, url_for, flash, jsonify
+from datetime import date
 from app.models.models import Villa, Country, Service, Booking, db
 from datetime import datetime
 import random, string

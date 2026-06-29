@@ -1,159 +1,181 @@
 {% extends 'base.html' %}
-{% block title %}{% if lang=='ru' %}Отели и виллы{% elif lang=='uz' %}Mehmonxona va villalar{% else %}Hotels & Villas{% endif %} — Bek Tour{% endblock %}
+{% block title %}{% if lang=='ru' %}Отели и жильё в Узбекистане{% elif lang=='uz' %}O'zbekistonda mehmonxona va villalar{% else %}Hotels & Stays in Uzbekistan{% endif %} — Bek Tour{% endblock %}
+{% block meta_desc %}Find luxury hotels, villas and boutique stays in Samarkand, Bukhara, Khiva, Tashkent. Book with Bek Tour — Uzbekistan's premium travel platform.{% endblock %}
 
 {% block content %}
 <div class="page-hero">
   <div class="container">
-    <span class="eyebrow">{% if lang=='ru' %}Каталог{% elif lang=='uz' %}Katalog{% else %}Collection{% endif %}</span>
-    <h1 style="font-size:clamp(2rem,4vw,3rem);">{% if lang=='ru' %}Жильё в Узбекистане{% elif lang=='uz' %}O'zbekistonda turar joylar{% else %}Stays in Uzbekistan{% endif %}</h1>
-    <p>{{ villas.total }} {% if lang=='ru' %}объектов{% elif lang=='uz' %}ob'ekt{% else %}properties{% endif %}</p>
+    <span class="eyebrow">{% if lang=='ru' %}Размещение{% elif lang=='uz' %}Turar joylar{% else %}Accommodation{% endif %}</span>
+    <h1>{% if lang=='ru' %}Отели и жильё{% elif lang=='uz' %}Mehmonxona va villalar{% else %}Hotels & Stays{% endif %}</h1>
+    <p>{{ villas.total }} {% if lang=='ru' %}объектов по всему Узбекистану{% elif lang=='uz' %}ob\'ekt O\'zbekiston bo\'ylab{% else %}properties across Uzbekistan{% endif %}</p>
   </div>
 </div>
 
-<div class="container" style="padding-top:48px;padding-bottom:80px;">
-  <form method="GET" action="{{ url_for('villas.index') }}">
-    <div style="display:grid;grid-template-columns:280px 1fr;gap:28px;align-items:start;">
-
-      <!-- SIDEBAR -->
-      <aside class="filter-panel">
-        <div class="fp-head">
-          <b><i class="fa fa-sliders-h" style="color:var(--gold);margin-right:6px;"></i>{% if lang=='ru' %}Фильтры{% elif lang=='uz' %}Filtrlar{% else %}Filters{% endif %}</b>
-          <a href="{{ url_for('villas.index') }}" class="fp-reset">{% if lang=='ru' %}Сбросить{% elif lang=='uz' %}Tozalash{% else %}Reset{% endif %}</a>
+<div class="container" style="padding-top:44px;padding-bottom:80px;">
+  <form method="GET" action="{{ url_for('villas.index') }}" id="filterForm">
+    <div style="display:grid;grid-template-columns:1fr;gap:22px;">
+      <!-- Mobile filter toggle -->
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+        <div style="font-size:.88rem;color:var(--muted);">
+          {% if lang=='ru' %}Найдено:{% elif lang=='uz' %}Topildi:{% else %}Found:{% endif %}
+          <strong style="color:var(--ink);font-size:.95rem;"> {{ villas.total }}</strong>
         </div>
-
-        <div class="fp-group">
-          <span class="fp-lbl">{% if lang=='ru' %}Поиск{% elif lang=='uz' %}Qidirish{% else %}Search{% endif %}</span>
-          <div style="position:relative;">
-            <input type="text" name="q" value="{{ q or '' }}" placeholder="{% if lang=='ru' %}Название...{% elif lang=='uz' %}Nomi...{% else %}Name...{% endif %}" class="f-in" style="padding-left:32px;">
-            <i class="fa fa-search" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:.74rem;"></i>
-          </div>
-        </div>
-
-        <div class="fp-group">
-          <span class="fp-lbl">{% if lang=='ru' %}Направление{% elif lang=='uz' %}Yo\'nalish{% else %}Destination{% endif %}</span>
-          <select name="country" class="f-in" onchange="this.form.submit()">
-            <option value="">{% if lang=='ru' %}Все{% elif lang=='uz' %}Barchasi{% else %}All{% endif %}</option>
-            {% for c in countries %}<option value="{{ c.id }}" {% if request.args.get('country')|int == c.id %}selected{% endif %}>{{ c.name_en }}</option>{% endfor %}
-          </select>
-        </div>
-
-        <div class="fp-group">
-          <span class="fp-lbl">{% if lang=='ru' %}Гостей{% elif lang=='uz' %}Mehmonlar{% else %}Guests{% endif %}</span>
-          <select name="guests" class="f-in" onchange="this.form.submit()">
-            <option value="">{% if lang=='ru' %}Любое{% elif lang=='uz' %}Istalgan{% else %}Any{% endif %}</option>
-            {% for n in [2,4,6,8,10] %}<option value="{{ n }}" {% if request.args.get('guests')==n|string %}selected{% endif %}>{{ n }}+</option>{% endfor %}
-          </select>
-        </div>
-
-        <div class="fp-group">
-          <span class="fp-lbl">{% if lang=='ru' %}Цена/ночь ($){% elif lang=='uz' %}Narx/kecha ($){% else %}Price/night ($){% endif %}</span>
-          <div class="price-row">
-            <input type="number" name="min_price" placeholder="Min" class="f-in" value="{{ request.args.get('min_price','') }}">
-            <input type="number" name="max_price" placeholder="Max" class="f-in" value="{{ request.args.get('max_price','') }}">
-          </div>
-        </div>
-
-        <div class="fp-group">
-          <span class="fp-lbl">{% if lang=='ru' %}Удобства{% elif lang=='uz' %}Qulayliklar{% else %}Amenities{% endif %}</span>
-          {% for field, icon, en, ru, uz in [
-            ('has_pool','fa-swimming-pool','Pool','Бассейн','Hovuz'),
-            ('has_beach','fa-umbrella-beach','Beach','Пляж','Qirg\'oq'),
-            ('has_wifi','fa-wifi','WiFi','WiFi','WiFi'),
-            ('has_ac','fa-snowflake','AC','Кондиционер','Konditsioner'),
-            ('has_parking','fa-parking','Parking','Парковка','Avtoturargoh'),
-          ] %}
-          <label class="chk">
-            <input type="checkbox" name="{{ field }}" value="1" {% if request.args.get(field) %}checked{% endif %} onchange="this.form.submit()">
-            <i class="fa {{ icon }}" style="color:var(--gold);width:14px;font-size:.75rem;"></i>
-            {% if lang=='ru' %}{{ ru }}{% elif lang=='uz' %}{{ uz }}{% else %}{{ en }}{% endif %}
-          </label>
-          {% endfor %}
-        </div>
-
-        <button type="submit" class="btn btn-gold btn-block" style="margin-top:8px;">
-          <i class="fa fa-search"></i> {% if lang=='ru' %}Применить{% elif lang=='uz' %}Qo\'llash{% else %}Apply{% endif %}
-        </button>
-      </aside>
-
-      <!-- RESULTS -->
-      <div>
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:10px;">
-          <div style="font-size:.88rem;color:var(--muted);">
-            {% if lang=='ru' %}Найдено:{% elif lang=='uz' %}Topildi:{% else %}Found:{% endif %}
-            <strong style="color:var(--ink);font-size:1rem;"> {{ villas.total }}</strong>
-          </div>
-          <select name="sort" class="f-in" style="width:auto;" onchange="this.form.submit()">
-            <option value="created_at">{% if lang=='ru' %}Новые{% elif lang=='uz' %}Yangi{% else %}Newest{% endif %}</option>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+          <select name="sort" class="f-in" style="width:auto;font-size:.8rem;" onchange="this.form.submit()">
+            <option value="created_at">{% if lang=='ru' %}Новые{% else %}Newest{% endif %}</option>
             <option value="price_asc" {% if request.args.get('sort')=='price_asc' %}selected{% endif %}>{% if lang=='ru' %}Цена ↑{% else %}Price ↑{% endif %}</option>
             <option value="price_desc" {% if request.args.get('sort')=='price_desc' %}selected{% endif %}>{% if lang=='ru' %}Цена ↓{% else %}Price ↓{% endif %}</option>
+            <option value="rating" {% if request.args.get('sort')=='rating' %}selected{% endif %}>{% if lang=='ru' %}Рейтинг{% else %}Rating{% endif %}</option>
           </select>
+          <button type="button" class="btn btn-outline btn-sm" 
+                  onclick="document.getElementById('filters').style.display=document.getElementById('filters').style.display=='none'?'block':'none'"
+                  style="display:none;" id="filterToggle">
+            <i class="fa fa-sliders-h"></i> {% if lang=='ru' %}Фильтры{% else %}Filters{% endif %}
+          </button>
         </div>
+      </div>
 
-        {% if villas.items %}
-        <div class="villas-grid">
-          {% for villa in villas.items %}
-          <div class="vcard">
-            <div class="vcard-img">
-              <img src="{{ villa.cover_image or "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&h=600&fit=crop&q=80" }}" alt="{{ villa.title_en }}" loading="lazy">
-              {% if villa.is_featured %}<div class="vcard-badge vb-gold">Featured</div>{% endif %}
-              <div class="vcard-acts">
-                <button class="vcard-act" data-fav="{{ villa.id }}"><i class="fa fa-heart"></i></button>
-                <button class="vcard-act" data-cmp="{{ villa.id }}" data-name="{{ villa.title_en }}"><i class="fa fa-balance-scale"></i></button>
-              </div>
-            </div>
-            <div class="vcard-body">
-              <div class="vcard-tag">{% if lang=='ru' %}Размещение{% elif lang=='uz' %}Turar joy{% else %}Accommodation{% endif %}</div>
-              <div class="vcard-loc"><i class="fa fa-map-marker-alt"></i> {{ villa.city or '' }}{% if villa.country %}, {{ villa.country.name_en }}{% endif %}</div>
-              <div class="vcard-title"><a href="{{ url_for('villas.detail', slug=villa.slug) }}">{{ villa.title_en }}</a></div>
-              <div class="vcard-meta">
-                {% if villa.bedrooms %}<span><i class="fa fa-bed"></i> {{ villa.bedrooms }}</span>{% endif %}
-                {% if villa.bathrooms %}<span><i class="fa fa-bath"></i> {{ villa.bathrooms }}</span>{% endif %}
-                {% if villa.guests %}<span><i class="fa fa-users"></i> {{ villa.guests }}</span>{% endif %}
-                {% if villa.has_pool %}<span><i class="fa fa-swimming-pool"></i></span>{% endif %}
-                {% if villa.has_wifi %}<span><i class="fa fa-wifi"></i></span>{% endif %}
-              </div>
-              <div class="vcard-foot">
-                <div>
-                  <div class="vcard-pl">{{ t.from_label }}</div>
-                  <div class="vcard-price">${{ villa.price_per_night }}</div>
-                  <div class="vcard-per">{{ t.per_night }}</div>
-                </div>
-                <a href="{{ url_for('villas.detail', slug=villa.slug) }}" class="btn btn-ink btn-sm">{{ t.btn_view }}</a>
-              </div>
+      <div style="display:grid;grid-template-columns:1fr;gap:22px;" id="mainGrid">
+        <!-- FILTERS sidebar -->
+        <aside class="filter-panel" id="filters">
+          <div class="fp-head">
+            <b><i class="fa fa-sliders-h" style="color:var(--gold);margin-right:7px;"></i>{% if lang=='ru' %}Фильтры{% elif lang=='uz' %}Filtrlar{% else %}Filters{% endif %}</b>
+            <a href="{{ url_for('villas.index') }}" class="fp-reset">{% if lang=='ru' %}Сбросить{% else %}Reset{% endif %}</a>
+          </div>
+          <div class="fp-group">
+            <span class="fp-lbl">{% if lang=='ru' %}Поиск{% else %}Search{% endif %}</span>
+            <div style="position:relative;">
+              <input type="text" name="q" value="{{ q or '' }}" class="f-in" 
+                     placeholder="{% if lang=='ru' %}Название...{% else %}Name...{% endif %}"
+                     style="padding-left:34px;">
+              <i class="fa fa-search" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:.76rem;"></i>
             </div>
           </div>
-          {% endfor %}
-        </div>
+          <div class="fp-group">
+            <span class="fp-lbl">{% if lang=='ru' %}Направление{% else %}Destination{% endif %}</span>
+            <select name="country" class="f-in" onchange="this.form.submit()">
+              <option value="">{% if lang=='ru' %}Весь Узбекистан{% else %}All Uzbekistan{% endif %}</option>
+              {% for c in countries %}<option value="{{ c.id }}" {% if request.args.get('country')|int == c.id %}selected{% endif %}>{{ c.name_en }}</option>{% endfor %}
+            </select>
+          </div>
+          <div class="fp-group">
+            <span class="fp-lbl">{% if lang=='ru' %}Гостей{% else %}Guests{% endif %}</span>
+            <select name="guests" class="f-in" onchange="this.form.submit()">
+              <option value="">{% if lang=='ru' %}Любое{% else %}Any{% endif %}</option>
+              {% for n in [1,2,4,6,8,10] %}<option value="{{ n }}" {% if request.args.get('guests')==n|string %}selected{% endif %}>{{ n }}+</option>{% endfor %}
+            </select>
+          </div>
+          <div class="fp-group">
+            <span class="fp-lbl">{% if lang=='ru' %}Цена/ночь ($){% else %}Price/night ($){% endif %}</span>
+            <div class="price-row">
+              <input type="number" name="min_price" placeholder="Min" class="f-in" value="{{ request.args.get('min_price','') }}" min="0">
+              <input type="number" name="max_price" placeholder="Max" class="f-in" value="{{ request.args.get('max_price','') }}" min="0">
+            </div>
+          </div>
+          <div class="fp-group">
+            <span class="fp-lbl">{% if lang=='ru' %}Удобства{% else %}Amenities{% endif %}</span>
+            {% for field, ico, en, ru in [
+              ('has_pool','fa-swimming-pool','Pool','Бассейн'),
+              ('has_beach','fa-umbrella-beach','Beach','Пляж'),
+              ('has_wifi','fa-wifi','WiFi','WiFi'),
+              ('has_ac','fa-snowflake','AC','Кондиционер'),
+              ('has_parking','fa-parking','Parking','Парковка'),
+            ] %}
+            <label class="chk">
+              <input type="checkbox" name="{{ field }}" value="1" 
+                     {% if request.args.get(field) %}checked{% endif %} 
+                     onchange="this.form.submit()">
+              <i class="fa {{ ico }}" style="color:var(--gold);width:14px;font-size:.76rem;"></i>
+              {% if lang=='ru' %}{{ ru }}{% else %}{{ en }}{% endif %}
+            </label>
+            {% endfor %}
+          </div>
+          <button type="submit" class="btn btn-gold btn-block" style="margin-top:8px;">
+            <i class="fa fa-search"></i> {% if lang=='ru' %}Применить{% else %}Apply{% endif %}
+          </button>
+        </aside>
 
-        {% if villas.pages > 1 %}
-        <div class="pager">
-          {% if villas.has_prev %}<a href="{{ url_for('villas.index', page=villas.prev_num, **request.args) }}" class="pager-btn"><i class="fa fa-chevron-left"></i></a>{% endif %}
-          {% for p in villas.iter_pages(left_edge=1,right_edge=1,left_current=2,right_current=2) %}
-            {% if p %}<a href="{{ url_for('villas.index', page=p, **request.args) }}" class="pager-btn {% if p==villas.page %}on{% endif %}">{{ p }}</a>
-            {% else %}<span class="pager-btn" style="opacity:.3">…</span>{% endif %}
-          {% endfor %}
-          {% if villas.has_next %}<a href="{{ url_for('villas.index', page=villas.next_num, **request.args) }}" class="pager-btn"><i class="fa fa-chevron-right"></i></a>{% endif %}
-        </div>
-        {% endif %}
+        <!-- RESULTS -->
+        <div>
+          {% if villas.items %}
+          <div class="villas-grid">
+            {% for villa in villas.items %}
+            <div class="vcard">
+              <div class="vcard-img">
+                <img src="{{ villa.cover_image or '/photo/' + (villa.city or 'samarkand').lower() + '?w=800&h=600' }}" 
+                     alt="{{ villa.title_en }}, {{ villa.city }}" loading="lazy">
+                {% if villa.is_featured %}<div class="vcard-badge vb-gold">✦ Featured</div>{% endif %}
+                {% if villa.rating and villa.rating >= 4.8 %}<div class="vcard-badge" style="left:auto;right:12px;background:rgba(22,163,74,.9);color:#fff;">★ {{ villa.rating }}</div>{% endif %}
+                <div class="vcard-acts">
+                  <button class="vcard-act" data-fav="{{ villa.id }}" title="Save"><i class="fa fa-heart"></i></button>
+                  <button class="vcard-act" data-cmp="{{ villa.id }}" data-name="{{ villa.title_en }}" title="Compare"><i class="fa fa-balance-scale"></i></button>
+                </div>
+              </div>
+              <div class="vcard-body">
+                <div class="vcard-tag">{% if lang=='ru' %}Размещение{% else %}Accommodation{% endif %}</div>
+                <div class="vcard-loc"><i class="fa fa-map-marker-alt"></i> {{ villa.city }}{% if villa.country %}, {{ villa.country.name_en }}{% endif %}</div>
+                <div class="vcard-title"><a href="{{ url_for('villas.detail', slug=villa.slug) }}">{{ villa.title_en }}</a></div>
+                <div class="vcard-meta">
+                  {% if villa.bedrooms %}<span><i class="fa fa-bed"></i>{{ villa.bedrooms }}</span>{% endif %}
+                  {% if villa.bathrooms %}<span><i class="fa fa-bath"></i>{{ villa.bathrooms }}</span>{% endif %}
+                  {% if villa.guests %}<span><i class="fa fa-users"></i>{{ villa.guests }}</span>{% endif %}
+                  {% if villa.has_pool %}<span><i class="fa fa-swimming-pool"></i>Pool</span>{% endif %}
+                  {% if villa.has_wifi %}<span><i class="fa fa-wifi"></i>WiFi</span>{% endif %}
+                </div>
+                <div class="vcard-foot">
+                  <div>
+                    <div class="vcard-pl">{{ t.from_label }}</div>
+                    <div class="vcard-price">${{ villa.price_per_night }}</div>
+                    <div class="vcard-per">{{ t.per_night }}</div>
+                  </div>
+                  <a href="{{ url_for('villas.detail', slug=villa.slug) }}" class="btn btn-ink btn-sm">{{ t.btn_view }}</a>
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
 
-        {% else %}
-        <div style="text-align:center;padding:80px 20px;">
-          <div style="font-size:3rem;opacity:.2;margin-bottom:16px;">🔍</div>
-          <h3 style="font-family:var(--f-s);color:var(--ink);margin-bottom:8px;">{% if lang=='ru' %}Ничего не найдено{% elif lang=='uz' %}Hech narsa topilmadi{% else %}Nothing found{% endif %}</h3>
-          <p style="color:var(--muted);margin-bottom:20px;">{% if lang=='ru' %}Попробуйте изменить фильтры{% elif lang=='uz' %}Filtrlarni o\'zgartiring{% else %}Try adjusting your filters{% endif %}</p>
-          <a href="{{ url_for('villas.index') }}" class="btn btn-gold">{% if lang=='ru' %}Сбросить{% else %}Clear{% endif %}</a>
+          {% if villas.pages > 1 %}
+          <div class="pager">
+            {% if villas.has_prev %}<a href="{{ url_for('villas.index', page=villas.prev_num, **request.args) }}" class="pager-btn"><i class="fa fa-chevron-left"></i></a>{% endif %}
+            {% for p in villas.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+              {% if p %}<a href="{{ url_for('villas.index', page=p, **request.args) }}" class="pager-btn {% if p==villas.page %}on{% endif %}">{{ p }}</a>
+              {% else %}<span class="pager-btn" style="opacity:.3;">…</span>{% endif %}
+            {% endfor %}
+            {% if villas.has_next %}<a href="{{ url_for('villas.index', page=villas.next_num, **request.args) }}" class="pager-btn"><i class="fa fa-chevron-right"></i></a>{% endif %}
+          </div>
+          {% endif %}
+
+          {% else %}
+          <div style="text-align:center;padding:80px 20px;background:#fff;border-radius:var(--r-lg);border:1px solid var(--line);">
+            <div style="font-size:3rem;margin-bottom:16px;opacity:.25;">🔍</div>
+            <h3 style="font-family:var(--serif);color:var(--ink);margin-bottom:8px;">{% if lang=='ru' %}Ничего не найдено{% else %}Nothing Found{% endif %}</h3>
+            <p style="color:var(--muted);font-size:.86rem;margin-bottom:20px;">{% if lang=='ru' %}Попробуйте изменить фильтры{% else %}Try adjusting your filters{% endif %}</p>
+            <a href="{{ url_for('villas.index') }}" class="btn btn-gold">{% if lang=='ru' %}Сбросить{% else %}Clear all{% endif %}</a>
+          </div>
+          {% endif %}
         </div>
-        {% endif %}
       </div>
     </div>
   </form>
 </div>
 
+<!-- Compare bar -->
 <div class="cmp-bar" id="cmpBar">
-  <span style="font-size:.6rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.28);">Compare</span>
+  <span style="font-size:.58rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.28);white-space:nowrap;">Compare</span>
   <div class="cmp-chips"></div>
   <a href="#" class="btn btn-gold btn-sm" style="flex-shrink:0;">Compare</a>
-  <button onclick="clearCmp()" style="color:rgba(255,255,255,.28);font-size:.75rem;cursor:pointer;">Clear</button>
+  <button onclick="clearCmp()" style="color:rgba(255,255,255,.28);font-size:.74rem;cursor:pointer;">Clear</button>
 </div>
 
+<style>
+@media (min-width: 768px) {
+  #mainGrid { grid-template-columns: 280px 1fr !important; }
+  #filterToggle { display: none !important; }
+}
+@media (max-width: 767px) {
+  #filters { display: none; }
+  #filterToggle { display: flex !important; }
+}
+</style>
 {% endblock %}

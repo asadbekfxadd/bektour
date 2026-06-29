@@ -102,8 +102,9 @@ def create_app():
 
     @app.context_processor
     def inject_globals():
+        from datetime import date
         lang = session.get('lang', 'en')
-        return dict(lang=lang, t=TDict(TRANSLATIONS.get(lang, TRANSLATIONS['en'])))
+        return dict(lang=lang, t=TDict(TRANSLATIONS.get(lang, TRANSLATIONS['en'])), now_date=date.today().isoformat())
 
     from app.routes.main import main_bp
     from app.routes.auth import auth_bp
@@ -111,6 +112,7 @@ def create_app():
     from app.routes.services import services_bp
     from app.routes.admin import admin_bp
     from app.routes.b2b import b2b_bp
+    from app.routes.photos import photos_bp
 
     app.register_blueprint(main_bp)
     app.register_blueprint(auth_bp, url_prefix='/auth')
@@ -118,5 +120,15 @@ def create_app():
     app.register_blueprint(services_bp, url_prefix='/services')
     app.register_blueprint(admin_bp, url_prefix='/admin')
     app.register_blueprint(b2b_bp, url_prefix='/b2b')
+    app.register_blueprint(photos_bp)
+
+
+    @app.after_request
+    def security_headers(response):
+        response.headers['X-Content-Type-Options'] = 'nosniff'
+        response.headers['X-Frame-Options'] = 'SAMEORIGIN'
+        response.headers['X-XSS-Protection'] = '1; mode=block'
+        response.headers['Referrer-Policy'] = 'strict-origin-when-cross-origin'
+        return response
 
     return app
