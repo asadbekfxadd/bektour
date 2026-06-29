@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block title %}Booking Confirmed — Bek Tour{% endblock %}
+{% block content %}
+<div style="min-height:80vh;display:flex;align-items:center;justify-content:center;padding:calc(var(--nav-h)+40px) 20px 60px;">
+  <div style="background:#fff;border-radius:var(--r-xl);box-shadow:var(--s3);padding:44px 36px;max-width:520px;width:100%;text-align:center;">
+    <div style="width:72px;height:72px;border-radius:50%;background:#f0fff4;border:2px solid #86efac;display:flex;align-items:center;justify-content:center;margin:0 auto 24px;font-size:2rem;">✅</div>
+    <h1 style="font-family:var(--serif);font-size:2rem;margin-bottom:8px;">{% if lang=='ru' %}Бронирование подтверждено!{% elif lang=='uz' %}Bron tasdiqlandi!{% else %}Booking Confirmed!{% endif %}</h1>
+    <p style="color:var(--muted);margin-bottom:28px;">{% if lang=='ru' %}Мы свяжемся с вами в течение 2 часов{% else %}We will contact you within 2 hours{% endif %}</p>
+    <div style="background:var(--cream);border-radius:var(--r);padding:20px;margin-bottom:28px;text-align:left;">
+      <div style="font-size:.58rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;">{% if lang=='ru' %}Номер бронирования{% else %}Booking Reference{% endif %}</div>
+      <div style="font-family:var(--serif);font-size:2rem;color:var(--gold);font-weight:600;">{{ booking.booking_number }}</div>
+      <div style="font-size:.78rem;color:var(--muted);margin-top:14px;display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <div><b>{% if lang=='ru' %}Объект{% else %}Property{% endif %}:</b> {{ booking.villa.title_en if booking.villa else 'N/A' }}</div>
+        <div><b>{% if lang=='ru' %}Гостей{% else %}Guests{% endif %}:</b> {{ booking.guests }}</div>
+        <div><b>Check-in:</b> {{ booking.check_in }}</div>
+        <div><b>Check-out:</b> {{ booking.check_out }}</div>
+        {% if booking.total_price %}<div style="grid-column:1/-1;"><b>{% if lang=='ru' %}Итого{% else %}Total{% endif %}:</b> <span style="color:var(--gold);font-weight:700;">${{ booking.total_price }}</span></div>{% endif %}
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+      <a href="https://t.me/bektop" target="_blank" class="btn btn-ink btn-sm"><i class="fab fa-telegram"></i> Telegram</a>
+      <a href="https://wa.me/998901234567" target="_blank" class="btn btn-gold btn-sm"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+      <a href="{{ url_for('main.index') }}" class="btn btn-outline btn-sm"><i class="fa fa-home"></i> {% if lang=='ru' %}Главная{% else %}Home{% endif %}</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

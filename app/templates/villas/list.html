@@ -94,7 +94,7 @@
           {% for villa in villas.items %}
           <div class="vcard">
             <div class="vcard-img">
-              <img src="https://picsum.photos/seed/uzstay{{ villa.id }}x/800/600" alt="{{ villa.title_en }}" loading="lazy">
+              <img src="{{ villa.cover_image or "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&h=600&fit=crop&q=80" }}" alt="{{ villa.title_en }}" loading="lazy">
               {% if villa.is_featured %}<div class="vcard-badge vb-gold">Featured</div>{% endif %}
               <div class="vcard-acts">
                 <button class="vcard-act" data-fav="{{ villa.id }}"><i class="fa fa-heart"></i></button>

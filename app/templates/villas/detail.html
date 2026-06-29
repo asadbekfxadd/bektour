@@ -25,12 +25,12 @@
       <div>
         <div class="detail-gallery">
           <div class="detail-gallery-main">
-            <img src="https://picsum.photos/seed/detail{{ villa.id }}main/1200/700" alt="{{ villa.title_en }}" id="mainImg" loading="eager">
+            <img src="{{ villa.cover_image or "https://images.unsplash.com/photo-1589646694432-53cb95e1de20?w=1200&h=700&fit=crop&q=80" }}" alt="{{ villa.title_en }}" id="mainImg" loading="eager">
           </div>
           <div class="detail-thumbs">
             {% for i in range(5) %}
-            <div class="detail-thumb" onclick="document.getElementById('mainImg').src='https://picsum.photos/seed/detail{{ villa.id }}th{{ i }}/800/500'">
-              <img src="https://picsum.photos/seed/detail{{ villa.id }}th{{ i }}/400/300" alt="" loading="lazy">
+            <div class="detail-thumb" onclick="document.getElementById('mainImg').src='https://source.unsplash.com/800x500/?uzbekistan,travel&sig={{ villa.id }}{{ i }}'">
+              <img src="https://source.unsplash.com/400x300/?uzbekistan,silk,road&sig={{ villa.id }}{{ i }}" alt="" loading="lazy">
             </div>
             {% endfor %}
           </div>

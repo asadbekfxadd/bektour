@@ -208,7 +208,7 @@
     <div class="regions-grid reveal">
       {% for c in countries %}
       <a href="{{ url_for('villas.index') }}?country={{ c.id }}" class="r-card {% if loop.index == 1 %}r-tall{% endif %}">
-        <img src="https://picsum.photos/seed/uzreg{{ c.id }}x/700/{% if loop.index == 1 %}900{% else %}500{% endif %}" alt="{{ c.name_en }}" loading="lazy">
+        <img src="{{ c.image or 'https://images.unsplash.com/photo-1589646694432-53cb95e1de20?w=700&h={% if loop.index == 1 %}900{% else %}500{% endif %}&fit=crop&q=80' }}" alt="{{ c.name_en }}, Uzbekistan" loading="lazy">
         <div class="r-veil"></div>
         <div class="r-info">
           {% if loop.index == 1 %}<span class="r-tag">UNESCO World Heritage</span>{% endif %}
@@ -249,7 +249,7 @@
       {% for villa in featured %}
       <div class="vcard reveal d{{ loop.index0 % 3 + 1 }}">
         <div class="vcard-img">
-          <img src="https://picsum.photos/seed/uzstay{{ villa.id }}f/800/600" alt="{{ villa.title_en }}" loading="lazy">
+          <img src="{{ villa.cover_image or "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&h=600&fit=crop&q=80" }}" alt="{{ villa.title_en }}" loading="lazy">
           <div class="vcard-badge vb-gold">Featured</div>
           <div class="vcard-acts">
             <button class="vcard-act" data-fav="{{ villa.id }}" title="Save"><i class="fa fa-heart"></i></button>
@@ -381,6 +381,51 @@
         </div>
       </div>
       {% endfor %}
+    </div>
+  </div>
+</section>
+
+
+<!-- WHAT'S INCLUDED (Coliving.com comparison table) -->
+<section class="section" style="background:#fff;">
+  <div class="container">
+    <div style="max-width:800px;margin:0 auto;">
+      <div style="text-align:center;margin-bottom:44px;" class="reveal">
+        <span class="eyebrow">{% if lang=='ru' %}Прозрачность{% elif lang=='uz' %}Shaffoflik{% else %}What's Included{% endif %}</span>
+        <h2>{% if lang=='ru' %}Всё включено. Никаких сюрпризов.{% elif lang=='uz' %}Hammasi kiritilgan. Hech qanday kutilmagan xarajat yo'q.{% else %}Everything Included. No Surprises.{% endif %}</h2>
+        <p class="lead" style="margin-top:12px;">{% if lang=='ru' %}Мы работаем как Booking.com — но только для Узбекистана, с личным сопровождением.{% elif lang=='uz' %}Biz Booking.com kabi ishlaymiz — lekin faqat O'zbekiston uchun, shaxsiy hamrohlik bilan.{% else %}We operate like Booking.com — but only for Uzbekistan, with personal accompaniment.{% endif %}</p>
+      </div>
+      <div class="compare-table-wrap reveal">
+        <table class="compare-table">
+          <thead>
+            <tr>
+              <th>{% if lang=='ru' %}Что включено{% else %}What's Included{% endif %}</th>
+              <th class="bk" style="color:var(--gold);background:rgba(200,164,93,.08);">✈ Bek Tour</th>
+              <th>{% if lang=='ru' %}Самостоятельно{% else %}DIY Travel{% endif %}</th>
+              <th>{% if lang=='ru' %}Другие туры{% else %}Other Agencies{% endif %}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for feat, bek, diy, other in [
+              ('Verified hotels & stays', True, False, None),
+              ('Private licensed guide', True, False, None),
+              ('Airport transfers', True, False, None),
+              ('Visa support', True, False, None),
+              ('24/7 WhatsApp support', True, False, None),
+              ('Free cancellation', True, False, False),
+              ('Best price guarantee', True, False, True),
+              ('Real verified reviews', True, False, None),
+            ] %}
+            <tr>
+              <td>{% if lang=='ru' %}{{ {'Verified hotels & stays':'Проверенные отели','Private licensed guide':'Лицензированный гид','Airport transfers':'Трансфер из аэропорта','Visa support':'Визовая поддержка','24/7 WhatsApp support':'Поддержка 24/7','Free cancellation':'Бесплатная отмена','Best price guarantee':'Гарантия лучшей цены','Real verified reviews':'Реальные отзывы'}[feat] }}{% else %}{{ feat }}{% endif %}</td>
+              <td class="bk" style="background:rgba(200,164,93,.05);"><span class="ck">✓</span></td>
+              <td>{% if diy is none %}<span class="no">✗</span>{% elif diy %}<span class="ck">✓</span>{% else %}<span class="no">✗</span>{% endif %}</td>
+              <td>{% if other is none %}<span style="color:var(--muted);font-size:.78rem;">{% if lang=='ru' %}Зависит{% else %}Varies{% endif %}</span>{% elif other %}<span class="ck">✓</span>{% else %}<span class="no">✗</span>{% endif %}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 </section>

@@ -6,6 +6,18 @@
   <meta name="theme-color" content="#061826">
   <title>{% block title %}Bek Tour{% endblock %} | Discover Uzbekistan</title>
   <meta name="description" content="{% block meta_desc %}Luxury tours, hotels and experiences in Uzbekistan. Samarkand, Bukhara, Khiva — the Silk Road awaits.{% endblock %}">
+  <!-- SEO & Social -->
+  <meta property="og:title" content="{% block og_title %}Bek Tour — Discover Uzbekistan{% endblock %}">
+  <meta property="og:description" content="{% block og_desc %}Luxury tours, hotels and experiences in Uzbekistan. Samarkand, Bukhara, Khiva — the Silk Road awaits.{% endblock %}">
+  <meta property="og:image" content="{% block og_image %}https://images.unsplash.com/photo-1589646694432-53cb95e1de20?w=1200&h=630&fit=crop&q=80{% endblock %}">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="{{ lang }}_UZ">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{% block tw_title %}Bek Tour — Uzbekistan Tourism{% endblock %}">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="{{ request.url }}">
+  <!-- Schema.org -->
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"TravelAgency","name":"Bek Tour","url":"https://bektour.uz","telephone":"+998901234567","address":{"@type":"PostalAddress","addressCountry":"UZ","addressLocality":"Tashkent"},"description":"Premium tours and accommodation in Uzbekistan — Samarkand, Bukhara, Khiva","sameAs":["https://t.me/bektop"]}</script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -169,6 +181,26 @@
     <span>{% if lang=='ru' %}Ваш гид по Узбекистану{% elif lang=='uz' %}O'zbekiston bo'yicha qo'llanmangiz{% else %}Your Guide to Uzbekistan{% endif %}</span>
   </div>
 </footer>
+
+
+<!-- Mobile Bottom Nav (SmenaStation-inspired) -->
+<nav class="mob-bottom-nav">
+  <a href="{{ url_for('main.index') }}" class="mbn-item {% if request.endpoint == 'main.index' %}active{% endif %}">
+    <i class="fa fa-home"></i>Home
+  </a>
+  <a href="{{ url_for('villas.index') }}" class="mbn-item {% if request.endpoint and 'villas' in request.endpoint %}active{% endif %}">
+    <i class="fa fa-building"></i>Stays
+  </a>
+  <a href="#calculator" class="mbn-item mbn-book">
+    <i class="fa fa-calculator"></i>Plan Trip
+  </a>
+  <a href="{{ url_for('services.index') }}" class="mbn-item {% if request.endpoint and 'services' in request.endpoint %}active{% endif %}">
+    <i class="fa fa-concierge-bell"></i>Services
+  </a>
+  <a href="{{ url_for('main.contacts') }}" class="mbn-item {% if request.endpoint == 'main.contacts' %}active{% endif %}">
+    <i class="fa fa-envelope"></i>Contact
+  </a>
+</nav>
 
 <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 {% block extra_js %}{% endblock %}
