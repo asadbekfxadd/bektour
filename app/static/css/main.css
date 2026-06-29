@@ -558,3 +558,31 @@ textarea.form-ctrl, textarea.form-control { resize: vertical; min-height: 110px;
   body { padding-bottom: 68px; } /* space for bottom nav */
   .hero-btns .btn { flex: 1; min-width: 140px; }
 }
+
+/* ── Homepage specific responsive ─────────── */
+@media (min-width: 640px) {
+  #whyGrid { grid-template-columns: repeat(3, 1fr) !important; }
+}
+@media (min-width: 640px) {
+  .blog-cards-wrap { grid-template-columns: repeat(3, 1fr) !important; }
+}
+@media (min-width: 480px) {
+  .info-grid { grid-template-columns: repeat(2, 1fr) !important; }
+}
+@media (min-width: 768px) {
+  .info-grid { grid-template-columns: repeat(3, 1fr) !important; }
+  .fest-grid  { grid-template-columns: repeat(2, 1fr) !important; }
+  .blog-grid  { grid-template-columns: repeat(3, 1fr) !important; }
+}
+
+/* Dest slider spacing */
+.dest-slider { padding: 4px 0 16px; }
+@media (min-width: 768px) {
+  .dest-slide { flex: 0 0 320px; }
+}
+
+/* Compare table mobile */
+@media (max-width: 640px) {
+  .compare-table th:nth-child(4),
+  .compare-table td:nth-child(4) { display: none; }
+}
