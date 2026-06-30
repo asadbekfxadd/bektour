@@ -1,0 +1,138 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="b2b-shell">
+  <div class="b2b-sidebar-backdrop" id="b2bBackdrop" onclick="toggleB2bSidebar()"></div>
+  <aside class="b2b-sidebar" id="b2bSidebar">
+    <div class="b2b-sidebar-head">
+      <div class="b2b-brand">
+        <div class="b2b-brand-icon"><i class="fa fa-handshake"></i></div>
+        <div class="b2b-brand-text">Partner Hub</div>
+      </div>
+      <div class="b2b-agency-card">
+        <div class="b2b-agency-name">{{ agency.name }}</div>
+        <span class="b2b-agency-status {% if agency.status=='active' %}b2b-status-active{% else %}b2b-status-pending{% endif %}">
+          <i class="fa fa-circle" style="font-size:.5rem;"></i> {{ agency.status }}
+        </span>
+      </div>
+    </div>
+
+    <nav class="b2b-nav">
+      <div class="b2b-nav-section">{% if lang=='ru' %}Главное{% else %}Overview{% endif %}</div>
+      <a href="{{ url_for('b2b.dashboard') }}" class="b2b-nav-item {% if request.endpoint=='b2b.dashboard' %}on{% endif %}">
+        <i class="fa fa-gauge-high"></i> {% if lang=='ru' %}Дашборд{% else %}Dashboard{% endif %}
+      </a>
+      <a href="{{ url_for('b2b.reports') }}" class="b2b-nav-item {% if request.endpoint=='b2b.reports' %}on{% endif %}">
+        <i class="fa fa-chart-line"></i> {% if lang=='ru' %}Отчёты{% else %}Reports{% endif %}
+      </a>
+
+      <div class="b2b-nav-section">{% if lang=='ru' %}Объекты{% else %}Inventory{% endif %}</div>
+      <a href="{{ url_for('b2b.properties') }}" class="b2b-nav-item {% if 'property' in request.endpoint or request.endpoint=='b2b.properties' %}on{% endif %}">
+        <i class="fa fa-building"></i> {% if lang=='ru' %}Объекты размещения{% else %}Properties{% endif %}
+      </a>
+      <a href="{{ url_for('b2b.tours') }}" class="b2b-nav-item {% if 'tour' in request.endpoint %}on{% endif %}">
+        <i class="fa fa-route"></i> {% if lang=='ru' %}Туры{% else %}Tours{% endif %}
+      </a>
+      <a href="{{ url_for('b2b.media') }}" class="b2b-nav-item {% if request.endpoint=='b2b.media' %}on{% endif %}">
+        <i class="fa fa-photo-film"></i> {% if lang=='ru' %}Медиа-центр{% else %}Media Center{% endif %}
+      </a>
+
+      <div class="b2b-nav-section">{% if lang=='ru' %}Продажи{% else %}Sales{% endif %}</div>
+      <a href="{{ url_for('b2b.bookings') }}" class="b2b-nav-item {% if request.endpoint=='b2b.bookings' %}on{% endif %}">
+        <i class="fa fa-calendar-check"></i> {% if lang=='ru' %}Бронирования{% else %}Bookings{% endif %}
+        {% if stats and stats.new_requests %}<span class="b2b-nav-badge">{{ stats.new_requests }}</span>{% endif %}
+      </a>
+      <a href="{{ url_for('b2b.customers') }}" class="b2b-nav-item {% if request.endpoint=='b2b.customers' %}on{% endif %}">
+        <i class="fa fa-users"></i> {% if lang=='ru' %}Клиенты{% else %}Customers{% endif %}
+      </a>
+
+      <div class="b2b-nav-section">{% if lang=='ru' %}Поддержка{% else %}Support{% endif %}</div>
+      <a href="{{ url_for('b2b.support') }}" class="b2b-nav-item {% if request.endpoint=='b2b.support' %}on{% endif %}">
+        <i class="fa fa-life-ring"></i> {% if lang=='ru' %}Тикеты{% else %}Support Tickets{% endif %}
+      </a>
+      <a href="https://t.me/bektop" target="_blank" class="b2b-nav-item">
+        <i class="fab fa-telegram"></i> Telegram
+      </a>
+      <a href="https://wa.me/998901234567" target="_blank" class="b2b-nav-item">
+        <i class="fab fa-whatsapp"></i> WhatsApp
+      </a>
+    </nav>
+
+    <div class="b2b-sidebar-foot">
+      <a href="{{ url_for('villas.index') }}" class="b2b-nav-item"><i class="fa fa-globe"></i> {% if lang=='ru' %}На сайт{% else %}View Website{% endif %}</a>
+      <a href="{{ url_for('auth.logout') }}" class="b2b-nav-item" style="color:#fca5a5;"><i class="fa fa-sign-out-alt"></i> {% if lang=='ru' %}Выйти{% else %}Logout{% endif %}</a>
+    </div>
+  </aside>
+
+  <div class="b2b-main">
+    <div class="b2b-topbar">
+      <button class="b2b-icon-btn b2b-burger-mobile" onclick="toggleB2bSidebar()"><i class="fa fa-bars"></i></button>
+      <div class="b2b-search-trigger" onclick="openCmdK()">
+        <i class="fa fa-search"></i>
+        <span class="b2b-search-text">{% if lang=='ru' %}Поиск туров, объектов, клиентов...{% else %}Search tours, properties, customers...{% endif %}</span>
+        <kbd>Ctrl K</kbd>
+      </div>
+      <div class="b2b-topbar-right">
+        <a href="{{ url_for('b2b.support') }}" class="b2b-icon-btn" title="Support"><i class="fa fa-life-ring"></i></a>
+        <div class="b2b-icon-btn" title="Notifications" style="position:relative;">
+          <i class="fa fa-bell"></i>
+          {% if stats and (stats.new_requests > 0 or stats.open_tickets > 0) %}<span style="position:absolute;top:6px;right:6px;width:7px;height:7px;background:#dc2626;border-radius:50%;"></span>{% endif %}
+        </div>
+        <div class="user-av" style="cursor:pointer;">{{ (current_user.first_name or agency.name)[0].upper() }}</div>
+      </div>
+    </div>
+
+    <div class="b2b-content">
+      {% block b2b_content %}{% endblock %}
+    </div>
+  </div>
+</div>
+
+<!-- Command Palette -->
+<div class="b2b-cmdk-overlay" id="b2bCmdk">
+  <div class="b2b-cmdk-box">
+    <input type="text" class="b2b-cmdk-input" id="b2bCmdkInput" placeholder="{% if lang=='ru' %}Поиск туров, объектов, клиентов...{% else %}Search tours, properties, customers...{% endif %}" autofocus>
+    <div class="b2b-cmdk-results" id="b2bCmdkResults">
+      <div class="b2b-cmdk-empty">{% if lang=='ru' %}Начните вводить для поиска{% else %}Start typing to search{% endif %}</div>
+    </div>
+  </div>
+</div>
+
+<script>
+function toggleB2bSidebar(){
+  document.getElementById('b2bSidebar').classList.toggle('open');
+  document.getElementById('b2bBackdrop').classList.toggle('open');
+}
+function openCmdK(){
+  document.getElementById('b2bCmdk').classList.add('open');
+  setTimeout(()=>document.getElementById('b2bCmdkInput').focus(),50);
+}
+function closeCmdK(){
+  document.getElementById('b2bCmdk').classList.remove('open');
+  document.getElementById('b2bCmdkInput').value='';
+  document.getElementById('b2bCmdkResults').innerHTML = '<div class="b2b-cmdk-empty">{% if lang=="ru" %}Начните вводить{% else %}Start typing to search{% endif %}</div>';
+}
+document.getElementById('b2bCmdk').addEventListener('click', e => { if(e.target.id === 'b2bCmdk') closeCmdK(); });
+document.addEventListener('keydown', e => {
+  if((e.ctrlKey||e.metaKey) && e.key === 'k'){ e.preventDefault(); openCmdK(); }
+  if(e.key === 'Escape') closeCmdK();
+});
+let b2bSearchTimer;
+document.getElementById('b2bCmdkInput').addEventListener('input', function(){
+  clearTimeout(b2bSearchTimer);
+  const q = this.value;
+  if(q.length < 2){
+    document.getElementById('b2bCmdkResults').innerHTML = '<div class="b2b-cmdk-empty">{% if lang=="ru" %}Введите минимум 2 символа{% else %}Type at least 2 characters{% endif %}</div>';
+    return;
+  }
+  b2bSearchTimer = setTimeout(()=>{
+    fetch('{{ url_for("b2b.api_search") }}?q='+encodeURIComponent(q))
+      .then(r=>r.json())
+      .then(data=>{
+        const box = document.getElementById('b2bCmdkResults');
+        if(!data.length){ box.innerHTML = '<div class="b2b-cmdk-empty">No results found</div>'; return; }
+        box.innerHTML = data.map(r => `<a href="${r.url}" class="b2b-cmdk-item" style="text-decoration:none;color:var(--ink);"><i class="fa fa-arrow-right" style="color:var(--gold);font-size:.7rem;"></i> ${r.label} <span class="b2b-cmdk-type">${r.type}</span></a>`).join('');
+      });
+  }, 250);
+});
+</script>
+{% endblock %}

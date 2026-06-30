@@ -1,58 +1,164 @@
-{% extends 'base.html' %}
-{% block title %}B2B Dashboard — Bek Tour{% endblock %}
-{% block content %}
-<div class="page-hero"><div class="container"><h1>B2B Dashboard</h1><p>{{ agency.name }}</p></div></div>
-<section style="padding:48px 0;">
-  <div class="container">
-    <div class="dash-layout">
-      <aside class="dash-sidebar">
-        <div class="dash-sidebar-head">
-          <div style="font-size:1.8rem;margin-bottom:8px;">🏢</div>
-          <div style="color:var(--gold);font-weight:700;font-size:.95rem;">{{ agency.name }}</div>
-          <div style="font-size:.72rem;color:rgba(255,255,255,.38);margin-top:4px;"><span class="badge {% if agency.status=='active' %}bdg-green{% else %}bdg-gold{% endif %}">{{ agency.status }}</span></div>
+{% extends 'b2b/_layout.html' %}
+{% block title %}Dashboard — Partner Hub — Bek Tour{% endblock %}
+{% block b2b_content %}
+
+{% if agency.status == 'pending' %}
+<div style="background:#fffbeb;border:1px solid var(--gold);border-radius:var(--r-lg);padding:18px 20px;margin-bottom:22px;display:flex;gap:14px;align-items:center;flex-wrap:wrap;">
+  <i class="fa fa-clock" style="color:var(--gold);font-size:1.4rem;"></i>
+  <div style="flex:1;min-width:200px;">
+    <b>{% if lang=='ru' %}Заявка на рассмотрении{% else %}Application Under Review{% endif %}</b><br>
+    <span style="font-size:.82rem;color:var(--muted);">{% if lang=='ru' %}Мы активируем ваш аккаунт в течение 24 часов{% else %}We'll activate your account within 24 hours{% endif %}</span>
+  </div>
+  <a href="{{ url_for('b2b.support') }}" class="btn btn-outline btn-sm">{% if lang=='ru' %}Связаться{% else %}Contact Us{% endif %}</a>
+</div>
+{% endif %}
+
+{% if announcements %}
+{% for a in announcements %}
+<div style="background:var(--ink);border-radius:var(--r-lg);padding:16px 20px;margin-bottom:14px;display:flex;gap:12px;align-items:flex-start;">
+  <i class="fa fa-bullhorn" style="color:var(--gold);margin-top:2px;"></i>
+  <div><b style="color:#fff;font-size:.86rem;">{{ a.title }}</b><div style="color:rgba(255,255,255,.5);font-size:.78rem;margin-top:3px;">{{ a.body }}</div></div>
+</div>
+{% endfor %}
+{% endif %}
+
+<div class="b2b-page-head">
+  <div>
+    <div class="b2b-page-title">{% if lang=='ru' %}Добро пожаловать, {{ agency.name }}{% else %}Welcome back, {{ agency.name }}{% endif %}</div>
+    <div class="b2b-page-sub">{% if lang=='ru' %}Вот что происходит с вашим бизнесом сегодня{% else %}Here's what's happening with your business today{% endif %}</div>
+  </div>
+  <div style="display:flex;gap:8px;">
+    <a href="{{ url_for('b2b.property_new') }}" class="btn btn-outline btn-sm"><i class="fa fa-plus"></i> {% if lang=='ru' %}Объект{% else %}Property{% endif %}</a>
+    <a href="{{ url_for('b2b.tour_new') }}" class="btn btn-gold btn-sm"><i class="fa fa-plus"></i> {% if lang=='ru' %}Тур{% else %}Tour{% endif %}</a>
+  </div>
+</div>
+
+<!-- Stats -->
+<div class="b2b-stats">
+  <div class="b2b-stat-tile">
+    <div class="b2b-stat-icon"><i class="fa fa-calendar-day"></i></div>
+    <div class="b2b-stat-n">{{ stats.today_bookings }}</div>
+    <div class="b2b-stat-l">{% if lang=='ru' %}Бронирований сегодня{% else %}Today's Bookings{% endif %}</div>
+  </div>
+  <div class="b2b-stat-tile">
+    <div class="b2b-stat-icon"><i class="fa fa-sack-dollar"></i></div>
+    <div class="b2b-stat-n">${{ '{:,.0f}'.format(stats.month_revenue) }}</div>
+    <div class="b2b-stat-l">{% if lang=='ru' %}Доход за месяц{% else %}Monthly Revenue{% endif %}</div>
+  </div>
+  <div class="b2b-stat-tile">
+    <div class="b2b-stat-icon"><i class="fa fa-route"></i></div>
+    <div class="b2b-stat-n">{{ stats.active_tours }}</div>
+    <div class="b2b-stat-l">{% if lang=='ru' %}Активных туров{% else %}Active Tours{% endif %}</div>
+  </div>
+  <div class="b2b-stat-tile">
+    <div class="b2b-stat-icon"><i class="fa fa-building"></i></div>
+    <div class="b2b-stat-n">{{ stats.active_properties }}</div>
+    <div class="b2b-stat-l">{% if lang=='ru' %}Активных объектов{% else %}Active Properties{% endif %}</div>
+  </div>
+</div>
+
+<!-- Quick actions -->
+<div class="b2b-panel">
+  <div class="b2b-panel-head"><h3><i class="fa fa-bolt" style="color:var(--gold);"></i> {% if lang=='ru' %}Быстрые действия{% else %}Quick Actions{% endif %}</h3></div>
+  <div class="b2b-panel-body">
+    <div class="b2b-quick-actions">
+      <a href="{{ url_for('b2b.property_new') }}" class="b2b-qa-btn"><i class="fa fa-building"></i><span>{% if lang=='ru' %}Новый объект{% else %}New Property{% endif %}</span></a>
+      <a href="{{ url_for('b2b.tour_new') }}" class="b2b-qa-btn"><i class="fa fa-route"></i><span>{% if lang=='ru' %}Новый тур{% else %}New Tour{% endif %}</span></a>
+      <a href="{{ url_for('b2b.media') }}" class="b2b-qa-btn"><i class="fa fa-cloud-upload-alt"></i><span>{% if lang=='ru' %}Загрузить медиа{% else %}Upload Media{% endif %}</span></a>
+      <a href="{{ url_for('b2b.reports') }}" class="b2b-qa-btn"><i class="fa fa-chart-bar"></i><span>{% if lang=='ru' %}Отчёты{% else %}View Reports{% endif %}</span></a>
+    </div>
+  </div>
+</div>
+
+<div style="display:grid;grid-template-columns:1fr;gap:20px;" id="dashGrid">
+  <!-- Revenue chart -->
+  <div class="b2b-panel">
+    <div class="b2b-panel-head"><h3><i class="fa fa-chart-line" style="color:var(--gold);"></i> {% if lang=='ru' %}Доход за 6 месяцев{% else %}6-Month Revenue{% endif %}</h3></div>
+    <div class="b2b-panel-body">
+      {% set max_val = (chart_data|max) or 1 %}
+      <div class="b2b-chart">
+        {% for label in chart_labels %}
+        <div class="b2b-bar-col">
+          <div style="font-size:.68rem;color:var(--ink);font-weight:700;">${{ '{:,.0f}'.format(chart_data[loop.index0]) }}</div>
+          <div class="b2b-bar" style="height:{{ ((chart_data[loop.index0] / max_val) * 130)|round|int if max_val > 0 else 4 }}px;"></div>
+          <div class="b2b-bar-label">{{ label }}</div>
         </div>
-        <div style="padding:8px 0;">
-          <div class="dash-nav-item on"><i class="fa fa-tachometer-alt"></i> Dashboard</div>
-          <a href="{{ url_for('villas.index') }}" class="dash-nav-item"><i class="fa fa-home"></i> {% if lang=='ru' %}Жильё{% else %}Browse Stays{% endif %}</a>
-          <div class="dash-nav-item"><i class="fa fa-wallet"></i> {% if lang=='ru' %}Баланс{% else %}Balance{% endif %}: <b style="color:var(--gold);margin-left:4px;">${{ agency.balance }}</b></div>
-          <div class="dash-nav-item"><i class="fa fa-percent"></i> {% if lang=='ru' %}Скидка{% else %}Discount{% endif %}: <b style="color:var(--gold);margin-left:4px;">{{ agency.discount_percent }}%</b></div>
-          <hr style="border:none;border-top:1px solid var(--line);margin:6px 0;">
-          <a href="{{ url_for('auth.logout') }}" class="dash-nav-item" style="color:#e53e3e;"><i class="fa fa-sign-out-alt"></i> {% if lang=='ru' %}Выйти{% else %}Logout{% endif %}</a>
-        </div>
-      </aside>
-      <div>
-        {% if agency.status == 'pending' %}
-        <div style="background:#fffbeb;border:1px solid var(--gold);border-radius:var(--r);padding:18px;margin-bottom:22px;display:flex;gap:12px;align-items:center;">
-          <i class="fa fa-clock" style="color:var(--gold);font-size:1.3rem;"></i>
-          <div>
-            <b>{% if lang=='ru' %}Заявка на рассмотрении{% else %}Application under review{% endif %}</b><br>
-            <span style="font-size:.8rem;color:var(--muted);">{% if lang=='ru' %}Активируем в течение 24 часов{% else %}We'll activate within 24 hours{% endif %}</span>
-          </div>
-        </div>
-        {% endif %}
-        <div class="stat-cards">
-          <div class="stat-card"><div class="stat-card-n">{{ bookings|length }}</div><div class="stat-card-l">{% if lang=='ru' %}Бронирований{% else %}Bookings{% endif %}</div></div>
-          <div class="stat-card"><div class="stat-card-n">${{ agency.balance }}</div><div class="stat-card-l">{% if lang=='ru' %}Баланс{% else %}Balance{% endif %}</div></div>
-          <div class="stat-card"><div class="stat-card-n">{{ agency.discount_percent }}%</div><div class="stat-card-l">{% if lang=='ru' %}Скидка{% else %}Discount{% endif %}</div></div>
-        </div>
-        <div class="content-card">
-          <h3>{% if lang=='ru' %}Мои бронирования{% else %}My Bookings{% endif %}</h3>
-          {% for b in bookings %}
-          <div class="booking-row">
-            <div style="flex:1;"><div style="font-weight:600;font-size:.86rem;">{{ b.villa.title_en if b.villa else 'N/A' }}</div><div style="font-size:.74rem;color:var(--muted);">{{ b.check_in }} → {{ b.check_out }}</div></div>
-            <span class="badge {% if b.status=='confirmed' %}bdg-green{% elif b.status=='cancelled' %}bdg-red{% else %}bdg-gold{% endif %}">{{ b.status }}</span>
-            <div style="font-weight:700;color:var(--gold);">${{ b.total_price }}</div>
-          </div>
-          {% else %}
-          <div style="text-align:center;padding:40px;color:var(--muted);">
-            <div style="font-size:2rem;margin-bottom:12px;">📋</div>
-            <p>{% if lang=='ru' %}Нет бронирований{% else %}No bookings yet{% endif %}</p>
-            <a href="{{ url_for('villas.index') }}" class="btn btn-gold btn-sm" style="margin-top:14px;">{% if lang=='ru' %}Найти жильё{% else %}Browse Stays{% endif %}</a>
-          </div>
-          {% endfor %}
-        </div>
+        {% endfor %}
       </div>
     </div>
   </div>
-</section>
+
+  <!-- Upcoming check-ins / check-outs -->
+  <div class="b2b-panel">
+    <div class="b2b-panel-head"><h3><i class="fa fa-door-open" style="color:var(--gold);"></i> {% if lang=='ru' %}Заезды на этой неделе{% else %}Upcoming Check-ins (7 days){% endif %}</h3></div>
+    <div class="b2b-panel-body" style="padding:0;">
+      {% if upcoming_checkins %}
+      <div class="b2b-table-wrap">
+        <table class="b2b-table">
+          <thead><tr><th>{% if lang=='ru' %}Гость{% else %}Guest{% endif %}</th><th>{% if lang=='ru' %}Объект{% else %}Property{% endif %}</th><th>{% if lang=='ru' %}Заезд{% else %}Check-in{% endif %}</th><th>{% if lang=='ru' %}Гостей{% else %}Guests{% endif %}</th></tr></thead>
+          <tbody>
+            {% for b in upcoming_checkins %}
+            <tr><td><b>{{ b.first_name }}</b></td><td>{{ b.villa.title_en if b.villa else '—' }}</td><td>{{ b.check_in.strftime('%b %d') }}</td><td>{{ b.guests }}</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+      <div class="b2b-empty"><div class="b2b-empty-icon">📅</div><p>{% if lang=='ru' %}Нет заездов на этой неделе{% else %}No check-ins this week{% endif %}</p></div>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="b2b-panel">
+    <div class="b2b-panel-head"><h3><i class="fa fa-door-closed" style="color:var(--gold);"></i> {% if lang=='ru' %}Выезды на этой неделе{% else %}Upcoming Check-outs (7 days){% endif %}</h3></div>
+    <div class="b2b-panel-body" style="padding:0;">
+      {% if upcoming_checkouts %}
+      <div class="b2b-table-wrap">
+        <table class="b2b-table">
+          <thead><tr><th>{% if lang=='ru' %}Гость{% else %}Guest{% endif %}</th><th>{% if lang=='ru' %}Объект{% else %}Property{% endif %}</th><th>{% if lang=='ru' %}Выезд{% else %}Check-out{% endif %}</th></tr></thead>
+          <tbody>
+            {% for b in upcoming_checkouts %}
+            <tr><td><b>{{ b.first_name }}</b></td><td>{{ b.villa.title_en if b.villa else '—' }}</td><td>{{ b.check_out.strftime('%b %d') }}</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+      <div class="b2b-empty"><div class="b2b-empty-icon">📅</div><p>{% if lang=='ru' %}Нет выездов на этой неделе{% else %}No check-outs this week{% endif %}</p></div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Recent activity -->
+  <div class="b2b-panel">
+    <div class="b2b-panel-head">
+      <h3><i class="fa fa-clock-rotate-left" style="color:var(--gold);"></i> {% if lang=='ru' %}Последняя активность{% else %}Recent Activity{% endif %}</h3>
+      <a href="{{ url_for('b2b.bookings') }}" class="b2b-panel-link">{% if lang=='ru' %}Все бронирования{% else %}View All{% endif %} →</a>
+    </div>
+    <div class="b2b-panel-body" style="padding:0;">
+      {% if recent_bookings %}
+      <div class="b2b-table-wrap">
+        <table class="b2b-table">
+          <thead><tr><th>{% if lang=='ru' %}Гость{% else %}Guest{% endif %}</th><th>{% if lang=='ru' %}Объект{% else %}Property{% endif %}</th><th>{% if lang=='ru' %}Даты{% else %}Dates{% endif %}</th><th>{% if lang=='ru' %}Сумма{% else %}Amount{% endif %}</th><th>{% if lang=='ru' %}Статус{% else %}Status{% endif %}</th></tr></thead>
+          <tbody>
+            {% for b in recent_bookings %}
+            <tr>
+              <td><b>{{ b.first_name }} {{ b.last_name or '' }}</b><br><span style="font-size:.7rem;color:var(--muted);">{{ b.phone }}</span></td>
+              <td>{{ b.villa.title_en if b.villa else '—' }}</td>
+              <td style="font-size:.76rem;">{{ b.check_in.strftime('%b %d') }} → {{ b.check_out.strftime('%b %d') }}</td>
+              <td><b style="color:var(--gold);">${{ b.total_price or 0 }}</b></td>
+              <td><span class="b2b-pill b2b-pill-{{ b.status }}">{{ b.status }}</span></td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+      <div class="b2b-empty"><div class="b2b-empty-icon">📋</div><h4>{% if lang=='ru' %}Пока нет бронирований{% else %}No bookings yet{% endif %}</h4><p>{% if lang=='ru' %}Опубликуйте объекты и туры чтобы получать заявки{% else %}Publish properties and tours to start receiving requests{% endif %}</p></div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<style>@media(min-width:1100px){#dashGrid{grid-template-columns:1fr 1fr}#dashGrid > .b2b-panel:nth-child(1),#dashGrid > .b2b-panel:nth-child(4){grid-column:1/-1}}</style>
 {% endblock %}

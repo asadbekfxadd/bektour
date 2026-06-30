@@ -1,0 +1,64 @@
+{% extends 'b2b/_layout.html' %}
+{% block title %}Tours — Partner Hub{% endblock %}
+{% block b2b_content %}
+<div class="b2b-page-head">
+  <div>
+    <div class="b2b-page-title">{% if lang=='ru' %}Туры{% else %}Tours{% endif %}</div>
+    <div class="b2b-page-sub">{{ tours|length }} {% if lang=='ru' %}туров{% else %}total tours{% endif %}</div>
+  </div>
+  <a href="{{ url_for('b2b.tour_new') }}" class="btn btn-gold btn-sm"><i class="fa fa-plus"></i> {% if lang=='ru' %}Создать тур{% else %}New Tour{% endif %}</a>
+</div>
+
+<div class="b2b-chips">
+  <div class="b2b-chip on" onclick="filterT('all', this)">{% if lang=='ru' %}Все{% else %}All{% endif %} <span class="b2b-chip-count">{{ tours|length }}</span></div>
+  {% for cat in ['private','vip','luxury','adventure','family','historical'] %}
+  <div class="b2b-chip" onclick="filterT('{{ cat }}', this)">{{ cat|title }} <span class="b2b-chip-count">{{ tours|selectattr('category','equalto',cat)|list|length }}</span></div>
+  {% endfor %}
+</div>
+
+{% if tours %}
+<div class="b2b-card-grid" id="toursAdminGrid">
+  {% for t in tours %}
+  <div class="b2b-item-card" data-cat="{{ t.category }}">
+    <div class="b2b-item-img">
+      <img src="{{ t.cover_image or '/photo/samarkand?w=400&h=300' }}" alt="{{ t.title }}" loading="lazy">
+      <span class="b2b-pill b2b-pill-{{ t.status }} b2b-item-status">{{ t.status }}</span>
+    </div>
+    <div class="b2b-item-body">
+      <div class="b2b-item-title">{{ t.title }}</div>
+      <div class="b2b-item-meta">
+        <span><i class="fa fa-calendar-alt"></i> {{ t.duration_days }}d</span>
+        <span><i class="fa fa-tag"></i> {{ t.category|title }}</span>
+        {% if t.price_per_person %}<span><i class="fa fa-dollar-sign"></i> {{ t.price_per_person }}</span>{% endif %}
+      </div>
+      <div class="b2b-item-actions">
+        <a href="{{ url_for('b2b.tour_edit', id=t.id) }}" class="btn btn-outline btn-sm" style="flex:1;justify-content:center;"><i class="fa fa-edit"></i> {% if lang=='ru' %}Изменить{% else %}Edit{% endif %}</a>
+        <form method="POST" action="{{ url_for('b2b.tour_publish', id=t.id) }}">
+          <button type="submit" class="btn btn-sm" style="width:100%;background:{% if t.status=='draft' %}var(--gold){% else %}var(--ink){% endif %};color:#fff;">
+            {% if t.status=='draft' %}{% if lang=='ru' %}Опубликовать{% else %}Publish{% endif %}{% else %}{% if lang=='ru' %}Снять{% else %}Unpublish{% endif %}{% endif %}
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="b2b-panel"><div class="b2b-empty">
+  <div class="b2b-empty-icon">🗺️</div>
+  <h4>{% if lang=='ru' %}Нет туров{% else %}No tours yet{% endif %}</h4>
+  <p>{% if lang=='ru' %}Создайте свой первый тур по Узбекистану{% else %}Create your first Uzbekistan tour package{% endif %}</p>
+  <a href="{{ url_for('b2b.tour_new') }}" class="btn btn-gold"><i class="fa fa-plus"></i> {% if lang=='ru' %}Создать тур{% else %}Create Tour{% endif %}</a>
+</div></div>
+{% endif %}
+
+<script>
+function filterT(cat, el){
+  document.querySelectorAll('.b2b-chips .b2b-chip').forEach(c=>c.classList.remove('on'));
+  el.classList.add('on');
+  document.querySelectorAll('#toursAdminGrid .b2b-item-card').forEach(card=>{
+    card.style.display = (cat==='all' || card.dataset.cat===cat) ? '' : 'none';
+  });
+}
+</script>
+{% endblock %}

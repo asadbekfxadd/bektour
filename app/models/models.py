@@ -147,3 +147,163 @@ class Review(db.Model):
     text = db.Column(db.Text)
     is_approved = db.Column(db.Boolean, default=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+
+# ═══════════════════════════════════════════════════
+# B2B PARTNER PLATFORM MODELS
+# ═══════════════════════════════════════════════════
+
+class Property(db.Model):
+    """Partner-managed properties: hotels, resorts, villas, guesthouses etc."""
+    __tablename__ = 'properties'
+    id = db.Column(db.Integer, primary_key=True)
+    agency_id = db.Column(db.Integer, db.ForeignKey('agencies.id'), nullable=False)
+    name = db.Column(db.String(200), nullable=False)
+    category = db.Column(db.String(50), default='hotel')  # hotel, resort, villa, guesthouse, apartment, hostel, camping, glamping, sanatorium, mountain_resort, eco_resort
+    description = db.Column(db.Text)
+    address = db.Column(db.String(300))
+    city = db.Column(db.String(100))
+    lat = db.Column(db.Float)
+    lng = db.Column(db.Float)
+    cover_image = db.Column(db.String(255))
+    gallery = db.Column(db.Text)  # JSON list of image URLs
+    video_url = db.Column(db.String(255))
+    tour_360_url = db.Column(db.String(255))
+    check_in_time = db.Column(db.String(20), default='14:00')
+    check_out_time = db.Column(db.String(20), default='12:00')
+    cancellation_policy = db.Column(db.Text)
+    languages_spoken = db.Column(db.String(200))
+    nearby_attractions = db.Column(db.Text)
+    has_parking = db.Column(db.Boolean, default=False)
+    has_restaurant = db.Column(db.Boolean, default=False)
+    has_pool = db.Column(db.Boolean, default=False)
+    has_spa = db.Column(db.Boolean, default=False)
+    has_gym = db.Column(db.Boolean, default=False)
+    has_wifi = db.Column(db.Boolean, default=True)
+    has_airport_transfer = db.Column(db.Boolean, default=False)
+    has_breakfast = db.Column(db.Boolean, default=False)
+    has_lunch = db.Column(db.Boolean, default=False)
+    has_dinner = db.Column(db.Boolean, default=False)
+    seo_title = db.Column(db.String(200))
+    seo_description = db.Column(db.String(300))
+    status = db.Column(db.String(20), default='draft')  # draft, published
+    rating = db.Column(db.Float, default=0.0)
+    views = db.Column(db.Integer, default=0)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    rooms = db.relationship('Room', backref='property', lazy='dynamic', cascade='all, delete-orphan')
+
+
+class Room(db.Model):
+    """Room categories within a property"""
+    __tablename__ = 'rooms'
+    id = db.Column(db.Integer, primary_key=True)
+    property_id = db.Column(db.Integer, db.ForeignKey('properties.id'), nullable=False)
+    name = db.Column(db.String(150), nullable=False)
+    description = db.Column(db.Text)
+    max_guests = db.Column(db.Integer, default=2)
+    bed_type = db.Column(db.String(80))
+    size_sqm = db.Column(db.Float)
+    base_price = db.Column(db.Numeric(12, 2))
+    weekend_price = db.Column(db.Numeric(12, 2))
+    high_season_price = db.Column(db.Numeric(12, 2))
+    cover_image = db.Column(db.String(255))
+    gallery = db.Column(db.Text)
+    total_rooms = db.Column(db.Integer, default=1)
+    instant_booking = db.Column(db.Boolean, default=True)
+    is_active = db.Column(db.Boolean, default=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+
+class Tour(db.Model):
+    """Partner-managed tour packages"""
+    __tablename__ = 'tours'
+    id = db.Column(db.Integer, primary_key=True)
+    agency_id = db.Column(db.Integer, db.ForeignKey('agencies.id'), nullable=False)
+    title = db.Column(db.String(200), nullable=False)
+    category = db.Column(db.String(50), default='private')  # private, vip, luxury, adventure, business, family, historical, food, mountain, desert, weekend, custom
+    description = db.Column(db.Text)
+    cover_image = db.Column(db.String(255))
+    gallery = db.Column(db.Text)
+    video_url = db.Column(db.String(255))
+    duration_days = db.Column(db.Integer, default=1)
+    destinations = db.Column(db.String(300))  # comma-separated city list
+    hotels_included = db.Column(db.Text)
+    meals_included = db.Column(db.String(100))  # e.g. "Breakfast, Lunch"
+    transportation = db.Column(db.String(150))
+    guide_languages = db.Column(db.String(200))
+    price_per_person = db.Column(db.Numeric(12, 2))
+    discount_percent = db.Column(db.Float, default=0)
+    min_travelers = db.Column(db.Integer, default=1)
+    max_travelers = db.Column(db.Integer, default=20)
+    meeting_point = db.Column(db.String(300))
+    lat = db.Column(db.Float)
+    lng = db.Column(db.Float)
+    included_services = db.Column(db.Text)
+    excluded_services = db.Column(db.Text)
+    cancellation_rules = db.Column(db.Text)
+    itinerary = db.Column(db.Text)  # JSON: [{"day":1,"title":"...","desc":"..."}]
+    status = db.Column(db.String(20), default='draft')
+    rating = db.Column(db.Float, default=0.0)
+    views = db.Column(db.Integer, default=0)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+
+class MediaAsset(db.Model):
+    """Media center file storage references"""
+    __tablename__ = 'media_assets'
+    id = db.Column(db.Integer, primary_key=True)
+    agency_id = db.Column(db.Integer, db.ForeignKey('agencies.id'), nullable=False)
+    filename = db.Column(db.String(255), nullable=False)
+    file_url = db.Column(db.String(400))
+    file_type = db.Column(db.String(30))  # image, video, drone, 360, pdf, document, logo, certificate
+    folder = db.Column(db.String(120), default='General')
+    file_size_kb = db.Column(db.Integer)
+    uploaded_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+
+class PartnerCustomer(db.Model):
+    """CRM customer profiles managed by a partner agency"""
+    __tablename__ = 'partner_customers'
+    id = db.Column(db.Integer, primary_key=True)
+    agency_id = db.Column(db.Integer, db.ForeignKey('agencies.id'), nullable=False)
+    full_name = db.Column(db.String(150), nullable=False)
+    email = db.Column(db.String(120))
+    phone = db.Column(db.String(30))
+    nationality = db.Column(db.String(80))
+    passport_number = db.Column(db.String(50))
+    notes = db.Column(db.Text)
+    loyalty_points = db.Column(db.Integer, default=0)
+    total_spent = db.Column(db.Numeric(12, 2), default=0)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+
+class SupportTicket(db.Model):
+    """Partner support tickets"""
+    __tablename__ = 'support_tickets'
+    id = db.Column(db.Integer, primary_key=True)
+    agency_id = db.Column(db.Integer, db.ForeignKey('agencies.id'), nullable=False)
+    subject = db.Column(db.String(200), nullable=False)
+    message = db.Column(db.Text)
+    status = db.Column(db.String(20), default='open')  # open, answered, closed
+    priority = db.Column(db.String(20), default='normal')  # low, normal, high, urgent
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+
+class Announcement(db.Model):
+    """Platform-wide announcements shown to all partners"""
+    __tablename__ = 'announcements'
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(200), nullable=False)
+    body = db.Column(db.Text)
+    is_active = db.Column(db.Boolean, default=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+
+# Extend Agency with new relationships (monkey-patch style additive relationship)
+Agency.properties = db.relationship('Property', backref='agency', lazy='dynamic')
+Agency.tours = db.relationship('Tour', backref='agency', lazy='dynamic')
+Agency.media_assets = db.relationship('MediaAsset', backref='agency', lazy='dynamic')
+Agency.customers = db.relationship('PartnerCustomer', backref='agency', lazy='dynamic')
+Agency.tickets = db.relationship('SupportTicket', backref='agency', lazy='dynamic')

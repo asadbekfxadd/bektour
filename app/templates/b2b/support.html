@@ -1,0 +1,60 @@
+{% extends 'b2b/_layout.html' %}
+{% block title %}Support — Partner Hub{% endblock %}
+{% block b2b_content %}
+<div class="b2b-page-head">
+  <div>
+    <div class="b2b-page-title">{% if lang=='ru' %}Поддержка{% else %}Support Tickets{% endif %}</div>
+    <div class="b2b-page-sub">{% if lang=='ru' %}Ответим в течение 4 часов{% else %}We respond within 4 hours{% endif %}</div>
+  </div>
+</div>
+
+<div style="display:grid;grid-template-columns:1fr;gap:20px;" id="supportGrid">
+  <div class="b2b-form-section">
+    <h4><i class="fa fa-paper-plane"></i> {% if lang=='ru' %}Новый тикет{% else %}New Ticket{% endif %}</h4>
+    <form method="POST" action="{{ url_for('b2b.support_new') }}">
+      <div class="form-row">
+        <div class="form-group"><label class="form-lbl">{% if lang=='ru' %}Тема{% else %}Subject{% endif %} *</label><input type="text" name="subject" class="form-ctrl" required></div>
+        <div class="form-group"><label class="form-lbl">{% if lang=='ru' %}Приоритет{% else %}Priority{% endif %}</label>
+          <select name="priority" class="form-ctrl">
+            <option value="low">Low</option><option value="normal" selected>Normal</option>
+            <option value="high">High</option><option value="urgent">Urgent</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group"><label class="form-lbl">{% if lang=='ru' %}Сообщение{% else %}Message{% endif %} *</label><textarea name="message" class="form-ctrl" rows="4" required></textarea></div>
+      <button type="submit" class="btn btn-gold btn-sm"><i class="fa fa-paper-plane"></i> {% if lang=='ru' %}Отправить{% else %}Submit Ticket{% endif %}</button>
+    </form>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr;gap:10px;">
+    <a href="https://wa.me/998901234567" target="_blank" style="background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;display:flex;align-items:center;gap:12px;text-decoration:none;">
+      <i class="fab fa-whatsapp" style="color:#25D366;font-size:1.4rem;"></i>
+      <div><div style="font-weight:700;font-size:.84rem;color:var(--ink);">WhatsApp Support</div><div style="font-size:.72rem;color:var(--muted);">+998 90 123 45 67</div></div>
+    </a>
+    <a href="https://t.me/bektop" target="_blank" style="background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;display:flex;align-items:center;gap:12px;text-decoration:none;">
+      <i class="fab fa-telegram" style="color:#2CA5E0;font-size:1.4rem;"></i>
+      <div><div style="font-weight:700;font-size:.84rem;color:var(--ink);">Telegram Support</div><div style="font-size:.72rem;color:var(--muted);">@bektop</div></div>
+    </a>
+  </div>
+
+  {% if tickets %}
+  <div class="b2b-panel">
+    <div class="b2b-panel-head"><h3>{% if lang=='ru' %}Мои тикеты{% else %}My Tickets{% endif %}</h3></div>
+    <div class="b2b-table-wrap">
+      <table class="b2b-table">
+        <thead><tr><th>{% if lang=='ru' %}Тема{% else %}Subject{% endif %}</th><th>{% if lang=='ru' %}Приоритет{% else %}Priority{% endif %}</th><th>{% if lang=='ru' %}Статус{% else %}Status{% endif %}</th><th>{% if lang=='ru' %}Дата{% else %}Date{% endif %}</th></tr></thead>
+        <tbody>
+          {% for t in tickets %}
+          <tr><td><b>{{ t.subject }}</b><br><span style="font-size:.72rem;color:var(--muted);">{{ t.message[:60] }}{% if t.message|length > 60 %}...{% endif %}</span></td>
+          <td><span class="b2b-pill" style="background:{% if t.priority=='urgent' %}#fee2e2{% elif t.priority=='high' %}#fef3c7{% else %}#f3f4f6{% endif %};color:{% if t.priority=='urgent' %}#dc2626{% elif t.priority=='high' %}#b45309{% else %}#6b7280{% endif %};">{{ t.priority }}</span></td>
+          <td><span class="b2b-pill b2b-pill-{{ t.status }}">{{ t.status }}</span></td>
+          <td style="font-size:.76rem;">{{ t.created_at.strftime('%b %d, %Y') }}</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  {% endif %}
+</div>
+<style>@media(min-width:900px){#supportGrid{grid-template-columns:1.5fr 1fr}#supportGrid>.b2b-panel{grid-column:1/-1}}</style>
+{% endblock %}

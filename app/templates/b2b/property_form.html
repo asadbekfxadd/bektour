@@ -1,0 +1,159 @@
+{% extends 'b2b/_layout.html' %}
+{% block title %}{% if property %}Edit Property{% else %}New Property{% endif %} — Partner Hub{% endblock %}
+{% block b2b_content %}
+<div class="b2b-page-head">
+  <div>
+    <div class="b2b-page-title">{% if property %}{{ property.name }}{% else %}{% if lang=='ru' %}Новый объект{% else %}New Property{% endif %}{% endif %}</div>
+    <div class="b2b-page-sub">
+      <a href="{{ url_for('b2b.properties') }}" style="color:var(--gold);"><i class="fa fa-arrow-left"></i> {% if lang=='ru' %}Назад к объектам{% else %}Back to Properties{% endif %}</a>
+      {% if property %}<span style="margin-left:10px;"><span class="b2b-pill b2b-pill-{{ property.status }}">{{ property.status }}</span></span>{% endif %}
+    </div>
+  </div>
+  {% if property %}
+  <div style="display:flex;gap:8px;">
+    <form method="POST" action="{{ url_for('b2b.property_publish', id=property.id) }}">
+      <button type="submit" class="btn btn-sm" style="background:{% if property.status=='draft' %}var(--gold){% else %}var(--ink){% endif %};color:#fff;">
+        {% if property.status=='draft' %}<i class="fa fa-globe"></i> {% if lang=='ru' %}Опубликовать{% else %}Publish{% endif %}{% else %}<i class="fa fa-eye-slash"></i> {% if lang=='ru' %}Снять{% else %}Unpublish{% endif %}{% endif %}
+      </button>
+    </form>
+    <form method="POST" action="{{ url_for('b2b.property_delete', id=property.id) }}" onsubmit="return confirm('Delete this property?')">
+      <button type="submit" class="btn btn-outline btn-sm" style="color:#dc2626;border-color:#fca5a5;"><i class="fa fa-trash"></i></button>
+    </form>
+  </div>
+  {% endif %}
+</div>
+
+<form method="POST" action="{% if property %}{{ url_for('b2b.property_edit', id=property.id) }}{% else %}{{ url_for('b2b.property_new') }}{% endif %}">
+  <div class="b2b-form-section">
+    <h4><i class="fa fa-info-circle"></i> {% if lang=='ru' %}Основная информация{% else %}Basic Information{% endif %}</h4>
+    <div class="form-row">
+      <div class="form-group"><label class="form-lbl">{% if lang=='ru' %}Название{% else %}Property Name{% endif %} *</label><input type="text" name="name" class="form-ctrl" required value="{{ property.name if property else '' }}" placeholder="Samarkand Boutique Hotel"></div>
+      <div class="form-group"><label class="form-lbl">{% if lang=='ru' %}Категория{% else %}Category{% endif %}</label>
+        <select name="category" class="form-ctrl">
+          {% for cat in ['hotel','resort','villa','guesthouse','apartment','hostel','camping','glamping','sanatorium','mountain_resort','eco_resort','luxury_resort','business_hotel','boutique_hotel','family_hotel'] %}
+          <option value="{{ cat }}" {% if property and property.category==cat %}selected{% endif %}>{{ cat.replace('_',' ')|title }}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+    <div class="form-group"><label class="form-lbl">{% if lang=='ru' %}Описание{% else %}Description{% endif %}</label><textarea name="description" class="form-ctrl" rows="4" placeholder="Describe your property...">{{ property.description if property else '' }}</textarea></div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-lbl">{% if lang=='ru' %}Город{% else %}City{% endif %}</label>
+        <select name="city" class="form-ctrl">
+          {% for c in ['Samarkand','Bukhara','Khiva','Tashkent','Fergana','Shahrisabz','Nukus','Termez'] %}
+          <option value="{{ c }}" {% if property and property.city==c %}selected{% endif %}>{{ c }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="form-group"><label class="form-lbl">{% if lang=='ru' %}Адрес{% else %}Address{% endif %}</label><input type="text" name="address" class="form-ctrl" value="{{ property.address if property else '' }}" placeholder="Street address"></div>
+    </div>
+  </div>
+
+  <div class="b2b-form-section">
+    <h4><i class="fa fa-photo-film"></i> {% if lang=='ru' %}Медиа{% else %}Media{% endif %}</h4>
+    <div class="b2b-dropzone" onclick="document.getElementById('fakeUpload').click()">
+      <i class="fa fa-cloud-upload-alt"></i>
+      <div style="font-weight:600;font-size:.86rem;color:var(--ink);">{% if lang=='ru' %}Перетащите фото сюда{% else %}Drag & drop photos here{% endif %}</div>
+      <div style="font-size:.74rem;color:var(--muted);margin-top:4px;">{% if lang=='ru' %}или нажмите для выбора · 4K фото, до 50 изображений{% else %}or click to browse · 4K images, up to 50 photos{% endif %}</div>
+      <input type="file" id="fakeUpload" multiple accept="image/*" style="display:none;">
+    </div>
+    <div class="form-row" style="margin-top:14px;">
+      <div class="form-group"><label class="form-lbl"><i class="fa fa-video"></i> {% if lang=='ru' %}Видео тур{% else %}Video Tour URL{% endif %}</label><input type="url" name="video_url" class="form-ctrl" value="{{ property.video_url if property else '' }}" placeholder="https://youtube.com/..."></div>
+      <div class="form-group"><label class="form-lbl"><i class="fa fa-vr-cardboard"></i> {% if lang=='ru' %}360° тур{% else %}360° Virtual Tour URL{% endif %}</label><input type="url" name="tour_360_url" class="form-ctrl" value="{{ property.tour_360_url if property else '' }}" placeholder="https://..."></div>
+    </div>
+  </div>
+
+  <div class="b2b-form-section">
+    <h4><i class="fa fa-list-check"></i> {% if lang=='ru' %}Удобства{% else %}Amenities{% endif %}</h4>
+    <div class="b2b-amenity-grid">
+      {% for field, ico, en, ru in [
+        ('has_parking','fa-square-parking','Parking','Парковка'),('has_restaurant','fa-utensils','Restaurant','Ресторан'),
+        ('has_pool','fa-water-ladder','Swimming Pool','Бассейн'),('has_spa','fa-spa','Spa','Спа'),
+        ('has_gym','fa-dumbbell','Gym','Спортзал'),('has_wifi','fa-wifi','Wi-Fi','Wi-Fi'),
+        ('has_airport_transfer','fa-shuttle-van','Airport Transfer','Трансфер'),('has_breakfast','fa-mug-saucer','Breakfast','Завтрак'),
+        ('has_lunch','fa-bowl-food','Lunch','Обед'),('has_dinner','fa-utensils','Dinner','Ужин'),
+      ] %}
+      <label class="b2b-amenity-toggle">
+        <input type="checkbox" name="{{ field }}" {% if property and property[field] %}checked{% endif %}>
+        <i class="fa {{ ico }}" style="color:var(--gold);"></i> {% if lang=='ru' %}{{ ru }}{% else %}{{ en }}{% endif %}
+      </label>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="b2b-form-section">
+    <h4><i class="fa fa-clock"></i> {% if lang=='ru' %}Заезд / Выезд / Отмена{% else %}Check-in / Cancellation Policy{% endif %}</h4>
+    <div class="form-row">
+      <div class="form-group"><label class="form-lbl">{% if lang=='ru' %}Время заезда{% else %}Check-in Time{% endif %}</label><input type="time" name="check_in_time" class="form-ctrl" value="{{ property.check_in_time if property else '14:00' }}"></div>
+      <div class="form-group"><label class="form-lbl">{% if lang=='ru' %}Время выезда{% else %}Check-out Time{% endif %}</label><input type="time" name="check_out_time" class="form-ctrl" value="{{ property.check_out_time if property else '12:00' }}"></div>
+    </div>
+    <div class="form-group"><label class="form-lbl">{% if lang=='ru' %}Политика отмены{% else %}Cancellation Policy{% endif %}</label><textarea name="cancellation_policy" class="form-ctrl" rows="2" placeholder="Free cancellation up to 48 hours before check-in...">{{ property.cancellation_policy if property else '' }}</textarea></div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-lbl">{% if lang=='ru' %}Языки персонала{% else %}Languages Spoken{% endif %}</label><input type="text" name="languages_spoken" class="form-ctrl" value="{{ property.languages_spoken if property else '' }}" placeholder="English, Russian, Uzbek"></div>
+      <div class="form-group"><label class="form-lbl">{% if lang=='ru' %}Рядом{% else %}Nearby Attractions{% endif %}</label><input type="text" name="nearby_attractions" class="form-ctrl" value="{{ property.nearby_attractions if property else '' }}" placeholder="Registan Square (5 min walk)"></div>
+    </div>
+  </div>
+
+  <div class="b2b-form-section">
+    <h4><i class="fa fa-magnifying-glass"></i> SEO</h4>
+    <div class="form-group"><label class="form-lbl">SEO Title</label><input type="text" name="seo_title" class="form-ctrl" value="{{ property.seo_title if property else '' }}" maxlength="60"></div>
+    <div class="form-group"><label class="form-lbl">SEO Description</label><textarea name="seo_description" class="form-ctrl" rows="2" maxlength="160">{{ property.seo_description if property else '' }}</textarea></div>
+  </div>
+
+  <button type="submit" class="btn btn-gold btn-lg btn-block"><i class="fa fa-save"></i> {% if property %}{% if lang=='ru' %}Сохранить изменения{% else %}Save Changes{% endif %}{% else %}{% if lang=='ru' %}Создать объект{% else %}Create Property{% endif %}{% endif %}</button>
+</form>
+
+{% if property %}
+<!-- Rooms management -->
+<div class="b2b-form-section" style="margin-top:24px;">
+  <h4><i class="fa fa-bed"></i> {% if lang=='ru' %}Категории номеров{% else %}Room Categories{% endif %} ({{ rooms|length if rooms else 0 }})</h4>
+  {% if rooms %}
+  <div class="b2b-table-wrap" style="margin-bottom:18px;">
+    <table class="b2b-table">
+      <thead><tr><th>{% if lang=='ru' %}Название{% else %}Name{% endif %}</th><th>{% if lang=='ru' %}Гостей{% else %}Guests{% endif %}</th><th>{% if lang=='ru' %}Цена{% else %}Base Price{% endif %}</th><th>{% if lang=='ru' %}Выходные{% else %}Weekend{% endif %}</th><th>{% if lang=='ru' %}Кол-во{% else %}Count{% endif %}</th><th></th></tr></thead>
+      <tbody>
+        {% for r in rooms %}
+        <tr>
+          <td><b>{{ r.name }}</b>{% if r.bed_type %}<br><span style="font-size:.7rem;color:var(--muted);">{{ r.bed_type }}</span>{% endif %}</td>
+          <td>{{ r.max_guests }}</td>
+          <td style="color:var(--gold);font-weight:700;">${{ r.base_price or '—' }}</td>
+          <td>{{ '$' + r.weekend_price|string if r.weekend_price else '—' }}</td>
+          <td>{{ r.total_rooms }}</td>
+          <td>
+            <form method="POST" action="{{ url_for('b2b.room_delete', id=r.id) }}" onsubmit="return confirm('Delete room?')">
+              <button type="submit" style="color:#dc2626;background:none;border:none;cursor:pointer;"><i class="fa fa-trash"></i></button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% endif %}
+  <details>
+    <summary style="cursor:pointer;font-weight:600;color:var(--gold);font-size:.84rem;margin-bottom:14px;">+ {% if lang=='ru' %}Добавить категорию номера{% else %}Add Room Category{% endif %}</summary>
+    <form method="POST" action="{{ url_for('b2b.room_new', id=property.id) }}" style="margin-top:14px;">
+      <div class="form-row">
+        <div class="form-group"><label class="form-lbl">{% if lang=='ru' %}Название{% else %}Room Name{% endif %} *</label><input type="text" name="name" class="form-ctrl" required placeholder="Deluxe Suite"></div>
+        <div class="form-group"><label class="form-lbl">{% if lang=='ru' %}Тип кровати{% else %}Bed Type{% endif %}</label><input type="text" name="bed_type" class="form-ctrl" placeholder="King bed"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-lbl">{% if lang=='ru' %}Макс. гостей{% else %}Max Guests{% endif %}</label><input type="number" name="max_guests" class="form-ctrl" value="2" min="1"></div>
+        <div class="form-group"><label class="form-lbl">{% if lang=='ru' %}Площадь м²{% else %}Size (m²){% endif %}</label><input type="number" name="size_sqm" class="form-ctrl" step="0.1"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-lbl">{% if lang=='ru' %}Базовая цена{% else %}Base Price{% endif %} ($)</label><input type="number" name="base_price" class="form-ctrl" step="0.01"></div>
+        <div class="form-group"><label class="form-lbl">{% if lang=='ru' %}Цена выходного{% else %}Weekend Price{% endif %} ($)</label><input type="number" name="weekend_price" class="form-ctrl" step="0.01"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-lbl">{% if lang=='ru' %}Кол-во номеров{% else %}Total Rooms{% endif %}</label><input type="number" name="total_rooms" class="form-ctrl" value="1" min="1"></div>
+        <div class="form-group" style="display:flex;align-items:flex-end;">
+          <label class="chk"><input type="checkbox" name="instant_booking" checked> {% if lang=='ru' %}Мгновенное бронирование{% else %}Instant Booking{% endif %}</label>
+        </div>
+      </div>
+      <button type="submit" class="btn btn-gold btn-sm"><i class="fa fa-plus"></i> {% if lang=='ru' %}Добавить номер{% else %}Add Room{% endif %}</button>
+    </form>
+  </details>
+</div>
+{% endif %}
+{% endblock %}
