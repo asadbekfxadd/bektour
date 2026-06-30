@@ -236,23 +236,37 @@
     </div>
     <div class="dest-slider reveal">
       {% set dests = [
-        ('samarkand','Samarkand','Pearl of the Silk Road','Жемчужина Шёлкового Пути','UNESCO · Registan'),
-        ('bukhara','Bukhara','The Holy City','Священный Город','UNESCO · 2500 years'),
-        ('khiva','Khiva','Open Air Museum','Музей под открытым небом','UNESCO · Walled City'),
-        ('tashkent','Tashkent','Capital & Amirsay','Столица и Амирсай','Mountains · Modern'),
-        ('fergana','Fergana Valley','Silk & Crafts','Шёлк и Ремёсла','Handicrafts · Nature'),
-        ('shahrisabz','Shahrisabz','City of Timur','Город Тимура','UNESCO · Ancient'),
-        ('nukus','Nukus','Aral Sea','Аральское Море','Art Museum · Desert'),
-        ('termez','Termez','Buddhist Ruins','Буддийские Руины','Ancient · History'),
+        ('samarkand','Samarkand','Pearl of the Silk Road','Жемчужина Шёлкового Пути','UNESCO · Registan', true, 'April – June', 'Апрель – Июнь'),
+        ('bukhara','Bukhara','The Holy City','Священный Город','UNESCO · 2500 years', true, 'March – May', 'Март – Май'),
+        ('khiva','Khiva','Open Air Museum','Музей под открытым небом','UNESCO · Walled City', true, 'April – May', 'Апрель – Май'),
+        ('tashkent','Tashkent','Capital & Amirsay','Столица и Амирсай','Mountains · Modern', false, 'Year-round', 'Круглый год'),
+        ('fergana','Fergana Valley','Silk & Crafts','Шёлк и Ремёсла','Handicrafts · Nature', false, 'Sept – Nov', 'Сент – Нояб'),
+        ('shahrisabz','Shahrisabz','City of Timur','Город Тимура','UNESCO · Ancient', true, 'April – Oct', 'Апрель – Окт'),
+        ('nukus','Nukus','Aral Sea','Аральское Море','Art Museum · Desert', false, 'May – Sept', 'Май – Сент'),
+        ('termez','Termez','Buddhist Ruins','Буддийские Руины','Ancient · History', false, 'Oct – Apr', 'Окт – Апр'),
       ] %}
-      {% for slug, name, sub_en, sub_ru, badge in dests %}
-      <a href="{{ url_for('villas.index') }}?q={{ name }}" class="dest-slide">
-        <img src="/photo/{{ slug }}?w=560&h=680" alt="{{ name }}, Uzbekistan" loading="lazy">
+      {% for slug, name, sub_en, sub_ru, badge, unesco, season_en, season_ru in dests %}
+      <a href="{{ url_for('main.destination', slug=slug) }}" class="dest-slide">
+        <div class="dest-slide-media">
+          <img class="dsm-poster" src="/photo/{{ slug }}?w=560&h=680" alt="{{ name }}, Uzbekistan" loading="lazy">
+          <video class="dsm-video" muted loop playsinline preload="none"
+                 poster="/photo/{{ slug }}?w=560&h=680"
+                 data-src="" data-src-webm=""></video>
+        </div>
+        <button type="button" class="dest-slide-fav" data-fav-city="{{ slug }}" aria-label="Save" onclick="event.preventDefault();event.stopPropagation();this.classList.toggle('on')">
+          <i class="fa fa-heart"></i>
+        </button>
+        <span class="dest-slide-play" aria-hidden="true"><i class="fa fa-play"></i></span>
+        {% if unesco %}<div class="dest-slide-unesco"><i class="fa fa-landmark"></i> UNESCO</div>{% endif %}
         <div class="dest-slide-veil"></div>
         <div class="dest-slide-info">
           <div style="font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:5px;">{{ badge }}</div>
           <div class="dest-slide-name">{{ name }}</div>
           <div class="dest-slide-sub">{% if lang=='ru' %}{{ sub_ru }}{% else %}{{ sub_en }}{% endif %}</div>
+          <div class="dest-slide-meta-row">
+            <span><i class="fa fa-sun"></i> {% if lang=='ru' %}{{ season_ru }}{% else %}{{ season_en }}{% endif %}</span>
+          </div>
+          <div class="dest-slide-cta">{% if lang=='ru' %}Исследовать{% else %}Explore{% endif %} <i class="fa fa-arrow-right"></i></div>
         </div>
       </a>
       {% endfor %}
@@ -263,6 +277,13 @@
     </div>
   </div>
 </section>
+
+<div class="uzb-divider">
+  <svg class="uzb-divider-mark" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M16 2 L20 10 L28 10 L21.5 15.5 L24 24 L16 19 L8 24 L10.5 15.5 L4 10 L12 10 Z" stroke="currentColor" stroke-width="1.1"/>
+    <circle cx="16" cy="16" r="3" stroke="currentColor" stroke-width="1.1"/>
+  </svg>
+</div>
 
 <!-- ═══ FEATURED STAYS ════════════════════════════════════ -->
 {% if featured %}
@@ -456,52 +477,19 @@
       <h2>{% if lang=='ru' %}Узбекистан в кадре{% else %}Uzbekistan Through the Lens{% endif %}</h2>
     </div>
     <div class="gallery-masonry reveal">
-      {% for city, variant, shape in [
-        ('samarkand','?w=600&h=800','tall'),('bukhara','?w=600&h=450','wide'),
-        ('khiva','?w=600&h=600','square'),('tashkent','?w=600&h=450','wide'),
-        ('fergana','?w=600&h=800','tall'),('shahrisabz','?w=600&h=450','wide'),
-        ('samarkand','?w=600&h=600','square'),('bukhara','?w=600&h=800','tall'),
-        ('khiva','?w=600&h=450','wide'),('nukus','?w=600&h=600','square'),
-        ('termez','?w=600&h=450','wide'),('fergana','?w=600&h=600','square'),
+      {% set gal_items = [
+        ('samarkand','?w=600&h=800','tall',''),('bukhara','?w=600&h=450','wide',''),
+        ('khiva','?w=600&h=600','square',''),('tashkent','?w=600&h=450','wide',''),
+        ('fergana','?w=600&h=800','tall',''),('shahrisabz','?w=600&h=450','wide',''),
+        ('samarkand','?w=600&h=600','square',''),('bukhara','?w=600&h=800','tall',''),
+        ('khiva','?w=600&h=450','wide',''),('nukus','?w=600&h=600','square',''),
+        ('termez','?w=600&h=450','wide',''),('fergana','?w=600&h=600','square',''),
       ] %}
+      {% for city, variant, shape, _ in gal_items %}
       <div class="gal-item {{ shape }}" onclick="openGallery('/photo/{{ city }}{{ variant }}')">
         <img src="/photo/{{ city }}{{ variant }}" alt="{{ city|title }}, Uzbekistan" loading="lazy">
       </div>
       {% endfor %}
-    </div>
-      <div class="gal-item" onclick="openGallery('https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/Kalon_Minaret%2C_Bukhara.jpg/600px-Kalon_Minaret%2C_Bukhara.jpg')">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/Kalon_Minaret%2C_Bukhara.jpg/600px-Kalon_Minaret%2C_Bukhara.jpg" alt="Kalon, Bukhara" loading="lazy">
-      </div>
-      <div class="gal-item" onclick="openGallery('https://upload.wikimedia.org/wikipedia/commons/thumb/6/67/Khiva%2C_Ichan_Qala%2C_Uzbekistan.jpg/600px-Khiva%2C_Ichan_Qala%2C_Uzbekistan.jpg')">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/67/Khiva%2C_Ichan_Qala%2C_Uzbekistan.jpg/600px-Khiva%2C_Ichan_Qala%2C_Uzbekistan.jpg" alt="Ichan Kala, Khiva" loading="lazy">
-      </div>
-      <div class="gal-item" onclick="openGallery('https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/Tashkent_panorama.jpg/600px-Tashkent_panorama.jpg')">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/Tashkent_panorama.jpg/600px-Tashkent_panorama.jpg" alt="Tashkent" loading="lazy">
-      </div>
-      <div class="gal-item" onclick="openGallery('https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/GUR_EMIR2.JPG/600px-GUR_EMIR2.JPG')">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/GUR_EMIR2.JPG/600px-GUR_EMIR2.JPG" alt="Gur-e-Amir, Samarkand" loading="lazy">
-      </div>
-      <div class="gal-item" onclick="openGallery('https://upload.wikimedia.org/wikipedia/commons/thumb/2/27/Poi_Kalon_complex_in_Bukhara.jpg/600px-Poi_Kalon_complex_in_Bukhara.jpg')">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/27/Poi_Kalon_complex_in_Bukhara.jpg/600px-Poi_Kalon_complex_in_Bukhara.jpg" alt="Poi Kalon, Bukhara" loading="lazy">
-      </div>
-      <div class="gal-item" onclick="openGallery('https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Khiva_-_Kalta_Minor_minaret.jpg/600px-Khiva_-_Kalta_Minor_minaret.jpg')">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Khiva_-_Kalta_Minor_minaret.jpg/600px-Khiva_-_Kalta_Minor_minaret.jpg" alt="Kalta Minor, Khiva" loading="lazy">
-      </div>
-      <div class="gal-item" onclick="openGallery('https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Silk_market_in_Margilan.jpg/600px-Silk_market_in_Margilan.jpg')">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Silk_market_in_Margilan.jpg/600px-Silk_market_in_Margilan.jpg" alt="Silk Market, Fergana" loading="lazy">
-      </div>
-      <div class="gal-item" onclick="openGallery('https://upload.wikimedia.org/wikipedia/commons/thumb/d/df/Ak-Saray_Palace_ruins%2C_Shakhrisabz.jpg/600px-Ak-Saray_Palace_ruins%2C_Shakhrisabz.jpg')">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/df/Ak-Saray_Palace_ruins%2C_Shakhrisabz.jpg/600px-Ak-Saray_Palace_ruins%2C_Shakhrisabz.jpg" alt="Ak-Saray, Shahrisabz" loading="lazy">
-      </div>
-      <div class="gal-item" onclick="openGallery('https://upload.wikimedia.org/wikipedia/commons/thumb/3/37/Aral_sea_ship_graveyard_2.jpg/600px-Aral_sea_ship_graveyard_2.jpg')">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/37/Aral_sea_ship_graveyard_2.jpg/600px-Aral_sea_ship_graveyard_2.jpg" alt="Aral Sea" loading="lazy">
-      </div>
-      <div class="gal-item" onclick="openGallery('https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Ark_of_Bukhara.jpg/600px-Ark_of_Bukhara.jpg')">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Ark_of_Bukhara.jpg/600px-Ark_of_Bukhara.jpg" alt="Ark, Bukhara" loading="lazy">
-      </div>
-      <div class="gal-item" onclick="openGallery('https://upload.wikimedia.org/wikipedia/commons/thumb/e/e2/Shah-i-Zinda_Samarkand.jpg/600px-Shah-i-Zinda_Samarkand.jpg')">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e2/Shah-i-Zinda_Samarkand.jpg/600px-Shah-i-Zinda_Samarkand.jpg" alt="Shah-i-Zinda, Samarkand" loading="lazy">
-      </div>
     </div>
   </div>
 </section>

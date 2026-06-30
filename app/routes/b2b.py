@@ -1,7 +1,8 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, request, jsonify
 from flask_login import login_required, current_user, login_user
 from app.models.models import (db, Agency, Booking, User, Property, Room, Tour,
-                                 MediaAsset, PartnerCustomer, SupportTicket, Announcement, Villa)
+                                 MediaAsset, PartnerCustomer, SupportTicket, Announcement, Villa,
+                                 PROPERTY_TYPES, PROPERTY_TYPE_KEYS)
 from datetime import datetime, timedelta
 from sqlalchemy import func
 import json
@@ -133,6 +134,16 @@ def properties():
     if not agency: return redirect(url_for('b2b.register'))
     props = agency.properties.order_by(Property.created_at.desc()).all()
     return render_template('b2b/properties.html', agency=agency, properties=props)
+
+
+@b2b_bp.route('/properties/new/type')
+def property_type_select():
+    agency = get_agency_or_redirect()
+    if not agency: return redirect(url_for('b2b.register'))
+    groups = {'stay': [], 'outdoor': [], 'venue': [], 'service': []}
+    for t in PROPERTY_TYPES:
+        groups[t['group']].append(t)
+    return render_template('b2b/property_type_select.html', agency=agency, groups=groups)
 
 
 @b2b_bp.route('/properties/new', methods=['GET', 'POST'])

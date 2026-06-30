@@ -1,0 +1,246 @@
+{% extends 'base.html' %}
+{% set is_hero = true %}
+{% block title %}{{ country.name_en }}{% if lang=='ru' and country.name_ru %} — {{ country.name_ru }}{% endif %} — Bek Tour{% endblock %}
+{% block meta_desc %}{% if lang=='ru' and country.description_ru %}{{ country.description_ru[:155] }}{% elif country.description_en %}{{ country.description_en[:155] }}{% else %}Discover {{ country.name_en }}, Uzbekistan with Bek Tour — hotels, tours and the Silk Road experience.{% endif %}{% endblock %}
+{% block og_image %}{{ country.video_url and country.poster_image or country.image or '/photo/' + country.display_slug + '?w=1200&h=630' }}{% endblock %}
+
+{% block extra_css %}
+<style>
+/* Page-specific tweaks not covered by global video/ornament system */
+.dest-section { padding: 80px 0; }
+.dest-section.alt { background: var(--cream); }
+.dest-section-head { margin-bottom: 36px; }
+@media (max-width: 640px) { .dest-section { padding: 56px 0; } }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- ═══ CINEMATIC HERO ═══════════════════════════════════ -->
+<section class="dest-hero">
+  <a href="{{ url_for('main.index') }}#top" class="dest-hero-back">
+    <i class="fa fa-arrow-left"></i> {% if lang=='ru' %}Назад к направлениям{% else %}Back to Destinations{% endif %}
+  </a>
+  <div class="dest-hero-media">
+    <img src="{{ country.poster_image or country.image or '/photo/' + country.display_slug + '?w=1920&h=1080' }}" alt="{{ country.name_en }}, Uzbekistan">
+    <video muted loop playsinline preload="none"
+           data-src="{{ country.video_url or '' }}"
+           data-src-webm="{{ country.video_webm_url or '' }}"></video>
+  </div>
+  <div class="dest-hero-grad"></div>
+  {% if country.video_url %}
+  <button class="dest-hero-mute" id="destHeroMute" aria-label="Toggle sound"><i class="fa fa-volume-mute"></i></button>
+  {% endif %}
+  <div class="container">
+    <div class="dest-hero-content">
+      {% if country.is_unesco %}
+      <div class="dest-hero-unesco-badge"><i class="fa fa-landmark"></i> UNESCO {% if lang=='ru' %}Всемирное наследие{% else %}World Heritage{% endif %}</div>
+      {% endif %}
+      <h1 class="dest-hero-title reveal in">{{ country.name_en|upper }}</h1>
+      <p class="dest-hero-subtitle reveal in">{% if lang=='ru' and country.subtitle_ru %}{{ country.subtitle_ru }}{% elif country.subtitle_en %}{{ country.subtitle_en }}{% else %}{% if lang=='ru' %}Жемчужина Шёлкового Пути{% else %}The Pearl of the Silk Road{% endif %}{% endif %}</p>
+      <div class="dest-hero-actions reveal in">
+        <a href="{{ url_for('villas.index') }}?q={{ country.name_en }}" class="btn btn-gold btn-lg"><i class="fa fa-route"></i> {% if lang=='ru' %}Туры в {{ country.name_en }}{% else %}Tours to {{ country.name_en }}{% endif %}</a>
+        <a href="#dest-videos" class="btn btn-outline-w btn-lg"><i class="fa fa-play"></i> {% if lang=='ru' %}Смотреть видео{% else %}Watch Videos{% endif %}</a>
+      </div>
+
+      <!-- Animated stats -->
+      <div class="dest-stats-strip">
+        {% if country.population %}
+        <div class="dest-stat-cell"><i class="fa fa-users dest-stat-ico"></i><div class="dest-stat-val">{{ country.population }}</div><div class="dest-stat-key">{% if lang=='ru' %}Население{% else %}Population{% endif %}</div></div>
+        {% endif %}
+        <div class="dest-stat-cell"><i class="fa fa-landmark dest-stat-ico"></i><div class="dest-stat-val">{% if country.is_unesco %}UNESCO{% else %}{% if lang=='ru' %}Памятник{% else %}Heritage{% endif %}{% endif %}</div><div class="dest-stat-key">{% if lang=='ru' %}Статус{% else %}Status{% endif %}</div></div>
+        <div class="dest-stat-cell"><i class="fa fa-sun dest-stat-ico"></i><div class="dest-stat-val">{% if lang=='ru' and country.best_season_ru %}{{ country.best_season_ru }}{% elif country.best_season_en %}{{ country.best_season_en }}{% else %}Apr – Jun{% endif %}</div><div class="dest-stat-key">{% if lang=='ru' %}Лучший сезон{% else %}Best Season{% endif %}</div></div>
+        <div class="dest-stat-cell"><i class="fa fa-temperature-half dest-stat-ico"></i><div class="dest-stat-val">{{ country.avg_temp or '18–32°C' }}</div><div class="dest-stat-key">{% if lang=='ru' %}Ср. температура{% else %}Avg Temp{% endif %}</div></div>
+        {% if country.founded_year %}
+        <div class="dest-stat-cell"><i class="fa fa-monument dest-stat-ico"></i><div class="dest-stat-val">{{ country.founded_year }}</div><div class="dest-stat-key">{% if lang=='ru' %}Основан{% else %}Founded{% endif %}</div></div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ JUMP NAV ══════════════════════════════════════════ -->
+<div style="background:#fff;border-bottom:1px solid var(--line);position:sticky;top:var(--nav-h);z-index:60;">
+  <div class="container" style="padding-top:14px;padding-bottom:14px;">
+    <div class="dest-chip-nav">
+      <a href="#dest-about" class="dest-chip active">{% if lang=='ru' %}Обзор{% else %}Overview{% endif %}</a>
+      <a href="#dest-attractions" class="dest-chip">{% if lang=='ru' %}Достопримечательности{% else %}Attractions{% endif %}</a>
+      {% if media_clips %}<a href="#dest-videos" class="dest-chip">{% if lang=='ru' %}Видео{% else %}Videos{% endif %}</a>{% endif %}
+      {% if related_stays %}<a href="#dest-stays" class="dest-chip">{% if lang=='ru' %}Где остановиться{% else %}Where to Stay{% endif %}</a>{% endif %}
+    </div>
+  </div>
+</div>
+
+<!-- ═══ ABOUT / OVERVIEW ═════════════════════════════════ -->
+<section class="dest-section" id="dest-about">
+  <div class="container">
+    <div style="display:grid;grid-template-columns:1fr;gap:48px;max-width:760px;margin:0 auto;text-align:center;" class="reveal">
+      <div>
+        <span class="eyebrow uzb-eyebrow-orn">{% if lang=='ru' %}Об этом месте{% else %}About This Place{% endif %}</span>
+        <h2 style="margin-top:14px;">{% if lang=='ru' %}{{ country.name_ru or country.name_en }}{% else %}{{ country.name_en }}{% endif %}</h2>
+        <p class="lead" style="margin-top:18px;">
+          {% if lang=='ru' and country.description_ru %}{{ country.description_ru }}
+          {% elif country.description_en %}{{ country.description_en }}
+          {% else %}
+            {% if lang=='ru' %}{{ country.name_ru or country.name_en }} — одно из самых впечатляющих направлений Узбекистана, хранящее тысячелетнюю историю Шёлкового пути в каждой улице, куполе и базаре.{% else %}{{ country.name_en }} is one of Uzbekistan's most breathtaking destinations, carrying a thousand years of Silk Road history in every street, dome and bazaar.{% endif %}
+          {% endif %}
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ TOP ATTRACTIONS ═══════════════════════════════════ -->
+<section class="dest-section alt" id="dest-attractions">
+  <div class="container">
+    <div class="dest-section-head reveal" style="text-align:center;">
+      <span class="eyebrow uzb-eyebrow-orn">{% if lang=='ru' %}Маршрут{% else %}Highlights{% endif %}</span>
+      <h2 style="margin-top:10px;">{% if lang=='ru' %}Главные достопримечательности{% else %}Top Attractions{% endif %}</h2>
+    </div>
+    <div class="dest-attr-grid reveal">
+      {% set attractions = country.attractions_list %}
+      {% if attractions %}
+        {% for a in attractions %}
+        <div class="dest-attr-card">
+          <img src="{{ a.image or '/photo/' + country.display_slug + '?w=600&h=800' }}" alt="{{ a.name_en or a.name }}" loading="lazy">
+          <div class="dest-attr-veil"></div>
+          <div class="dest-attr-name">{% if lang=='ru' %}{{ a.name_ru or a.name_en or a.name }}{% else %}{{ a.name_en or a.name }}{% endif %}</div>
+        </div>
+        {% endfor %}
+      {% else %}
+        {# Graceful fallback when no curated attractions are set yet #}
+        {% for i in range(1,4) %}
+        <div class="dest-attr-card">
+          <img src="/photo/{{ country.display_slug }}?w=600&h=800&v={{ i }}" alt="{{ country.name_en }}" loading="lazy">
+          <div class="dest-attr-veil"></div>
+          <div class="dest-attr-name">{{ country.name_en }} #{{ i }}</div>
+        </div>
+        {% endfor %}
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+<!-- ═══ VIDEO GALLERY ═════════════════════════════════════ -->
+{% if media_clips %}
+<section class="dest-section" id="dest-videos">
+  <div class="container">
+    <div class="dest-section-head reveal" style="text-align:center;">
+      <span class="eyebrow uzb-eyebrow-orn">{% if lang=='ru' %}Погрузитесь{% else %}Immerse Yourself{% endif %}</span>
+      <h2 style="margin-top:10px;">{% if lang=='ru' %}{{ country.name_ru or country.name_en }} в движении{% else %}{{ country.name_en }} in Motion{% endif %}</h2>
+    </div>
+    <div class="dvideo-grid reveal">
+      {% for clip in media_clips %}
+      <div class="dvideo-card">
+        <img src="{{ clip.poster_image or '/photo/' + country.display_slug + '?w=600&h=450' }}" alt="{{ clip.title_en or clip.media_type }}" loading="lazy">
+        <video muted loop playsinline preload="none" data-src="{{ clip.video_url or '' }}"></video>
+        <div class="dvideo-card-veil"></div>
+        <div class="dvideo-card-play"><i class="fa fa-play"></i></div>
+        <div class="dvideo-card-label">
+          <span class="dvideo-card-type">{{ clip.media_type|upper }}</span>
+          <div class="dvideo-card-title">{% if lang=='ru' and clip.title_ru %}{{ clip.title_ru }}{% else %}{{ clip.title_en or clip.media_type|title }}{% endif %}</div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- ═══ RELATED STAYS ═════════════════════════════════════ -->
+{% if related_stays %}
+<section class="dest-section alt" id="dest-stays">
+  <div class="container">
+    <div class="dest-section-head reveal" style="display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:14px;">
+      <div>
+        <span class="eyebrow uzb-eyebrow-orn">{% if lang=='ru' %}Размещение{% else %}Where to Stay{% endif %}</span>
+        <h2 style="margin-top:10px;">{% if lang=='ru' %}Отели в {{ country.name_ru or country.name_en }}{% else %}Hotels in {{ country.name_en }}{% endif %}</h2>
+      </div>
+      <a href="{{ url_for('villas.index') }}?q={{ country.name_en }}" class="btn btn-outline btn-sm">{% if lang=='ru' %}Все объекты{% else %}View All{% endif %} <i class="fa fa-arrow-right"></i></a>
+    </div>
+    <div class="villas-grid reveal">
+      {% for villa in related_stays %}
+      <div class="vcard">
+        <div class="vcard-img">
+          <img src="{{ villa.cover_image or '/photo/' + (villa.city or country.display_slug).lower() + '?w=800&h=600' }}"
+               alt="{{ villa.title_en }}, {{ villa.city }}" loading="lazy">
+          {% if villa.is_featured %}<div class="vcard-badge vb-gold">✦ Featured</div>{% endif %}
+          {% if villa.rating and villa.rating >= 4.8 %}<div class="vcard-badge" style="left:auto;right:12px;background:rgba(22,163,74,.9);color:#fff;">★ {{ villa.rating }}</div>{% endif %}
+          <div class="vcard-acts">
+            <button class="vcard-act" data-fav="{{ villa.id }}" title="Save"><i class="fa fa-heart"></i></button>
+            <button class="vcard-act" data-cmp="{{ villa.id }}" data-name="{{ villa.title_en }}" title="Compare"><i class="fa fa-balance-scale"></i></button>
+          </div>
+        </div>
+        <div class="vcard-body">
+          <div class="vcard-tag">{% if lang=='ru' %}Размещение{% else %}Accommodation{% endif %}</div>
+          <div class="vcard-loc"><i class="fa fa-map-marker-alt"></i> {{ villa.city }}{% if villa.country %}, {{ villa.country.name_en }}{% endif %}</div>
+          <div class="vcard-title"><a href="{{ url_for('villas.detail', slug=villa.slug) }}">{{ villa.title_en }}</a></div>
+          <div class="vcard-meta">
+            {% if villa.bedrooms %}<span><i class="fa fa-bed"></i>{{ villa.bedrooms }}</span>{% endif %}
+            {% if villa.bathrooms %}<span><i class="fa fa-bath"></i>{{ villa.bathrooms }}</span>{% endif %}
+            {% if villa.guests %}<span><i class="fa fa-users"></i>{{ villa.guests }}</span>{% endif %}
+            {% if villa.has_pool %}<span><i class="fa fa-swimming-pool"></i>Pool</span>{% endif %}
+            {% if villa.has_wifi %}<span><i class="fa fa-wifi"></i>WiFi</span>{% endif %}
+          </div>
+          <div class="vcard-foot">
+            <div>
+              <div class="vcard-pl">{{ t.from_label }}</div>
+              <div class="vcard-price">${{ villa.price_per_night }}</div>
+              <div class="vcard-per">{{ t.per_night }}</div>
+            </div>
+            <a href="{{ url_for('villas.detail', slug=villa.slug) }}" class="btn btn-ink btn-sm">{{ t.btn_view }}</a>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<div class="uzb-divider">
+  <svg class="uzb-divider-mark" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M16 2 L20 10 L28 10 L21.5 15.5 L24 24 L16 19 L8 24 L10.5 15.5 L4 10 L12 10 Z" stroke="currentColor" stroke-width="1.1"/>
+    <circle cx="16" cy="16" r="3" stroke="currentColor" stroke-width="1.1"/>
+  </svg>
+</div>
+
+<!-- ═══ MORE DESTINATIONS ════════════════════════════════ -->
+{% if other_destinations %}
+<section class="dest-section" style="padding-top:0;">
+  <div class="container">
+    <div class="dest-section-head reveal" style="text-align:center;">
+      <span class="eyebrow uzb-eyebrow-orn">{% if lang=='ru' %}Продолжите путешествие{% else %}Continue Exploring{% endif %}</span>
+      <h2 style="margin-top:10px;">{% if lang=='ru' %}Другие направления{% else %}More Destinations{% endif %}</h2>
+    </div>
+    <div class="dest-slider reveal">
+      {% for c in other_destinations %}
+      <a href="{{ url_for('main.destination', slug=c.display_slug) }}" class="dest-slide">
+        <div class="dest-slide-media">
+          <img class="dsm-poster" src="{{ c.image or '/photo/' + c.display_slug + '?w=560&h=680' }}" alt="{{ c.name_en }}" loading="lazy">
+          <video class="dsm-video" muted loop playsinline preload="none" data-src="{{ c.video_url or '' }}"></video>
+        </div>
+        <span class="dest-slide-play" aria-hidden="true"><i class="fa fa-play"></i></span>
+        {% if c.is_unesco %}<div class="dest-slide-unesco"><i class="fa fa-landmark"></i> UNESCO</div>{% endif %}
+        <div class="dest-slide-veil"></div>
+        <div class="dest-slide-info">
+          <div class="dest-slide-name">{{ c.name_en }}</div>
+          <div class="dest-slide-sub">{% if lang=='ru' and c.subtitle_ru %}{{ c.subtitle_ru }}{% elif c.subtitle_en %}{{ c.subtitle_en }}{% endif %}</div>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- ═══ STICKY BOOKING BAR ═══════════════════════════════ -->
+<div class="dest-sticky-bar" id="destStickyBar">
+  <div>
+    <div class="dest-sticky-bar-title">{{ country.name_en }}</div>
+    <div class="dest-sticky-bar-sub">{% if lang=='ru' %}Готовы спланировать поездку?{% else %}Ready to plan your trip?{% endif %}</div>
+  </div>
+  <a href="{{ url_for('villas.index') }}?q={{ country.name_en }}" class="btn btn-gold btn-sm"><i class="fa fa-route"></i> {% if lang=='ru' %}Смотреть туры{% else %}View Tours{% endif %}</a>
+</div>
+
+{% endblock %}

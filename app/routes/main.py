@@ -22,6 +22,29 @@ def index():
     services  = Service.query.filter_by(is_active=True).limit(4).all()
     return render_template('main/index.html', featured=featured, countries=countries, services=services)
 
+
+@main_bp.route('/destination/<slug>')
+def destination(slug):
+    country = Country.query.filter_by(slug=slug).first()
+    if not country:
+        # fallback: match by generated slug from name (covers seed data without explicit slug yet)
+        candidates = Country.query.all()
+        for c in candidates:
+            if c.display_slug == slug:
+                country = c
+                break
+    if not country:
+        from flask import abort
+        abort(404)
+    related_stays = country.villas.filter_by(is_active=True).limit(6).all()
+    media_clips = list(country.media_clips)
+    other_destinations = Country.query.filter(
+        Country.is_popular == True, Country.id != country.id
+    ).limit(6).all()
+    return render_template('main/destination.html', country=country,
+                            related_stays=related_stays, media_clips=media_clips,
+                            other_destinations=other_destinations)
+
 @main_bp.route('/search')
 def search():
     q         = request.args.get('q', '')

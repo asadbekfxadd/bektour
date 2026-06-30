@@ -2,6 +2,45 @@
 {% block title %}Dashboard — Partner Hub — Bek Tour{% endblock %}
 {% block b2b_content %}
 
+{% if agency.onboarding.percent < 100 %}
+<div class="b2b-onboard">
+  <div class="b2b-onboard-head">
+    <div>
+      <div class="b2b-onboard-title">👋 {% if lang=='ru' %}Добро пожаловать в Partner Hub{% else %}Welcome to Partner Hub{% endif %}</div>
+      <div class="b2b-onboard-sub">{% if lang=='ru' %}Завершите настройку профиля чтобы начать получать бронирования от тысяч путешественников{% else %}Complete your business profile to start receiving bookings from thousands of travelers{% endif %}</div>
+    </div>
+    <div class="b2b-onboard-ring">
+      <svg width="84" height="84" viewBox="0 0 84 84">
+        <circle class="b2b-onboard-ring-bg" cx="42" cy="42" r="36"></circle>
+        <circle class="b2b-onboard-ring-fg" cx="42" cy="42" r="36"
+                stroke-dasharray="226.2"
+                stroke-dashoffset="{{ 226.2 - (226.2 * agency.onboarding.percent / 100) }}"></circle>
+      </svg>
+      <div class="b2b-onboard-ring-label">{{ agency.onboarding.percent }}%</div>
+    </div>
+  </div>
+  <div class="b2b-onboard-steps">
+    {% set step_links = {
+      'verify': url_for('b2b.support'),
+      'property': url_for('b2b.property_new'),
+      'photos': url_for('b2b.media'),
+      'video': url_for('b2b.media'),
+      'rooms': url_for('b2b.properties'),
+      'pricing': url_for('b2b.properties'),
+      'calendar': url_for('b2b.properties'),
+      'publish': url_for('b2b.properties'),
+      'booking': url_for('b2b.bookings'),
+    } %}
+    {% for step in agency.onboarding.steps %}
+    <a href="{{ step_links[step.key] }}" class="b2b-onboard-step {% if step.done %}done{% endif %}">
+      <span class="b2b-onboard-check">{% if step.done %}<i class="fa fa-check"></i>{% endif %}</span>
+      {% if lang=='ru' %}{{ step.label_ru }}{% else %}{{ step.label_en }}{% endif %}
+    </a>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+
 {% if agency.status == 'pending' %}
 <div style="background:#fffbeb;border:1px solid var(--gold);border-radius:var(--r-lg);padding:18px 20px;margin-bottom:22px;display:flex;gap:14px;align-items:center;flex-wrap:wrap;">
   <i class="fa fa-clock" style="color:var(--gold);font-size:1.4rem;"></i>
@@ -61,15 +100,52 @@
 <div class="b2b-panel">
   <div class="b2b-panel-head"><h3><i class="fa fa-bolt" style="color:var(--gold);"></i> {% if lang=='ru' %}Быстрые действия{% else %}Quick Actions{% endif %}</h3></div>
   <div class="b2b-panel-body">
-    <div class="b2b-quick-actions">
-      <a href="{{ url_for('b2b.property_new') }}" class="b2b-qa-btn"><i class="fa fa-building"></i><span>{% if lang=='ru' %}Новый объект{% else %}New Property{% endif %}</span></a>
-      <a href="{{ url_for('b2b.tour_new') }}" class="b2b-qa-btn"><i class="fa fa-route"></i><span>{% if lang=='ru' %}Новый тур{% else %}New Tour{% endif %}</span></a>
-      <a href="{{ url_for('b2b.media') }}" class="b2b-qa-btn"><i class="fa fa-cloud-upload-alt"></i><span>{% if lang=='ru' %}Загрузить медиа{% else %}Upload Media{% endif %}</span></a>
-      <a href="{{ url_for('b2b.reports') }}" class="b2b-qa-btn"><i class="fa fa-chart-bar"></i><span>{% if lang=='ru' %}Отчёты{% else %}View Reports{% endif %}</span></a>
+    <div class="b2b-qa-grid">
+      <a href="{{ url_for('b2b.property_type_select') }}" class="b2b-qa-card">
+        <div class="b2b-qa-card-ico"><i class="fa fa-building"></i></div>
+        <div class="b2b-qa-card-label">{% if lang=='ru' %}Добавить объект{% else %}Add Property{% endif %}</div>
+        <div class="b2b-qa-card-sub">{% if lang=='ru' %}Отель, вилла, ресурс{% else %}Hotel, villa, resort{% endif %}</div>
+      </a>
+      <a href="{{ url_for('b2b.tour_new') }}" class="b2b-qa-card">
+        <div class="b2b-qa-card-ico"><i class="fa fa-route"></i></div>
+        <div class="b2b-qa-card-label">{% if lang=='ru' %}Создать тур{% else %}Create Tour{% endif %}</div>
+        <div class="b2b-qa-card-sub">{% if lang=='ru' %}Новый маршрут{% else %}New itinerary{% endif %}</div>
+      </a>
+      <a href="{{ url_for('b2b.media') }}" class="b2b-qa-card">
+        <div class="b2b-qa-card-ico"><i class="fa fa-cloud-upload-alt"></i></div>
+        <div class="b2b-qa-card-label">{% if lang=='ru' %}Загрузить фото{% else %}Upload Photos{% endif %}</div>
+        <div class="b2b-qa-card-sub">{% if lang=='ru' %}Медиа-центр{% else %}Media center{% endif %}</div>
+      </a>
+      <a href="{{ url_for('b2b.media') }}?type=drone" class="b2b-qa-card">
+        <div class="b2b-qa-card-ico"><i class="fa fa-helicopter"></i></div>
+        <div class="b2b-qa-card-label">{% if lang=='ru' %}Дрон-видео{% else %}Drone Video{% endif %}</div>
+        <div class="b2b-qa-card-sub">{% if lang=='ru' %}Больше показов{% else %}More views{% endif %}</div>
+      </a>
+      <a href="{{ url_for('b2b.properties') }}" class="b2b-qa-card">
+        <div class="b2b-qa-card-ico"><i class="fa fa-calendar-days"></i></div>
+        <div class="b2b-qa-card-label">{% if lang=='ru' %}Календарь{% else %}Manage Calendar{% endif %}</div>
+        <div class="b2b-qa-card-sub">{% if lang=='ru' %}Доступность{% else %}Availability{% endif %}</div>
+      </a>
+      <a href="{{ url_for('b2b.properties') }}" class="b2b-qa-card">
+        <div class="b2b-qa-card-ico"><i class="fa fa-tags"></i></div>
+        <div class="b2b-qa-card-label">{% if lang=='ru' %}Цены{% else %}Manage Pricing{% endif %}</div>
+        <div class="b2b-qa-card-sub">{% if lang=='ru' %}Сезонные тарифы{% else %}Seasonal rates{% endif %}</div>
+      </a>
+      <a href="{{ url_for('b2b.reports') }}" class="b2b-qa-card">
+        <div class="b2b-qa-card-ico"><i class="fa fa-chart-bar"></i></div>
+        <div class="b2b-qa-card-label">{% if lang=='ru' %}Отчёты{% else %}View Reports{% endif %}</div>
+        <div class="b2b-qa-card-sub">{% if lang=='ru' %}Аналитика{% else %}Analytics{% endif %}</div>
+      </a>
+      <a href="{{ url_for('b2b.support') }}" class="b2b-qa-card">
+        <div class="b2b-qa-card-ico"><i class="fa fa-life-ring"></i></div>
+        <div class="b2b-qa-card-label">{% if lang=='ru' %}Поддержка{% else %}Contact Support{% endif %}</div>
+        <div class="b2b-qa-card-sub">{% if lang=='ru' %}Ответ за 4ч{% else %}4hr response{% endif %}</div>
+      </a>
     </div>
   </div>
 </div>
 
+<div class="b2b-with-rsidebar">
 <div style="display:grid;grid-template-columns:1fr;gap:20px;" id="dashGrid">
   <!-- Revenue chart -->
   <div class="b2b-panel">
@@ -158,7 +234,71 @@
       {% endif %}
     </div>
   </div>
-</div>
+
+</div><!-- /#dashGrid -->
+
+<!-- Right sidebar -->
+<aside class="b2b-rsidebar">
+  {% set first_prop = agency.properties.first() %}
+  {% if first_prop and not first_prop.video_url %}
+  <div class="b2b-insight-card">
+    <div class="b2b-insight-ico"><i class="fa fa-lightbulb"></i></div>
+    <div class="b2b-insight-text">{% if lang=='ru' %}Объекты с <b>видео</b> получают на 40% больше бронирований. Загрузите дрон-видео сейчас.{% else %}Properties with <b>video</b> receive 40% more bookings. Upload a drone video now.{% endif %}</div>
+  </div>
+  {% elif agency.properties.count() == 0 %}
+  <div class="b2b-insight-card">
+    <div class="b2b-insight-ico"><i class="fa fa-lightbulb"></i></div>
+    <div class="b2b-insight-text">{% if lang=='ru' %}Добавьте минимум <b>15 фото</b> и заполните все номера — это увеличивает конверсию вдвое.{% else %}Add at least <b>15 photos</b> and complete room info — this doubles your conversion.{% endif %}</div>
+  </div>
+  {% else %}
+  <div class="b2b-insight-card">
+    <div class="b2b-insight-ico"><i class="fa fa-bolt"></i></div>
+    <div class="b2b-insight-text">{% if lang=='ru' %}Включите <b>мгновенное бронирование</b> — партнёры с ним получают на 25% больше заявок.{% else %}Enable <b>instant booking</b> — partners with it get 25% more requests.{% endif %}</div>
+  </div>
+  {% endif %}
+
+  <div class="b2b-panel" style="margin-bottom:0;">
+    <div class="b2b-panel-head"><h3><i class="fa fa-graduation-cap" style="color:var(--gold);"></i> {% if lang=='ru' %}Советы{% else %}Partner Tips{% endif %}</h3></div>
+    <div class="b2b-panel-body">
+      <div class="b2b-tip-item"><i class="fa fa-camera b2b-tip-ico"></i><div class="b2b-tip-text">{% if lang=='ru' %}Используйте естественное освещение для фото номеров{% else %}Use natural lighting for room photos{% endif %}</div></div>
+      <div class="b2b-tip-item"><i class="fa fa-reply b2b-tip-ico"></i><div class="b2b-tip-text">{% if lang=='ru' %}Отвечайте на брони в течение часа для лучшего рейтинга{% else %}Reply to bookings within 1 hour for better ranking{% endif %}</div></div>
+      <div class="b2b-tip-item"><i class="fa fa-calendar-check b2b-tip-ico"></i><div class="b2b-tip-text">{% if lang=='ru' %}Держите календарь актуальным каждую неделю{% else %}Keep your calendar updated weekly{% endif %}</div></div>
+    </div>
+  </div>
+
+  <div class="b2b-panel" style="margin-bottom:0;">
+    <div class="b2b-panel-head"><h3><i class="fa fa-clock-rotate-left" style="color:var(--gold);"></i> {% if lang=='ru' %}Активность{% else %}Recent Activity{% endif %}</h3></div>
+    <div class="b2b-panel-body">
+      {% if recent_bookings %}
+        {% for b in recent_bookings[:4] %}
+        <div class="b2b-activity-item">
+          <div class="b2b-activity-dot"></div>
+          <div>
+            <div class="b2b-activity-text">{% if lang=='ru' %}Новая бронь от{% else %}New booking from{% endif %} <b>{{ b.first_name }}</b></div>
+            <div class="b2b-activity-time">{{ b.created_at.strftime('%b %d, %H:%M') }}</div>
+          </div>
+        </div>
+        {% endfor %}
+      {% else %}
+      <p style="font-size:.78rem;color:var(--muted);">{% if lang=='ru' %}Пока нет активности{% else %}No activity yet{% endif %}</p>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="b2b-panel" style="margin-bottom:0;">
+    <div class="b2b-panel-head"><h3><i class="fa fa-circle-question" style="color:var(--gold);"></i> {% if lang=='ru' %}Помощь{% else %}Help & Docs{% endif %}</h3></div>
+    <div class="b2b-panel-body" style="display:flex;flex-direction:column;gap:8px;">
+      <a href="#" class="btn btn-outline btn-sm" style="justify-content:flex-start;"><i class="fa fa-play-circle" style="color:var(--gold);"></i> {% if lang=='ru' %}Видео-инструкция{% else %}Watch Tutorial{% endif %}</a>
+      <a href="#" class="btn btn-outline btn-sm" style="justify-content:flex-start;"><i class="fa fa-book" style="color:var(--gold);"></i> {% if lang=='ru' %}База знаний{% else %}Knowledge Base{% endif %}</a>
+      <a href="https://t.me/bektop" target="_blank" class="btn btn-outline btn-sm" style="justify-content:flex-start;"><i class="fab fa-telegram" style="color:#2CA5E0;"></i> Telegram</a>
+      <a href="https://wa.me/998901234567" target="_blank" class="btn btn-outline btn-sm" style="justify-content:flex-start;"><i class="fab fa-whatsapp" style="color:#25D366;"></i> WhatsApp</a>
+      <div style="display:flex;align-items:center;gap:7px;font-size:.72rem;color:var(--muted);margin-top:4px;padding-top:10px;border-top:1px solid var(--line);">
+        <span class="b2b-status-dot"></span> {% if lang=='ru' %}Все системы работают{% else %}All systems operational{% endif %}
+      </div>
+    </div>
+  </div>
+</aside>
+</div><!-- /.b2b-with-rsidebar -->
 
 <style>
 @media (min-width:1100px) {

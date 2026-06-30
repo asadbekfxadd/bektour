@@ -306,3 +306,175 @@ document.addEventListener('DOMContentLoaded', () => {
   initFAQ();
   initGallery();
 });
+
+/* ── Currency Converter ─────────────────── */
+function convertCurr() {
+  const amt = parseFloat(document.getElementById('currAmt')?.value || '100');
+  const rate = parseFloat(document.getElementById('currFrom')?.value || '1');
+  const uzs = Math.round(amt / rate * 12700);
+  const el = document.getElementById('currResult');
+  if (el) el.textContent = uzs.toLocaleString();
+}
+window.convertCurr = convertCurr;
+
+/* ── Visa Checker ───────────────────────── */
+const VISA_FREE = ['USA','United Kingdom','Germany','France','Italy','Spain','Japan','South Korea','Australia','Canada','UAE','Netherlands','Switzerland','Sweden','Norway','Israel','Singapore','Malaysia','Turkey','Brazil','Argentina','Mexico','Indonesia','Thailand'];
+function checkVisa() {
+  const country = document.getElementById('visaCountry')?.value;
+  const el = document.getElementById('visaResult');
+  if (!el || !country) return;
+  const lang = document.documentElement.lang || 'en';
+  if (VISA_FREE.includes(country)) {
+    el.innerHTML = `<div style="color:#16A34A;font-weight:700;font-size:.88rem;margin-bottom:4px;">✓ ${lang==='ru'?'Виза не нужна!':'Visa-free entry!'}</div><div style="font-size:.74rem;color:var(--muted);">${lang==='ru'?'До 30 дней без визы · Только паспорт':'Up to 30 days · Passport only'}</div>`;
+  } else {
+    el.innerHTML = `<div style="color:#C8A45D;font-weight:700;font-size:.88rem;margin-bottom:4px;">${lang==='ru'?'Нужна электронная виза':'E-Visa Required'}</div><div style="font-size:.74rem;color:var(--muted);">${lang==='ru'?'Онлайн заявка · 3-5 рабочих дней · ~$20':'Online application · 3-5 business days · ~$20'}</div><a href="https://e-visa.gov.uz" target="_blank" style="font-size:.72rem;color:var(--gold);font-weight:600;text-decoration:none;">e-visa.gov.uz →</a>`;
+  }
+}
+window.checkVisa = checkVisa;
+
+/* ── Tour Category Filter ───────────────── */
+function filterTours(cat) {
+  document.querySelectorAll('.sec-tab').forEach(t => t.classList.remove('on'));
+  event.target.closest('.sec-tab').classList.add('on');
+  document.querySelectorAll('#toursGrid .tour-card').forEach(card => {
+    const match = cat === 'all' || card.dataset.cat === cat;
+    card.style.display = match ? '' : 'none';
+  });
+}
+window.filterTours = filterTours;
+
+/* ── Tour grid responsive ───────────────── */
+(function() {
+  const grid = document.getElementById('toursGrid');
+  if (grid) {
+    grid.style.gridTemplateColumns = window.innerWidth >= 900 ? 'repeat(3,1fr)' : window.innerWidth >= 560 ? 'repeat(2,1fr)' : '1fr';
+    window.addEventListener('resize', () => {
+      if (grid) grid.style.gridTemplateColumns = window.innerWidth >= 900 ? 'repeat(3,1fr)' : window.innerWidth >= 560 ? 'repeat(2,1fr)' : '1fr';
+    });
+  }
+})();
+
+/* ════════════════════════════════════════════════════
+   IMMERSIVE VIDEO CARD SYSTEM
+   Handles: hover-autoplay (desktop), tap-to-play (touch),
+   lazy loading, single-active-video, viewport pause.
+   Works for .dest-slide-media, .dvideo-card, .dest-hero-media
+   ════════════════════════════════════════════════════ */
+(function () {
+  const isTouch = window.matchMedia('(hover: none)').matches;
+  let activeVideo = null;
+
+  function lazyAttachSource(video) {
+    if (video.dataset.loaded === '1') return;
+    const src = video.dataset.src;
+    const srcWebm = video.dataset.srcWebm;
+    if (!src && !srcWebm) return;
+    if (srcWebm) {
+      const sWebm = document.createElement('source');
+      sWebm.src = srcWebm; sWebm.type = 'video/webm';
+      video.appendChild(sWebm);
+    }
+    if (src) {
+      const sMp4 = document.createElement('source');
+      sMp4.src = src; sMp4.type = 'video/mp4';
+      video.appendChild(sMp4);
+    }
+    video.load();
+    video.dataset.loaded = '1';
+  }
+
+  function playVideo(video) {
+    if (!video || !video.dataset.src && !video.dataset.srcWebm) return;
+    lazyAttachSource(video);
+    if (activeVideo && activeVideo !== video) pauseVideo(activeVideo);
+    activeVideo = video;
+    video.muted = true;
+    const p = video.play();
+    if (p && p.catch) p.catch(() => {});
+    video.classList.add(video.dataset.readyClass || 'dsm-ready');
+  }
+
+  function pauseVideo(video) {
+    if (!video) return;
+    video.pause();
+    video.classList.remove(video.dataset.readyClass || 'dsm-ready');
+  }
+
+  /* Card hover (desktop) */
+  function initVideoCards(selector, readyClass) {
+    document.querySelectorAll(selector).forEach(card => {
+      const video = card.querySelector('video');
+      if (!video) return;
+      video.dataset.readyClass = readyClass;
+
+      if (!isTouch) {
+        card.addEventListener('mouseenter', () => playVideo(video));
+        card.addEventListener('mouseleave', () => pauseVideo(video));
+      } else {
+        // Touch: tap toggles play, only one active globally
+        card.addEventListener('click', e => {
+          if (video.classList.contains(readyClass) && !video.paused) return; // allow link nav through
+          e.preventDefault();
+          playVideo(video);
+        });
+      }
+    });
+  }
+  initVideoCards('.dest-slide', 'dsm-ready');
+  initVideoCards('.dvideo-card', 'dvc-ready');
+
+  /* Pause any playing card video when scrolled out of view (perf) */
+  const cardObs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (!e.isIntersecting) {
+        const v = e.target.querySelector('video');
+        if (v && v === activeVideo) pauseVideo(v);
+      }
+    });
+  }, { threshold: 0 });
+  document.querySelectorAll('.dest-slide, .dvideo-card').forEach(c => cardObs.observe(c));
+
+  /* Destination hero video: autoplay muted once visible, with mute toggle */
+  const heroMedia = document.querySelector('.dest-hero-media');
+  if (heroMedia) {
+    const heroVideo = heroMedia.querySelector('video');
+    if (heroVideo && (heroVideo.dataset.src || heroVideo.dataset.srcWebm)) {
+      lazyAttachSource(heroVideo);
+      heroVideo.muted = true;
+      const playP = heroVideo.play();
+      if (playP && playP.then) {
+        playP.then(() => {
+          heroVideo.classList.add('dh-ready');
+          heroMedia.classList.add('dh-playing');
+        }).catch(() => {});
+      }
+    }
+    const muteBtn = document.getElementById('destHeroMute');
+    if (muteBtn && heroVideo) {
+      muteBtn.addEventListener('click', () => {
+        heroVideo.muted = !heroVideo.muted;
+        muteBtn.innerHTML = heroVideo.muted
+          ? '<i class="fa fa-volume-mute"></i>'
+          : '<i class="fa fa-volume-up"></i>';
+      });
+    }
+  }
+
+  /* Sticky booking bar reveal on scroll past hero (destination page) */
+  const stickyBar = document.getElementById('destStickyBar');
+  const destHeroEl = document.querySelector('.dest-hero');
+  if (stickyBar && destHeroEl) {
+    const heroObs = new IntersectionObserver(entries => {
+      entries.forEach(e => stickyBar.classList.toggle('show', !e.isIntersecting));
+    }, { threshold: 0 });
+    heroObs.observe(destHeroEl);
+  }
+
+  /* Chip nav active state + smooth scroll (destination page) */
+  document.querySelectorAll('.dest-chip').forEach(chip => {
+    chip.addEventListener('click', e => {
+      document.querySelectorAll('.dest-chip').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+    });
+  });
+})();

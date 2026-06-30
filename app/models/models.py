@@ -1,4 +1,5 @@
 from datetime import datetime
+import json
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -39,6 +40,56 @@ class Country(db.Model):
     image = db.Column(db.String(255))
     is_popular = db.Column(db.Boolean, default=False)
     villas = db.relationship('Villa', backref='country', lazy='dynamic')
+
+    # ── Destination experience fields (additive) ──
+    slug = db.Column(db.String(120), unique=True)
+    video_url = db.Column(db.String(400))          # MP4 hero/card video
+    video_webm_url = db.Column(db.String(400))      # optional WebM variant
+    poster_image = db.Column(db.String(255))         # explicit poster, falls back to `image`
+    subtitle_en = db.Column(db.String(200))
+    subtitle_ru = db.Column(db.String(200))
+    description_en = db.Column(db.Text)
+    description_ru = db.Column(db.Text)
+    is_unesco = db.Column(db.Boolean, default=False)
+    best_season_en = db.Column(db.String(120))
+    best_season_ru = db.Column(db.String(120))
+    avg_temp = db.Column(db.String(40))              # e.g. "18–32°C"
+    population = db.Column(db.String(40))            # e.g. "550,000+"
+    area_km2 = db.Column(db.String(40))
+    founded_year = db.Column(db.String(40))           # e.g. "742 AD" or "VI century BC"
+    travel_time_en = db.Column(db.String(80))
+    travel_time_ru = db.Column(db.String(80))
+    top_attractions = db.Column(db.Text)               # JSON list of {name_en,name_ru,image}
+    media_clips = db.relationship('DestinationMedia', backref='country', lazy='dynamic',
+                                   order_by='DestinationMedia.order', cascade='all, delete-orphan')
+
+    @property
+    def display_slug(self):
+        return self.slug or (self.name_en or '').lower().replace(' valley', '').replace(' ', '-')
+
+    @property
+    def attractions_list(self):
+        if not self.top_attractions:
+            return []
+        try:
+            return json.loads(self.top_attractions)
+        except Exception:
+            return []
+
+
+class DestinationMedia(db.Model):
+    """Themed video/photo clips for a destination page gallery
+    (drone, walking tour, night, food, festival, market, hotel, historical)."""
+    __tablename__ = 'destination_media'
+    id = db.Column(db.Integer, primary_key=True)
+    country_id = db.Column(db.Integer, db.ForeignKey('countries.id'), nullable=False)
+    media_type = db.Column(db.String(30), default='drone')  # drone, walking, night, food, festival, historical, market, hotel
+    title_en = db.Column(db.String(150))
+    title_ru = db.Column(db.String(150))
+    video_url = db.Column(db.String(400))
+    poster_image = db.Column(db.String(255))
+    duration_sec = db.Column(db.Integer)
+    order = db.Column(db.Integer, default=0)
 
 
 class Villa(db.Model):
@@ -301,9 +352,90 @@ class Announcement(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
 
-# Extend Agency with new relationships (monkey-patch style additive relationship)
-Agency.properties = db.relationship('Property', backref='agency', lazy='dynamic')
-Agency.tours = db.relationship('Tour', backref='agency', lazy='dynamic')
-Agency.media_assets = db.relationship('MediaAsset', backref='agency', lazy='dynamic')
-Agency.customers = db.relationship('PartnerCustomer', backref='agency', lazy='dynamic')
-Agency.tickets = db.relationship('SupportTicket', backref='agency', lazy='dynamic')
+
+
+# ═══════════════════════════════════════════════════
+# PROPERTY TYPE TAXONOMY (Partner Hub 2.0)
+# ═══════════════════════════════════════════════════
+PROPERTY_TYPES = [
+    {'key': 'hotel',            'icon': 'fa-hotel',            'group': 'stay'},
+    {'key': 'boutique_hotel',   'icon': 'fa-star',             'group': 'stay'},
+    {'key': 'luxury_hotel',     'icon': 'fa-gem',              'group': 'stay'},
+    {'key': 'resort',           'icon': 'fa-umbrella-beach',   'group': 'stay'},
+    {'key': 'spa_resort',       'icon': 'fa-spa',              'group': 'stay'},
+    {'key': 'eco_resort',       'icon': 'fa-leaf',             'group': 'stay'},
+    {'key': 'villa',            'icon': 'fa-house-chimney',    'group': 'stay'},
+    {'key': 'holiday_house',    'icon': 'fa-house',            'group': 'stay'},
+    {'key': 'guesthouse',       'icon': 'fa-house-user',       'group': 'stay'},
+    {'key': 'apartment',        'icon': 'fa-building',         'group': 'stay'},
+    {'key': 'hostel',           'icon': 'fa-bed',              'group': 'stay'},
+    {'key': 'camping',          'icon': 'fa-campground',       'group': 'outdoor'},
+    {'key': 'glamping',         'icon': 'fa-tent',             'group': 'outdoor'},
+    {'key': 'mountain_resort',  'icon': 'fa-mountain',         'group': 'outdoor'},
+    {'key': 'sanatorium',       'icon': 'fa-heart-pulse',      'group': 'stay'},
+    {'key': 'restaurant',       'icon': 'fa-utensils',         'group': 'venue'},
+    {'key': 'conference_hall',  'icon': 'fa-chalkboard-user',  'group': 'venue'},
+    {'key': 'event_venue',      'icon': 'fa-champagne-glasses','group': 'venue'},
+    {'key': 'transfer_company', 'icon': 'fa-shuttle-van',      'group': 'service'},
+    {'key': 'travel_agency',    'icon': 'fa-suitcase-rolling', 'group': 'service'},
+    {'key': 'tour_operator',    'icon': 'fa-route',            'group': 'service'},
+    {'key': 'guide',            'icon': 'fa-person-walking-luggage', 'group': 'service'},
+]
+PROPERTY_TYPE_KEYS = [t['key'] for t in PROPERTY_TYPES]
+
+
+# ═══════════════════════════════════════════════════
+# Property completion & onboarding helpers
+# ═══════════════════════════════════════════════════
+def _property_completion(self):
+    """Returns 0-100 completion score for a property listing."""
+    gallery_count = 0
+    if self.gallery:
+        try:
+            gallery_count = len(json.loads(self.gallery))
+        except Exception:
+            gallery_count = 1 if self.gallery else 0
+    checks = [
+        bool(self.name),
+        bool(self.description and len(self.description) >= 40),
+        bool(self.city and self.address),
+        bool(self.cover_image),
+        gallery_count >= 3,
+        bool(self.video_url),
+        self.rooms.count() > 0,
+        any([self.has_wifi, self.has_pool, self.has_spa, self.has_gym, self.has_restaurant]),
+        bool(self.cancellation_policy),
+        self.status == 'published',
+    ]
+    return round(sum(checks) / len(checks) * 100)
+
+Property.completion_percent = property(_property_completion)
+
+
+def _agency_onboarding_steps(self):
+    """Returns ordered onboarding checklist with completion booleans."""
+    has_property = self.properties.count() > 0
+    first_prop = self.properties.first()
+    has_photos = bool(first_prop and first_prop.gallery)
+    has_video = bool(first_prop and first_prop.video_url)
+    has_rooms = bool(first_prop and first_prop.rooms.count() > 0)
+    has_pricing = bool(first_prop and first_prop.rooms.filter(Room.base_price.isnot(None)).count() > 0)
+    has_published = self.properties.filter_by(status='published').count() > 0
+    has_booking = self.bookings.count() > 0
+
+    steps = [
+        {'key': 'verify',   'label_en': 'Verify company',            'label_ru': 'Подтвердить компанию',       'done': self.status == 'active'},
+        {'key': 'property', 'label_en': 'Add first property',        'label_ru': 'Добавить первый объект',     'done': has_property},
+        {'key': 'photos',   'label_en': 'Upload photos',              'label_ru': 'Загрузить фото',             'done': has_photos},
+        {'key': 'video',    'label_en': 'Upload drone video',         'label_ru': 'Загрузить дрон-видео',       'done': has_video},
+        {'key': 'rooms',    'label_en': 'Add rooms',                  'label_ru': 'Добавить номера',            'done': has_rooms},
+        {'key': 'pricing',  'label_en': 'Configure pricing',          'label_ru': 'Настроить цены',             'done': has_pricing},
+        {'key': 'calendar', 'label_en': 'Configure availability',     'label_ru': 'Настроить календарь',        'done': has_rooms},
+        {'key': 'publish',  'label_en': 'Publish property',           'label_ru': 'Опубликовать объект',        'done': has_published},
+        {'key': 'booking',  'label_en': 'Receive first booking',      'label_ru': 'Получить первое бронирование','done': has_booking},
+    ]
+    done_count = sum(1 for s in steps if s['done'])
+    percent = round(done_count / len(steps) * 100)
+    return {'steps': steps, 'done_count': done_count, 'total': len(steps), 'percent': percent}
+
+Agency.onboarding = property(_agency_onboarding_steps)
