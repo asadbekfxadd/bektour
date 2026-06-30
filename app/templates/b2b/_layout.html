@@ -1,5 +1,18 @@
-{% extends 'base.html' %}
-{% block content %}
+<!DOCTYPE html>
+<html lang="{{ lang }}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#061826">
+  <meta name="robots" content="noindex, nofollow">
+  <title>{% block title %}Partner Hub{% endblock %} — Bek Tour</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+</head>
+<body style="cursor:auto;">
+
 <div class="b2b-shell">
   <div class="b2b-sidebar-backdrop" id="b2bBackdrop" onclick="toggleB2bSidebar()"></div>
   <aside class="b2b-sidebar" id="b2bSidebar">
@@ -58,7 +71,7 @@
     </nav>
 
     <div class="b2b-sidebar-foot">
-      <a href="{{ url_for('villas.index') }}" class="b2b-nav-item"><i class="fa fa-globe"></i> {% if lang=='ru' %}На сайт{% else %}View Website{% endif %}</a>
+      <a href="{{ url_for('main.index') }}" class="b2b-nav-item"><i class="fa fa-globe"></i> {% if lang=='ru' %}На сайт{% else %}View Website{% endif %}</a>
       <a href="{{ url_for('auth.logout') }}" class="b2b-nav-item" style="color:#fca5a5;"><i class="fa fa-sign-out-alt"></i> {% if lang=='ru' %}Выйти{% else %}Logout{% endif %}</a>
     </div>
   </aside>
@@ -72,6 +85,11 @@
         <kbd>Ctrl K</kbd>
       </div>
       <div class="b2b-topbar-right">
+        <div class="lang-sw" style="background:var(--cream);">
+          <a href="{{ url_for('main.set_lang', lang='en') }}" {% if lang=='en' %}class="on"{% endif %}>EN</a>
+          <a href="{{ url_for('main.set_lang', lang='ru') }}" {% if lang=='ru' %}class="on"{% endif %}>RU</a>
+          <a href="{{ url_for('main.set_lang', lang='uz') }}" {% if lang=='uz' %}class="on"{% endif %}>UZ</a>
+        </div>
         <a href="{{ url_for('b2b.support') }}" class="b2b-icon-btn" title="Support"><i class="fa fa-life-ring"></i></a>
         <div class="b2b-icon-btn" title="Notifications" style="position:relative;">
           <i class="fa fa-bell"></i>
@@ -82,6 +100,18 @@
     </div>
 
     <div class="b2b-content">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+      <div style="margin-bottom:18px;">
+        {% for c, m in messages %}
+        <div class="toast toast-{{ c }}" style="position:static;margin-bottom:8px;animation:none;">
+          <i class="fa fa-{% if c=='success' %}check-circle{% else %}exclamation-circle{% endif %}"></i>
+          {{ m }}<button onclick="this.parentElement.remove()">✕</button>
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+      {% endwith %}
       {% block b2b_content %}{% endblock %}
     </div>
   </div>
@@ -135,4 +165,5 @@ document.getElementById('b2bCmdkInput').addEventListener('input', function(){
   }, 250);
 });
 </script>
-{% endblock %}
+</body>
+</html>
