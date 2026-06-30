@@ -140,11 +140,15 @@
 <!-- ═══ HERO WITH VIDEO ═══════════════════════════════════ -->
 <section class="hero" id="top">
   <div class="hero-video-wrap">
-    <video autoplay muted loop playsinline poster="/photo/samarkand?w=1920&h=1080">
-      <source src="https://www.w3schools.com/howto/rain.mp4" type="video/mp4">
-    </video>
-    <!-- Fallback image shown while video loads -->
-    <img src="/photo/samarkand?w=1920&h=1080" alt="Samarkand Uzbekistan" 
+    <!-- YouTube drone footage of Uzbekistan -->
+    <iframe 
+      src="https://www.youtube.com/embed/videoseries?list=PLZRd9RRHHjyMT1fNBroRPVBJvUFLeBYHw&autoplay=1&mute=1&loop=1&controls=0&showinfo=0&rel=0&playsinline=1&start=5"
+      style="position:absolute;top:50%;left:50%;min-width:100%;min-height:100%;transform:translate(-50%,-50%);border:none;opacity:.35;pointer-events:none;"
+      allow="autoplay; encrypted-media" loading="lazy" title="Uzbekistan">
+    </iframe>
+    <!-- Always-visible fallback background image -->
+    <img src="/photo/samarkand?w=1920&h=1080" 
+         alt="Registan Square, Samarkand" 
          style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-1;opacity:.32;">
   </div>
   <div class="container">
@@ -453,17 +457,51 @@
     </div>
     <div class="gallery-masonry reveal">
       {% for city, variant, shape in [
-        ('samarkand','?w=600&h=800&v=1','tall'),('bukhara','?w=600&h=450&v=2','wide'),
-        ('khiva','?w=600&h=600&v=1','square'),('tashkent','?w=600&h=450&v=3','wide'),
-        ('fergana','?w=600&h=800&v=4','tall'),('shahrisabz','?w=600&h=450&v=1','wide'),
-        ('samarkand','?w=600&h=600&v=2','square'),('bukhara','?w=600&h=800&v=5','tall'),
-        ('khiva','?w=600&h=450&v=2','wide'),('nukus','?w=600&h=600&v=3','square'),
-        ('termez','?w=600&h=450&v=1','wide'),('fergana','?w=600&h=600&v=2','square'),
+        ('samarkand','?w=600&h=800','tall'),('bukhara','?w=600&h=450','wide'),
+        ('khiva','?w=600&h=600','square'),('tashkent','?w=600&h=450','wide'),
+        ('fergana','?w=600&h=800','tall'),('shahrisabz','?w=600&h=450','wide'),
+        ('samarkand','?w=600&h=600','square'),('bukhara','?w=600&h=800','tall'),
+        ('khiva','?w=600&h=450','wide'),('nukus','?w=600&h=600','square'),
+        ('termez','?w=600&h=450','wide'),('fergana','?w=600&h=600','square'),
       ] %}
       <div class="gal-item {{ shape }}" onclick="openGallery('/photo/{{ city }}{{ variant }}')">
         <img src="/photo/{{ city }}{{ variant }}" alt="{{ city|title }}, Uzbekistan" loading="lazy">
       </div>
       {% endfor %}
+    </div>
+      <div class="gal-item" onclick="openGallery('https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/Kalon_Minaret%2C_Bukhara.jpg/600px-Kalon_Minaret%2C_Bukhara.jpg')">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/Kalon_Minaret%2C_Bukhara.jpg/600px-Kalon_Minaret%2C_Bukhara.jpg" alt="Kalon, Bukhara" loading="lazy">
+      </div>
+      <div class="gal-item" onclick="openGallery('https://upload.wikimedia.org/wikipedia/commons/thumb/6/67/Khiva%2C_Ichan_Qala%2C_Uzbekistan.jpg/600px-Khiva%2C_Ichan_Qala%2C_Uzbekistan.jpg')">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/67/Khiva%2C_Ichan_Qala%2C_Uzbekistan.jpg/600px-Khiva%2C_Ichan_Qala%2C_Uzbekistan.jpg" alt="Ichan Kala, Khiva" loading="lazy">
+      </div>
+      <div class="gal-item" onclick="openGallery('https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/Tashkent_panorama.jpg/600px-Tashkent_panorama.jpg')">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/Tashkent_panorama.jpg/600px-Tashkent_panorama.jpg" alt="Tashkent" loading="lazy">
+      </div>
+      <div class="gal-item" onclick="openGallery('https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/GUR_EMIR2.JPG/600px-GUR_EMIR2.JPG')">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/GUR_EMIR2.JPG/600px-GUR_EMIR2.JPG" alt="Gur-e-Amir, Samarkand" loading="lazy">
+      </div>
+      <div class="gal-item" onclick="openGallery('https://upload.wikimedia.org/wikipedia/commons/thumb/2/27/Poi_Kalon_complex_in_Bukhara.jpg/600px-Poi_Kalon_complex_in_Bukhara.jpg')">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/27/Poi_Kalon_complex_in_Bukhara.jpg/600px-Poi_Kalon_complex_in_Bukhara.jpg" alt="Poi Kalon, Bukhara" loading="lazy">
+      </div>
+      <div class="gal-item" onclick="openGallery('https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Khiva_-_Kalta_Minor_minaret.jpg/600px-Khiva_-_Kalta_Minor_minaret.jpg')">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Khiva_-_Kalta_Minor_minaret.jpg/600px-Khiva_-_Kalta_Minor_minaret.jpg" alt="Kalta Minor, Khiva" loading="lazy">
+      </div>
+      <div class="gal-item" onclick="openGallery('https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Silk_market_in_Margilan.jpg/600px-Silk_market_in_Margilan.jpg')">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Silk_market_in_Margilan.jpg/600px-Silk_market_in_Margilan.jpg" alt="Silk Market, Fergana" loading="lazy">
+      </div>
+      <div class="gal-item" onclick="openGallery('https://upload.wikimedia.org/wikipedia/commons/thumb/d/df/Ak-Saray_Palace_ruins%2C_Shakhrisabz.jpg/600px-Ak-Saray_Palace_ruins%2C_Shakhrisabz.jpg')">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/df/Ak-Saray_Palace_ruins%2C_Shakhrisabz.jpg/600px-Ak-Saray_Palace_ruins%2C_Shakhrisabz.jpg" alt="Ak-Saray, Shahrisabz" loading="lazy">
+      </div>
+      <div class="gal-item" onclick="openGallery('https://upload.wikimedia.org/wikipedia/commons/thumb/3/37/Aral_sea_ship_graveyard_2.jpg/600px-Aral_sea_ship_graveyard_2.jpg')">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/37/Aral_sea_ship_graveyard_2.jpg/600px-Aral_sea_ship_graveyard_2.jpg" alt="Aral Sea" loading="lazy">
+      </div>
+      <div class="gal-item" onclick="openGallery('https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Ark_of_Bukhara.jpg/600px-Ark_of_Bukhara.jpg')">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Ark_of_Bukhara.jpg/600px-Ark_of_Bukhara.jpg" alt="Ark, Bukhara" loading="lazy">
+      </div>
+      <div class="gal-item" onclick="openGallery('https://upload.wikimedia.org/wikipedia/commons/thumb/e/e2/Shah-i-Zinda_Samarkand.jpg/600px-Shah-i-Zinda_Samarkand.jpg')">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e2/Shah-i-Zinda_Samarkand.jpg/600px-Shah-i-Zinda_Samarkand.jpg" alt="Shah-i-Zinda, Samarkand" loading="lazy">
+      </div>
     </div>
   </div>
 </section>
@@ -544,7 +582,7 @@
         ('khiva','Khiva: The World\'s Most Perfectly Preserved Medieval City','Хива: лучше всего сохранившийся средневековый город мира','Architecture',6,'Walking through Khiva\'s Ichan Kala feels like time travel to the 10th century. Every building tells a story of the Silk Road golden age.','Прогулка по Ичан-Кале Хивы ощущается как путешествие во времени в X век. Каждое здание рассказывает историю золотого века Шёлкового пути.'),
       ] %}
       <div class="blog-card">
-        <div class="blog-card-img"><img src="/photo/{{ city }}?w=800&h=400&v={{ loop.index }}" alt="{{ title_en }}" loading="lazy"></div>
+        <div class="blog-card-img"><img src="/photo/{{ city }}?w=800&h=400" alt="{{ title_en }}" loading="lazy"></div>
         <div class="blog-card-body">
           <div class="blog-cat">{{ cat }}</div>
           <div class="blog-title"><a href="{{ url_for('main.index') }}">{% if lang=='ru' %}{{ title_ru }}{% else %}{{ title_en }}{% endif %}</a></div>
@@ -712,6 +750,352 @@
     </div>
   </div>
 </section>
+
+
+<!-- ═══ TOUR PACKAGES ═══════════════════════════════════════ -->
+<section class="section" style="background:#fff;" id="tours">
+  <div class="container">
+    <div style="text-align:center;margin-bottom:44px;" class="reveal">
+      <span class="eyebrow">{% if lang=='ru' %}Туры{% elif lang=='uz' %}Turlar{% else %}Tour Packages{% endif %}</span>
+      <h2>{% if lang=='ru' %}Выберите свой идеальный тур{% elif lang=='uz' %}O\'zingizning ideal turingizni tanlang{% else %}Choose Your Perfect Tour{% endif %}</h2>
+      <p class="lead" style="margin-top:10px;">{% if lang=='ru' %}От бюджетных поездок до эксклюзивных VIP-туров{% else %}From budget adventures to exclusive VIP experiences{% endif %}</p>
+    </div>
+    <!-- Tour category tabs -->
+    <div class="sec-tabs reveal" style="justify-content:center;margin-bottom:36px;">
+      {% for cat, icon, en, ru in [
+        ('all','fa-th','All Tours','Все туры'),
+        ('silk','fa-route','Silk Road','Шёлковый путь'),
+        ('luxury','fa-crown','Luxury','Люкс'),
+        ('family','fa-users','Family','Семейные'),
+        ('adventure','fa-mountain','Adventure','Приключения'),
+        ('short','fa-clock','Weekend','Выходные'),
+      ] %}
+      <div class="sec-tab {% if loop.first %}on{% endif %}" onclick="filterTours('{{ cat }}')">
+        <i class="fa {{ icon }}"></i> {% if lang=='ru' %}{{ ru }}{% else %}{{ en }}{% endif %}
+      </div>
+      {% endfor %}
+    </div>
+    <div style="display:grid;grid-template-columns:1fr;gap:20px;" id="toursGrid">
+      {% for icon, cat, title_en, title_ru, days, price, rating, inc_en, inc_ru, badge in [
+        ('fa-mosque','silk','Classic Silk Road: Tashkent → Samarkand → Bukhara → Khiva','Классический Шёлковый Путь: Ташкент → Самарканд → Бухара → Хива',10,890,4.9,'Hotel, Guide, Transfers, All Entry Fees','Отель, Гид, Трансферы, Все входные билеты','Bestseller'),
+        ('fa-crown','luxury','Luxury Uzbekistan: Private Jet & 5★ Resorts','Люкс Узбекистан: Частный самолёт и 5★ Резорты',7,4500,5.0,'5★ Hotels, Private Jet, Personal Butler, VIP Access','5★ Отели, Частный самолёт, Дворецкий, VIP-доступ','VIP'),
+        ('fa-users','family','Family Silk Road Adventure','Семейное приключение по Шёлковому пути',8,650,4.8,'Family Hotels, Kids Activities, Guide, Meals','Семейные отели, Детские активности, Гид, Питание','Family'),
+        ('fa-mountain','adventure','Tian Shan Mountains + Ancient Cities','Горы Тянь-Шань + Древние города',12,1100,4.7,'Hiking, Camping, Hotel, Guide, Equipment','Треккинг, Кемпинг, Отель, Гид, Снаряжение','Adventure'),
+        ('fa-clock','short','Weekend in Samarkand (3 Days)','Выходные в Самарканде (3 дня)',3,320,4.9,'Hotel, Guide, Registan Night Show, Transfers','Отель, Гид, Ночное шоу Регистан, Трансферы','Quick'),
+        ('fa-utensils','family','Uzbek Food & Culture Tour','Тур узбекской кухни и культуры',6,540,4.8,'Cooking Classes, Market Tours, Hotels, Guide','Кулинарные классы, Экскурсии по рынкам, Отель, Гид','Popular'),
+      ] %}
+      <div class="tour-card" data-cat="{{ cat }}">
+        <div style="display:grid;grid-template-columns:1fr;gap:0;">
+          <div class="tour-card-img" style="height:200px;">
+            <img src="/photo/samarkand?w=800&h=400&v={{ loop.index }}" alt="{{ title_en }}" loading="lazy">
+            <div class="tour-badge">{{ badge }}</div>
+          </div>
+          <div class="tour-card-body">
+            <div class="tour-card-tag">{% if lang=='ru' %}{{ {'silk':'Шёлковый путь','luxury':'Люкс','family':'Семейный','adventure':'Приключения','short':'Короткий'}[cat] }}{% else %}{{ cat|title }}{% endif %}</div>
+            <div class="tour-card-title">{% if lang=='ru' %}{{ title_ru }}{% else %}{{ title_en }}{% endif %}</div>
+            <div class="tour-card-meta">
+              <span><i class="fa fa-calendar-alt"></i> {{ days }} {% if lang=='ru' %}дней{% else %}days{% endif %}</span>
+              <span><i class="fa fa-star"></i> {{ rating }}</span>
+              <span><i class="fa fa-check-circle"></i> {% if lang=='ru' %}{{ inc_ru[:35] }}...{% else %}{{ inc_en[:35] }}...{% endif %}</span>
+            </div>
+            <div class="tour-card-foot">
+              <div>
+                <div class="tour-price-lbl">{% if lang=='ru' %}от{% else %}from{% endif %}</div>
+                <div class="tour-price">${{ price }}</div>
+                <div style="font-size:.64rem;color:var(--muted);">{% if lang=='ru' %}на чел.{% else %}per person{% endif %}</div>
+              </div>
+              <div style="display:flex;gap:8px;">
+                <a href="{{ url_for('main.contacts') }}" class="btn btn-gold btn-sm">{% if lang=='ru' %}Бронировать{% else %}Book Now{% endif %}</a>
+                <a href="{{ url_for('main.contacts') }}" class="btn btn-outline btn-sm">{% if lang=='ru' %}Подробнее{% else %}Details{% endif %}</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    <div style="text-align:center;margin-top:32px;" class="reveal">
+      <a href="{{ url_for('villas.index') }}" class="btn btn-outline btn-lg">{% if lang=='ru' %}Посмотреть все туры{% else %}View All Tours{% endif %} <i class="fa fa-arrow-right"></i></a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SUGGESTED ITINERARIES ══════════════════════════════ -->
+<section class="section" style="background:var(--ink);" id="itineraries">
+  <div class="container">
+    <div style="text-align:center;margin-bottom:44px;" class="reveal">
+      <span class="eyebrow" style="color:var(--gold);">{% if lang=='ru' %}Готовые маршруты{% else %}Ready-Made Itineraries{% endif %}</span>
+      <h2 style="color:#fff;">{% if lang=='ru' %}Сколько у вас дней?{% else %}How Many Days Do You Have?{% endif %}</h2>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr;gap:16px;" class="reveal">
+      {% for days, cities, highlights_en, highlights_ru, price in [
+        (3,'Tashkent + Samarkand','Registan, Shah-i-Zinda, Gur-e-Amir, Metro Art Tour','Регистан, Шах-и-Зинда, Гур-Эмир, Тур по метро',320),
+        (5,'Tashkent + Samarkand + Bukhara','Registan, Kalon Minaret, Ark Citadel, Bazaars, Hammam','Регистан, Минарет Калон, Арк, Базары, Хаммам',480),
+        (7,'Samarkand + Bukhara + Khiva','3 UNESCO Cities, Silk Road History, Desert Camel Trek','3 города ЮНЕСКО, Шёлковый путь, Верблюжий трек',650),
+        (10,'Full Uzbekistan Grand Tour','All Major Sites + Fergana Valley + Mountains + Local Villages','Все главные достопримечательности + Фергана + Горы',890),
+        (14,'Ultimate Uzbekistan + Aral Sea','Everything + Aral Sea Expedition + Karakalpak Culture','Всё + Экспедиция на Аральское море + Каракалпакстан',1200),
+      ] %}
+      <div style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:var(--r-lg);padding:22px 20px;display:flex;flex-wrap:wrap;align-items:center;gap:18px;transition:background .2s;" onmouseover="this.style.background='rgba(255,255,255,.1)'" onmouseout="this.style.background='rgba(255,255,255,.06)'">
+        <div style="background:var(--gold);color:#fff;border-radius:12px;padding:10px 18px;font-family:var(--serif);font-size:2rem;font-weight:700;min-width:80px;text-align:center;flex-shrink:0;">{{ days }}<div style="font-size:.6rem;font-family:var(--sans);letter-spacing:.08em;font-weight:400;">DAYS</div></div>
+        <div style="flex:1;min-width:180px;">
+          <div style="font-weight:700;color:#fff;font-size:.95rem;margin-bottom:4px;">{{ cities }}</div>
+          <div style="font-size:.78rem;color:rgba(255,255,255,.45);line-height:1.6;">{% if lang=='ru' %}{{ highlights_ru }}{% else %}{{ highlights_en }}{% endif %}</div>
+        </div>
+        <div style="text-align:right;flex-shrink:0;">
+          <div style="font-family:var(--serif);font-size:1.6rem;color:var(--gold);font-weight:600;">${{ price }}</div>
+          <div style="font-size:.65rem;color:rgba(255,255,255,.3);">{% if lang=='ru' %}от / на чел.{% else %}from / per person{% endif %}</div>
+          <a href="{{ url_for('main.contacts') }}" class="btn btn-gold btn-sm" style="margin-top:8px;">{% if lang=='ru' %}Выбрать{% else %}Book{% endif %}</a>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- ═══ TOP ATTRACTIONS ══════════════════════════════════════ -->
+<section class="section" style="background:var(--cream);" id="attractions">
+  <div class="container">
+    <div style="text-align:center;margin-bottom:44px;" class="reveal">
+      <span class="eyebrow">{% if lang=='ru' %}Топ достопримечательности{% else %}Top Attractions{% endif %}</span>
+      <h2>{% if lang=='ru' %}Места которые нельзя пропустить{% else %}Places You Cannot Miss{% endif %}</h2>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr;gap:14px;" class="reveal">
+      {% for rank, name, city, type_en, type_ru, desc_en, desc_ru, tip_en, tip_ru in [
+        (1,'Registan Square','Samarkand','UNESCO World Heritage','Наследие ЮНЕСКО','Three stunning madrasas frame the most magnificent medieval square in the world. Built over 3 centuries by Timur and his successors.','Три великолепные медресе обрамляют самую прекрасную средневековую площадь в мире. Построена на протяжении 3 веков Тимуром и его преемниками.','Visit at night for the spectacular light show. Golden hour at dawn is magical.','Посетите ночью для грандиозного светового шоу. Золотой час на рассвете — незабываем.'),
+        (2,'Itchan Kala (Old Khiva)','Khiva','UNESCO Walled City','Город-крепость ЮНЕСКО','The perfectly preserved inner city of Khiva. Every building has been standing for 400+ years. Walking its streets feels like time travel.','Идеально сохранившийся внутренний город Хивы. Каждому зданию 400+ лет. Прогулка по улицам ощущается как путешествие во времени.','Climb the Kalta Minor minaret for the best panoramic view of the city.','Поднимитесь на минарет Кальта-Минор для лучшего панорамного вида.'),
+        (3,'Kalon Minaret & Mosque','Bukhara','Islamic Architecture','Исламская архитектура','The 46-meter minaret that even Genghis Khan ordered to be spared when conquering Bukhara in 1220. Its geometric brick patterns are extraordinary.','47-метровый минарет который даже Чингисхан приказал сохранить при завоевании Бухары в 1220 году. Его геометрические кирпичные узоры исключительны.','Night illumination is spectacular. Visit during call to prayer for a spiritual experience.','Ночная иллюминация великолепна. Посетите во время азана для духовного переживания.'),
+        (4,'Shah-i-Zinda Necropolis','Samarkand','Archaeological Site','Археологический памятник','A "street of mausoleums" with the most spectacular Timurid tilework in existence. Cobalt blues and turquoise create an otherworldly atmosphere.','«Улица мавзолеев» с наиболее впечатляющими Тимуридскими изразцами. Кобальтовые и бирюзовые цвета создают потустороннюю атмосферу.','Morning light brings out the tilework best. Hire a guide to hear the stories.','Утренний свет лучше всего подчёркивает изразцы. Наймите гида чтобы услышать истории.'),
+        (5,'Amir Timur Mausoleum','Samarkand','Imperial Mausoleum','Императорский мавзолей','The turquoise ribbed dome of Gur-e-Amir shelters Tamerlane\'s jade tombstone. The interior with its papier-mâché stalactites is breathtaking.','Рубчатый бирюзовый купол Гур-Эмира укрывает нефритовый надгробный камень Тамерлана. Интерьер со сталактитами из папье-маше захватывает дух.','The door handles are said to bring luck. Low crowd times are early morning.','Говорят ручки дверей приносят удачу. Минимальные очереди — ранним утром.'),
+        (6,'Chorsu Bazaar','Tashkent','Traditional Market','Традиционный рынок','Tashkent\'s iconic domed bazaar has been a trading hub for 2000 years. The best place to taste Uzbek plov, samsa, fresh fruits and spices.','Знаковый купольный базар Ташкента был торговым центром 2000 лет. Лучшее место чтобы попробовать плов, самсу, свежие фрукты и специи.','Go early (7-9am) when locals shop. Bargaining is expected — start at 60% of asking price.','Идите рано (7-9 утра) когда покупают местные. Торг уместен — начинайте с 60% запрашиваемой цены.'),
+      ] %}
+      <div style="background:#fff;border-radius:var(--r-lg);padding:20px;display:flex;gap:16px;align-items:flex-start;border:1px solid var(--line);transition:all .25s;" onmouseover="this.style.borderColor='var(--gold)';this.style.transform='translateX(4px)'" onmouseout="this.style.borderColor='var(--line)';this.style.transform=''">
+        <div style="background:var(--ink);color:var(--gold);font-family:var(--serif);font-size:1.6rem;font-weight:700;width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">{{ rank }}</div>
+        <div style="flex:1;min-width:0;">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:6px;">
+            <div>
+              <div style="font-weight:700;font-size:1rem;color:var(--ink);">{{ name }}</div>
+              <div style="font-size:.72rem;color:var(--gold);font-weight:600;">{{ city }} · {% if lang=='ru' %}{{ type_ru }}{% else %}{{ type_en }}{% endif %}</div>
+            </div>
+            <a href="{{ url_for('main.contacts') }}" style="font-size:.72rem;background:var(--gold-lt);color:var(--gold);border:1px solid var(--gold-bd);border-radius:20px;padding:4px 12px;font-weight:600;white-space:nowrap;text-decoration:none;flex-shrink:0;">{% if lang=='ru' %}Включить в тур{% else %}Add to Tour{% endif %}</a>
+          </div>
+          <p style="font-size:.8rem;color:var(--muted);line-height:1.65;margin-bottom:8px;">{% if lang=='ru' %}{{ desc_ru }}{% else %}{{ desc_en }}{% endif %}</p>
+          <div style="background:var(--cream);border-radius:8px;padding:8px 12px;font-size:.74rem;color:var(--ink);display:flex;gap:7px;align-items:flex-start;">
+            <i class="fa fa-lightbulb" style="color:var(--gold);margin-top:1px;flex-shrink:0;"></i>
+            <span><b>{% if lang=='ru' %}Совет:{% else %}Tip:{% endif %}</b> {% if lang=='ru' %}{{ tip_ru }}{% else %}{{ tip_en }}{% endif %}</span>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- ═══ TRAVEL TOOLS ══════════════════════════════════════════ -->
+<section class="section" style="background:#fff;" id="tools">
+  <div class="container">
+    <div style="text-align:center;margin-bottom:44px;" class="reveal">
+      <span class="eyebrow">{% if lang=='ru' %}Инструменты путешественника{% else %}Travel Tools{% endif %}</span>
+      <h2>{% if lang=='ru' %}Всё для планирования поездки{% else %}Everything for Trip Planning{% endif %}</h2>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:14px;" class="reveal" id="toolsGrid">
+      <!-- Currency Converter -->
+      <div style="background:var(--cream);border-radius:var(--r-lg);padding:24px;border:1px solid var(--line);">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+          <div style="width:40px;height:40px;border-radius:10px;background:var(--gold-lt);color:var(--gold);display:flex;align-items:center;justify-content:center;font-size:1rem;"><i class="fa fa-exchange-alt"></i></div>
+          <h4 style="font-family:var(--sans);font-size:.9rem;">{% if lang=='ru' %}Конвертер валют{% else %}Currency Converter{% endif %}</h4>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;margin-bottom:12px;">
+          <input type="number" id="currAmt" value="100" class="f-in" style="flex:1;" onchange="convertCurr()">
+          <select id="currFrom" class="f-in" style="flex:1;" onchange="convertCurr()">
+            <option value="1">USD</option><option value="0.92">EUR</option>
+            <option value="0.79">GBP</option><option value="3.67">AED</option><option value="90">RUB</option>
+          </select>
+        </div>
+        <div style="background:#fff;border-radius:10px;padding:14px;text-align:center;border:1px solid var(--line);">
+          <div style="font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:4px;">= Uzbekistani Som</div>
+          <div style="font-family:var(--serif);font-size:1.8rem;color:var(--gold);font-weight:600;" id="currResult">1,270,000</div>
+          <div style="font-size:.68rem;color:var(--muted);margin-top:4px;">1 USD = 12,700 UZS</div>
+        </div>
+      </div>
+
+      <!-- Visa Checker -->
+      <div style="background:var(--cream);border-radius:var(--r-lg);padding:24px;border:1px solid var(--line);">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+          <div style="width:40px;height:40px;border-radius:10px;background:var(--gold-lt);color:var(--gold);display:flex;align-items:center;justify-content:center;font-size:1rem;"><i class="fa fa-passport"></i></div>
+          <h4 style="font-family:var(--sans);font-size:.9rem;">{% if lang=='ru' %}Проверить визу{% else %}Visa Checker{% endif %}</h4>
+        </div>
+        <select class="f-in" id="visaCountry" onchange="checkVisa()" style="margin-bottom:12px;">
+          <option value="">{% if lang=='ru' %}Выберите страну{% else %}Select your country{% endif %}</option>
+          {% for country in ['USA','United Kingdom','Germany','France','Italy','Spain','Japan','South Korea','Australia','Canada','UAE','China','India','Russia','Turkey','Saudi Arabia','Netherlands','Switzerland','Sweden','Norway'] %}
+          <option value="{{ country }}">{{ country }}</option>
+          {% endfor %}
+        </select>
+        <div id="visaResult" style="background:#fff;border-radius:10px;padding:14px;border:1px solid var(--line);font-size:.82rem;color:var(--muted);text-align:center;">
+          {% if lang=='ru' %}Выберите страну для проверки{% else %}Select a country to check{% endif %}
+        </div>
+      </div>
+
+      <!-- Weather Widget -->
+      <div style="background:var(--cream);border-radius:var(--r-lg);padding:24px;border:1px solid var(--line);">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+          <div style="width:40px;height:40px;border-radius:10px;background:var(--gold-lt);color:var(--gold);display:flex;align-items:center;justify-content:center;font-size:1rem;"><i class="fa fa-cloud-sun"></i></div>
+          <h4 style="font-family:var(--sans);font-size:.9rem;">{% if lang=='ru' %}Погода в Узбекистане{% else %}Uzbekistan Weather{% endif %}</h4>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;">
+          {% for city, temp_s, temp_w, icon in [('Tashkent','32°','6°','☀️'),('Samarkand','30°','4°','🌤️'),('Bukhara','35°','3°','☀️')] %}
+          <div style="background:#fff;border-radius:10px;padding:12px 8px;text-align:center;border:1px solid var(--line);">
+            <div style="font-size:1.4rem;margin-bottom:4px;">{{ icon }}</div>
+            <div style="font-weight:700;font-size:.78rem;color:var(--ink);">{{ city }}</div>
+            <div style="font-size:.7rem;color:var(--muted);margin-top:4px;">
+              <span style="color:#e05;font-weight:600;">{{ temp_s }}</span> / <span style="color:#05e;font-weight:600;">{{ temp_w }}</span>
+            </div>
+            <div style="font-size:.56rem;color:var(--muted);">{% if lang=='ru' %}Лето / Зима{% else %}Summer / Winter{% endif %}</div>
+          </div>
+          {% endfor %}
+        </div>
+        <div style="margin-top:10px;font-size:.74rem;color:var(--muted);text-align:center;"><i class="fa fa-info-circle" style="color:var(--gold);"></i> {% if lang=='ru' %}Лучшее время: Март–Май, Сент–Нояб{% else %}Best time: Mar–May, Sep–Nov{% endif %}</div>
+      </div>
+
+      <!-- Packing List -->
+      <div style="background:var(--cream);border-radius:var(--r-lg);padding:24px;border:1px solid var(--line);">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+          <div style="width:40px;height:40px;border-radius:10px;background:var(--gold-lt);color:var(--gold);display:flex;align-items:center;justify-content:center;font-size:1rem;"><i class="fa fa-suitcase"></i></div>
+          <h4 style="font-family:var(--sans);font-size:.9rem;">{% if lang=='ru' %}Список вещей{% else %}Packing Essentials{% endif %}</h4>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          {% for item_en, item_ru, icon in [
+            ('Modest clothing (shoulders & knees covered)','Скромная одежда (плечи и колени закрыты)','fa-tshirt'),
+            ('Comfortable walking shoes','Удобная обувь для ходьбы','fa-shoe-prints'),
+            ('Sunscreen SPF 50+ (very sunny!)','Солнцезащитный крем SPF 50+ (очень солнечно!)','fa-sun'),
+            ('Portable charger + adapters','Портативная зарядка + адаптеры','fa-battery-full'),
+            ('USD/EUR cash (small bills)','Наличные USD/EUR (мелкие купюры)','fa-money-bill'),
+            ('Scarf (for mosques & sun)','Шарф (для мечетей и от солнца)','fa-user-tie'),
+          ] %}
+          <div style="display:flex;align-items:center;gap:9px;font-size:.78rem;color:var(--muted);padding:5px 0;border-bottom:1px solid rgba(6,24,38,.05);">
+            <input type="checkbox" style="accent-color:var(--gold);width:14px;height:14px;flex-shrink:0;">
+            <i class="fa {{ icon }}" style="color:var(--gold);width:14px;font-size:.76rem;"></i>
+            {% if lang=='ru' %}{{ item_ru }}{% else %}{{ item_en }}{% endif %}
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+    <style>
+    @media (min-width:640px) { #toolsGrid { grid-template-columns: repeat(2,1fr); } }
+    @media (min-width:960px) { #toolsGrid { grid-template-columns: repeat(4,1fr); } }
+    </style>
+  </div>
+</section>
+
+<!-- ═══ FOOD & CUISINE ════════════════════════════════════════ -->
+<section class="section" style="background:var(--cream);" id="food">
+  <div class="container">
+    <div style="text-align:center;margin-bottom:44px;" class="reveal">
+      <span class="eyebrow">{% if lang=='ru' %}Узбекская кухня{% else %}Uzbek Cuisine{% endif %}</span>
+      <h2>{% if lang=='ru' %}Еда которая вас покорит{% else %}Food That Will Captivate You{% endif %}</h2>
+      <p class="lead" style="margin-top:10px;">{% if lang=='ru' %}Узбекская кухня признана одной из лучших в мире — и не зря{% else %}Uzbek cuisine is ranked among the world's finest — and for good reason{% endif %}</p>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr;gap:16px;" class="reveal">
+      {% for emoji, name, desc_en, desc_ru, where_en, where_ru in [
+        ('🥘','Plov (Pilaf)','The national dish of Uzbekistan. Rice cooked in a massive kazan with lamb, carrots, onion, garlic and spices. Each region has its own recipe — Fergana plov is considered the finest.','Национальное блюдо Узбекистана. Рис, приготовленный в огромном казане с бараниной, морковью, луком, чесноком и специями. В каждом регионе своя рецептура — ферганский плов считается лучшим.','Best at Chorsu Bazaar (Tashkent) or Central Asian Plov Center','Лучший — на базаре Чорсу (Ташкент) или в Центре плова'),
+        ('🥙','Shashlik','Marinated lamb or beef skewers grilled over charcoal. The smoke from the grill and the spice blend is an art form passed down for generations.','Маринованные шампуры из баранины или говядины, жаренные на углях. Дым мангала и смесь специй — искусство, передаваемое из поколения в поколение.','Every bazaar, every street corner — you will smell it before you see it','На каждом базаре, на каждом углу — вы почуете запах прежде чем увидите'),
+        ('🥟','Samsa','Flaky pastry triangles baked in a tandoor oven. Filled with minced lamb, onion and black pepper. The dough is made fresh daily.','Слоёные треугольники из теста, испечённые в тандыре. Начинка — рубленая баранина, лук и чёрный перец. Тесто готовится свежим каждый день.','Tandoor bakeries throughout the old city in Bukhara and Samarkand','Пекарни-тандыры по всему старому городу в Бухаре и Самарканде'),
+        ('🍜','Lagman','Hand-pulled noodles in a rich spiced broth with lamb and vegetables. Considered the comfort food of Uzbekistan — warming and deeply satisfying.','Тянутая лапша в богатом пряном бульоне с бараниной и овощами. Считается комфортной едой Узбекистана — согревающей и глубоко сытной.','Dungankafe restaurants near the bazaar in every city','Дунганские кафе рядом с базаром в каждом городе'),
+        ('🫓','Non (Bread)','Sacred round bread baked in a clay tandoor. Decorated with intricate patterns, it is considered holy and must never be placed upside down.','Священный круглый хлеб из глиняного тандыра. Украшенный сложными узорами, он считается священным и его нельзя переворачивать вверх дном.','Every bakery in Uzbekistan — eat it warm from the tandoor','Каждая пекарня в Узбекистане — ешьте тёплым из тандыра'),
+        ('🍡','Manti (Dumplings)','Large steamed dumplings filled with seasoned lamb and onion. Served with sour cream (qatiq) and fresh herbs. A labor of love to prepare.','Крупные паровые пельмени с приправленной бараниной и луком. Подаются со сметаной (катык) и свежей зеленью. Готовятся с любовью.','Chaikhana (teahouses) in the old city districts','Чайханы в кварталах старого города'),
+      ] %}
+      <div style="background:#fff;border-radius:var(--r-lg);padding:18px 20px;display:flex;gap:14px;align-items:flex-start;border:1px solid var(--line);">
+        <div style="font-size:2.5rem;flex-shrink:0;line-height:1;">{{ emoji }}</div>
+        <div style="flex:1;">
+          <div style="font-weight:700;font-size:1rem;color:var(--ink);margin-bottom:5px;">{{ name }}</div>
+          <p style="font-size:.8rem;color:var(--muted);line-height:1.65;margin-bottom:8px;">{% if lang=='ru' %}{{ desc_ru }}{% else %}{{ desc_en }}{% endif %}</p>
+          <div style="font-size:.72rem;color:var(--gold);font-weight:600;display:flex;align-items:center;gap:5px;"><i class="fa fa-map-marker-alt"></i> {% if lang=='ru' %}{{ where_ru }}{% else %}{{ where_en }}{% endif %}</div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    <div style="background:var(--ink);border-radius:var(--r-lg);padding:22px;margin-top:22px;display:flex;gap:14px;align-items:center;flex-wrap:wrap;" class="reveal">
+      <div style="font-size:2rem;flex-shrink:0;">🍽️</div>
+      <div style="flex:1;min-width:180px;">
+        <div style="font-weight:700;color:#fff;margin-bottom:4px;">{% if lang=='ru' %}Кулинарный тур{% else %}Uzbek Cooking Class{% endif %}</div>
+        <div style="font-size:.78rem;color:rgba(255,255,255,.45);">{% if lang=='ru' %}Научитесь готовить настоящий плов и самсу. Включено в наши туры по запросу.{% else %}Learn to cook authentic plov and samsa. Available as add-on to any tour.{% endif %}</div>
+      </div>
+      <a href="{{ url_for('main.contacts') }}" class="btn btn-gold btn-sm" style="flex-shrink:0;">{% if lang=='ru' %}Добавить к туру{% else %}Add to My Tour{% endif %}</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ EMERGENCY & CONTACTS ═════════════════════════════════ -->
+<section class="section" style="background:var(--ink);" id="emergency">
+  <div class="container">
+    <div style="text-align:center;margin-bottom:40px;" class="reveal">
+      <span class="eyebrow" style="color:var(--gold);">{% if lang=='ru' %}Важные контакты{% else %}Important Contacts{% endif %}</span>
+      <h2 style="color:#fff;">{% if lang=='ru' %}Мы рядом 24/7{% else %}We're Here 24/7{% endif %}</h2>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr;gap:14px;" class="reveal" id="emGrid">
+      {% for icon, color, title_en, title_ru, val, sub_en, sub_ru in [
+        ('fab fa-whatsapp','#25D366','WhatsApp (fastest)','WhatsApp (быстрее всего)','+998 90 123 45 67','Average reply: 5 minutes','Среднее время ответа: 5 минут'),
+        ('fab fa-telegram','#2CA5E0','Telegram Channel','Telegram канал','@bektop','Tours, news & deals','Туры, новости и предложения'),
+        ('fa-phone','#C8A45D','24/7 Hotline','Горячая линия 24/7','+998 71 000 00 00','Available day & night','Работает круглосуточно'),
+        ('fa-envelope','#C8A45D','Email','Email','info@bektour.uz','Reply within 4 hours','Ответ в течение 4 часов'),
+        ('fa-exclamation-triangle','#e53e3e','Emergency (in Uzbekistan)','Экстренная помощь (в Узбекистане)','102 (Police) · 103 (Medical)','Free calls within Uzbekistan','Бесплатные звонки внутри страны'),
+        ('fa-shield-alt','#C8A45D','Tourist Police Hotline','Туристическая полиция','+998 71 144 00 00','Specialized tourist support','Специализированная поддержка туристов'),
+      ] %}
+      <a href="{% if 'whatsapp' in icon.lower() %}https://wa.me/998901234567{% elif 'telegram' in icon.lower() %}https://t.me/bektop{% elif 'phone' in icon %}tel:+998710000000{% elif 'envelope' in icon %}mailto:info@bektour.uz{% else %}#{% endif %}"
+         target="_blank"
+         style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:var(--r);padding:18px 20px;display:flex;align-items:center;gap:14px;text-decoration:none;transition:background .2s;"
+         onmouseover="this.style.background='rgba(255,255,255,.1)'" onmouseout="this.style.background='rgba(255,255,255,.06)'">
+        <div style="width:46px;height:46px;border-radius:12px;background:{{ color }}22;border:1px solid {{ color }}44;display:flex;align-items:center;justify-content:center;font-size:1.2rem;color:{{ color }};flex-shrink:0;"><i class="{{ icon }}"></i></div>
+        <div style="flex:1;">
+          <div style="font-weight:700;color:#fff;font-size:.88rem;">{% if lang=='ru' %}{{ title_ru }}{% else %}{{ title_en }}{% endif %}</div>
+          <div style="font-size:.92rem;color:{{ color }};font-weight:600;margin:2px 0;">{{ val }}</div>
+          <div style="font-size:.7rem;color:rgba(255,255,255,.35);">{% if lang=='ru' %}{{ sub_ru }}{% else %}{{ sub_en }}{% endif %}</div>
+        </div>
+        <i class="fa fa-arrow-right" style="color:rgba(255,255,255,.2);font-size:.8rem;"></i>
+      </a>
+      {% endfor %}
+    </div>
+    <style>
+    @media (min-width:640px) { #emGrid { grid-template-columns: repeat(2,1fr); } }
+    @media (min-width:960px) { #emGrid { grid-template-columns: repeat(3,1fr); } }
+    </style>
+  </div>
+</section>
+
+<!-- ═══ SPECIAL OFFERS ══════════════════════════════════════ -->
+<section class="section" style="background:var(--cream);" id="offers">
+  <div class="container">
+    <div style="text-align:center;margin-bottom:44px;" class="reveal">
+      <span class="eyebrow">{% if lang=='ru' %}Специальные предложения{% else %}Special Offers{% endif %}</span>
+      <h2>{% if lang=='ru' %}Лучшие цены прямо сейчас{% else %}Best Deals Right Now{% endif %}</h2>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr;gap:14px;" class="reveal">
+      {% for badge, color, title_en, title_ru, orig, sale, save, ends_en, ends_ru, detail_en, detail_ru in [
+        ('🔥 HOT DEAL','#DC2626','7-Day Grand Silk Road Tour','7-дневный Гранд тур Шёлкового пути',890,699,'$191','Ends Sunday','Заканчивается в воскресенье','Includes all 3 UNESCO cities + private guide + 4★ hotels','Включает все 3 города ЮНЕСКО + частный гид + 4★ отели'),
+        ('⭐ EARLY BIRD','#C8A45D','Spring Navruz Special (March)','Весенний спецтур на Навруз (март)',650,520,'$130','Book 30 days ahead','Бронируйте за 30 дней','Experience the Persian New Year festival + flower markets','Праздник Навруз + цветочные рынки'),
+        ('👨‍👩‍👧‍👦 FAMILY DEAL','#16A34A','Family of 4 — 10% off','Семья из 4 — скидка 10%',3200,2880,'$320','Ongoing','Действует постоянно','Children under 12 stay & eat free at partner hotels','Дети до 12 лет живут и едят бесплатно в отелях-партнёрах'),
+      ] %}
+      <div style="background:#fff;border-radius:var(--r-lg);padding:22px;border:1.5px solid {{ color }}33;position:relative;overflow:hidden;">
+        <div style="position:absolute;top:0;right:0;background:{{ color }};color:#fff;padding:6px 16px;font-size:.68rem;font-weight:700;border-radius:0 var(--r-lg) 0 var(--r);">{{ badge }}</div>
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-top:10px;">
+          <div style="flex:1;min-width:180px;">
+            <div style="font-weight:700;font-size:.98rem;color:var(--ink);margin-bottom:5px;">{% if lang=='ru' %}{{ title_ru }}{% else %}{{ title_en }}{% endif %}</div>
+            <div style="font-size:.78rem;color:var(--muted);margin-bottom:8px;">{% if lang=='ru' %}{{ detail_ru }}{% else %}{{ detail_en }}{% endif %}</div>
+            <div style="font-size:.7rem;color:{{ color }};font-weight:600;"><i class="fa fa-clock"></i> {% if lang=='ru' %}{{ ends_ru }}{% else %}{{ ends_en }}{% endif %}</div>
+          </div>
+          <div style="text-align:right;flex-shrink:0;">
+            <div style="font-size:.76rem;color:var(--muted);text-decoration:line-through;">${{ orig }}</div>
+            <div style="font-family:var(--serif);font-size:2rem;color:{{ color }};font-weight:700;line-height:1;">${{ sale }}</div>
+            <div style="font-size:.68rem;background:{{ color }}15;color:{{ color }};border-radius:20px;padding:2px 10px;font-weight:700;margin-top:4px;">{% if lang=='ru' %}Экономия{% else %}Save{% endif %} {{ save }}</div>
+            <a href="{{ url_for('main.contacts') }}" class="btn btn-sm" style="background:{{ color }};color:#fff;margin-top:10px;display:inline-flex;">{% if lang=='ru' %}Забронировать{% else %}Book Now{% endif %}</a>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
 
 <!-- ═══ NEWSLETTER ═════════════════════════════════════════ -->
 <div class="nl-section">
