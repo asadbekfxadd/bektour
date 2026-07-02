@@ -93,19 +93,6 @@ def create_app():
     app = Flask(__name__)
     app.config.from_object('config.config.Config')
 
-    # WhiteNoise for efficient static file serving
-    try:
-        from whitenoise import WhiteNoise
-        app.wsgi_app = WhiteNoise(
-            app.wsgi_app,
-            root=app.static_folder,
-            prefix='static',
-            max_age=31536000,  # 1 year cache for static assets
-            autorefresh=False,
-        )
-    except ImportError:
-        pass  # WhiteNoise not installed, Flask will serve static files
-
     db.init_app(app)
     login_manager.init_app(app)
     migrate.init_app(app, db)
