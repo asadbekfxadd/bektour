@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block title %}{% if lang=='ru' %}Регистрация{% elif lang=='uz' %}Ro\'yxatdan o\'tish{% else %}Register{% endif %} — Bek Tour{% endblock %}
+{% block content %}
+<div class="auth-page">
+  <div class="auth-card">
+    <div class="auth-logo"><span style="font-size:2rem;">✈</span></div>
+    <h1 class="auth-title">{% if lang=='ru' %}Регистрация{% elif lang=='uz' %}Ro\'yxatdan o\'tish{% else %}Create Account{% endif %}</h1>
+    <p class="auth-sub">{% if lang=='ru' %}Создайте аккаунт бесплатно{% elif lang=='uz' %}Bepul hisob yarating{% else %}Create your free account{% endif %}</p>
+    <form method="POST" action="{{ url_for('auth.register') }}">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-lbl">{% if lang=='ru' %}Имя{% elif lang=='uz' %}Ism{% else %}First Name{% endif %}</label>
+          <input type="text" name="first_name" class="form-ctrl" placeholder="John" required>
+        </div>
+        <div class="form-group">
+          <label class="form-lbl">{% if lang=='ru' %}Фамилия{% elif lang=='uz' %}Familiya{% else %}Last Name{% endif %}</label>
+          <input type="text" name="last_name" class="form-ctrl" placeholder="Doe">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-lbl">Email</label>
+        <input type="email" name="email" class="form-ctrl" placeholder="your@email.com" required autocomplete="email">
+      </div>
+      <div class="form-group">
+        <label class="form-lbl">{% if lang=='ru' %}Телефон{% elif lang=='uz' %}Telefon{% else %}Phone{% endif %}</label>
+        <input type="tel" name="phone" class="form-ctrl" placeholder="+1 234 567 8900">
+      </div>
+      <div class="form-group">
+        <label class="form-lbl">{% if lang=='ru' %}Пароль{% elif lang=='uz' %}Parol{% else %}Password{% endif %}</label>
+        <input type="password" name="password" class="form-ctrl" placeholder="Min 8 characters" required autocomplete="new-password">
+      </div>
+      <button type="submit" class="btn btn-gold btn-block" style="margin-top:8px;">
+        {% if lang=='ru' %}Создать аккаунт{% elif lang=='uz' %}Hisob yaratish{% else %}Create Account{% endif %}
+      </button>
+    </form>
+    <div class="auth-link">
+      {% if lang=='ru' %}Уже есть аккаунт?{% elif lang=='uz' %}Hisobingiz bormi?{% else %}Already have an account?{% endif %}
+      <a href="{{ url_for('auth.login') }}">{% if lang=='ru' %}Войти{% elif lang=='uz' %}Kirish{% else %}Sign in{% endif %}</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

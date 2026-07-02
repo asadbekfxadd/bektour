@@ -1,0 +1,85 @@
+{% extends 'b2b/_layout.html' %}
+{% block title %}Reports — Partner Hub{% endblock %}
+{% block b2b_content %}
+<div class="b2b-page-head">
+  <div>
+    <div class="b2b-page-title">{% if lang=='ru' %}Отчёты{% else %}Reports & Analytics{% endif %}</div>
+    <div class="b2b-page-sub">{% if lang=='ru' %}Эффективность вашего бизнеса{% else %}Your business performance overview{% endif %}</div>
+  </div>
+  <div style="display:flex;gap:8px;">
+    <button onclick="window.print()" class="btn btn-outline btn-sm"><i class="fa fa-file-pdf"></i> Export PDF</button>
+    <a href="#" onclick="exportCSV();return false;" class="btn btn-outline btn-sm"><i class="fa fa-file-excel"></i> Export Excel</a>
+  </div>
+</div>
+
+<div class="b2b-stats">
+  <div class="b2b-stat-tile"><div class="b2b-stat-icon"><i class="fa fa-sack-dollar"></i></div><div class="b2b-stat-n">${{ '{:,.0f}'.format(total_revenue) }}</div><div class="b2b-stat-l">{% if lang=='ru' %}Общий доход{% else %}Total Revenue{% endif %}</div></div>
+  <div class="b2b-stat-tile"><div class="b2b-stat-icon"><i class="fa fa-calendar-check"></i></div><div class="b2b-stat-n">{{ total_bookings }}</div><div class="b2b-stat-l">{% if lang=='ru' %}Всего бронирований{% else %}Total Bookings{% endif %}</div></div>
+  <div class="b2b-stat-tile"><div class="b2b-stat-icon"><i class="fa fa-percent"></i></div><div class="b2b-stat-n">{{ conversion }}%</div><div class="b2b-stat-l">{% if lang=='ru' %}Конверсия{% else %}Conversion Rate{% endif %}</div></div>
+  <div class="b2b-stat-tile"><div class="b2b-stat-icon"><i class="fa fa-star"></i></div><div class="b2b-stat-n">{{ agency.discount_percent }}%</div><div class="b2b-stat-l">{% if lang=='ru' %}Ваша скидка{% else %}Your Discount{% endif %}</div></div>
+</div>
+
+<div class="b2b-panel">
+  <div class="b2b-panel-head"><h3><i class="fa fa-chart-line" style="color:var(--gold);"></i> {% if lang=='ru' %}Доход за 12 месяцев{% else %}12-Month Revenue Trend{% endif %}</h3></div>
+  <div class="b2b-panel-body" style="overflow-x:auto;">
+    {% set max_val = (monthly_revenue|max) or 1 %}
+    <div class="b2b-chart" style="min-width:600px;">
+      {% for label in monthly_labels %}
+      <div class="b2b-bar-col">
+        <div style="font-size:.62rem;color:var(--ink);font-weight:700;">${{ '{:,.0f}'.format(monthly_revenue[loop.index0]) }}</div>
+        <div class="b2b-bar" style="height:{{ ((monthly_revenue[loop.index0] / max_val) * 110)|round|int if max_val > 0 else 4 }}px;"></div>
+        <div class="b2b-bar-label">{{ label }}</div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<div class="b2b-panel">
+  <div class="b2b-panel-head"><h3><i class="fa fa-calendar-week" style="color:var(--gold);"></i> {% if lang=='ru' %}Бронирования по месяцам{% else %}Bookings by Month{% endif %}</h3></div>
+  <div class="b2b-panel-body" style="overflow-x:auto;">
+    {% set max_b = (monthly_bookings|max) or 1 %}
+    <div class="b2b-chart" style="min-width:600px;">
+      {% for label in monthly_labels %}
+      <div class="b2b-bar-col">
+        <div style="font-size:.62rem;color:var(--ink);font-weight:700;">{{ monthly_bookings[loop.index0] }}</div>
+        <div class="b2b-bar" style="height:{{ ((monthly_bookings[loop.index0] / max_b) * 110)|round|int if max_b > 0 else 4 }}px;background:linear-gradient(180deg,var(--ink),var(--ink2));"></div>
+        <div class="b2b-bar-label">{{ label }}</div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<div class="b2b-panel">
+  <div class="b2b-panel-head"><h3><i class="fa fa-ranking-star" style="color:var(--gold);"></i> {% if lang=='ru' %}Самые популярные объекты{% else %}Most Popular Properties{% endif %}</h3></div>
+  <div class="b2b-panel-body">
+    {% if top_properties %}
+    {% for name, cnt in top_properties %}
+    <div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--line);">
+      <div style="width:28px;height:28px;border-radius:8px;background:var(--gold-lt);color:var(--gold);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.78rem;">{{ loop.index }}</div>
+      <div style="flex:1;font-weight:600;font-size:.84rem;">{{ name }}</div>
+      <div style="font-size:.78rem;color:var(--muted);">{{ cnt }} {% if lang=='ru' %}бронирований{% else %}bookings{% endif %}</div>
+    </div>
+    {% endfor %}
+    {% else %}
+    <div class="b2b-empty" style="padding:30px;"><p>{% if lang=='ru' %}Недостаточно данных{% else %}Not enough data yet{% endif %}</p></div>
+    {% endif %}
+  </div>
+</div>
+
+<script>
+function exportCSV(){
+  let csv = 'Month,Revenue,Bookings\\n';
+  const labels = {{ monthly_labels|tojson }};
+  const rev = {{ monthly_revenue|tojson }};
+  const bk = {{ monthly_bookings|tojson }};
+  labels.forEach((l,i)=>{ csv += `${l},${rev[i]},${bk[i]}\\n`; });
+  const blob = new Blob([csv], {type:'text/csv'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'bektour_report.csv';
+  a.click();
+}
+</script>
+{% endblock %}

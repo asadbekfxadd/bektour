@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block title %}{% if lang=='ru' %}Профиль{% elif lang=='uz' %}Profil{% else %}Profile{% endif %} — Bek Tour{% endblock %}
+{% block content %}
+<div class="page-hero">
+  <div class="container">
+    <h1>{% if lang=='ru' %}Мой профиль{% elif lang=='uz' %}Mening profilim{% else %}My Profile{% endif %}</h1>
+    <p>{{ current_user.email }}</p>
+  </div>
+</div>
+<section style="padding:56px 0;">
+  <div class="container">
+    <div style="display:grid;grid-template-columns:280px 1fr;gap:28px;align-items:start;">
+      <div class="filter-panel">
+        <div style="text-align:center;margin-bottom:20px;">
+          <div style="width:72px;height:72px;border-radius:50%;background:var(--gold);color:var(--white);display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:2rem;margin:0 auto 12px;">{{ (current_user.first_name or current_user.email)[0].upper() }}</div>
+          <div style="font-weight:700;font-size:.95rem;">{{ current_user.full_name }}</div>
+          <div style="font-size:.76rem;color:var(--muted);">{{ current_user.email }}</div>
+        </div>
+        <a href="{{ url_for('main.index') }}" class="dash-nav-item">🏠 {% if lang=='ru' %}Главная{% elif lang=='uz' %}Asosiy{% else %}Home{% endif %}</a>
+        {% if current_user.role == 'admin' %}<a href="{{ url_for('admin.dashboard') }}" class="dash-nav-item">⚙️ Admin</a>{% endif %}
+        {% if current_user.role == 'agent' %}<a href="{{ url_for('b2b.dashboard') }}" class="dash-nav-item">🏢 B2B</a>{% endif %}
+        <a href="{{ url_for('auth.logout') }}" class="dash-nav-item" style="color:#e53e3e;">🚪 {% if lang=='ru' %}Выйти{% elif lang=='uz' %}Chiqish{% else %}Logout{% endif %}</a>
+      </div>
+      <div>
+        <div class="content-card">
+          <h3>{% if lang=='ru' %}Мои бронирования{% elif lang=='uz' %}Mening bronlarim{% else %}My Bookings{% endif %}</h3>
+          {% if bookings %}
+          {% for b in bookings %}
+          <div class="booking-row">
+            <div style="flex:1;">
+              <div style="font-weight:600;font-size:.88rem;">{{ b.villa.title_en }}</div>
+              <div style="font-size:.76rem;color:var(--muted);">{{ b.check_in }} — {{ b.check_out }}</div>
+            </div>
+            <span class="badge {% if b.status=='confirmed' %}bdg-green{% elif b.status=='cancelled' %}bdg-red{% else %}bdg-gold{% endif %}">{{ b.status }}</span>
+            <div style="font-weight:700;color:var(--gold);">${{ b.total_price }}</div>
+          </div>
+          {% endfor %}
+          {% else %}
+          <div style="text-align:center;padding:48px 20px;color:var(--muted);">
+            <div style="font-size:2.5rem;margin-bottom:14px;">🗺️</div>
+            <p>{% if lang=='ru' %}Бронирований пока нет{% elif lang=='uz' %}Hozircha bronlar yo\'q{% else %}No bookings yet{% endif %}</p>
+            <a href="{{ url_for('villas.index') }}" class="btn btn-gold btn-sm" style="margin-top:14px;">{% if lang=='ru' %}Найти жильё{% else %}Find a Stay{% endif %}</a>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% block title %}B2B Partnership — Bek Tour{% endblock %}
+{% block content %}
+<div class="page-hero" style="text-align:center;">
+  <div class="container">
+    <span class="section-label">For Travel Agencies</span>
+    <h1>B2B Partnership</h1>
+    <p>{% if lang=='ru' %}Специальные тарифы для агентств по всему миру{% elif lang=='uz' %}Butun dunyo agentliklari uchun maxsus narxlar{% else %}Special rates for travel agencies worldwide{% endif %}</p>
+  </div>
+</div>
+<section style="padding:64px 0;">
+  <div class="container">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:start;">
+      <div>
+        <h2 style="font-size:2rem;margin-bottom:28px;">{% if lang=='ru' %}Преимущества партнёрства{% elif lang=='uz' %}Hamkorlik afzalliklari{% else %}Partner Benefits{% endif %}</h2>
+        {% for ico, title_en, title_ru, desc_en, desc_ru in [
+          ('fa-percent','Up to 20% Commission','До 20% комиссии','Competitive rates on every booking','Конкурентные ставки на каждое бронирование'),
+          ('fa-credit-card','Credit Limit','Кредитный лимит','Book now, pay later with flexible terms','Забронируйте сейчас, платите позже'),
+          ('fa-headset','Dedicated Manager','Персональный менеджер','Your own account manager 24/7','Ваш персональный менеджер 24/7'),
+          ('fa-chart-line','Analytics Dashboard','Аналитика','Track bookings and commissions','Отслеживайте бронирования и комиссии'),
+        ] %}
+        <div style="display:flex;gap:16px;margin-bottom:22px;padding:18px;background:var(--white);border-radius:var(--r);border:1px solid var(--line);">
+          <div style="width:44px;height:44px;border-radius:12px;background:var(--gold-bg);color:var(--gold);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;"><i class="fa {{ ico }}"></i></div>
+          <div>
+            <div style="font-weight:700;font-size:.9rem;margin-bottom:4px;">{% if lang=='ru' %}{{ title_ru }}{% else %}{{ title_en }}{% endif %}</div>
+            <div style="font-size:.78rem;color:var(--muted);">{% if lang=='ru' %}{{ desc_ru }}{% else %}{{ desc_en }}{% endif %}</div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      <div style="background:var(--white);border-radius:var(--r-xl);padding:36px;box-shadow:var(--s2);border:1px solid var(--line);">
+        <h3 style="font-family:var(--sans);font-size:1.1rem;margin-bottom:6px;">{% if lang=='ru' %}Подать заявку{% elif lang=='uz' %}Ariza berish{% else %}Apply for Partnership{% endif %}</h3>
+        <p style="color:var(--muted);font-size:.8rem;margin-bottom:22px;">{% if lang=='ru' %}Ответим в течение 24 часов{% else %}We'll respond within 24 hours{% endif %}</p>
+        {% if current_user.is_authenticated %}
+        <form method="POST" action="{{ url_for('b2b.register') }}">
+          <div class="form-group"><label class="form-lbl">{% if lang=='ru' %}Название агентства{% else %}Agency Name{% endif %} *</label><input type="text" name="name" class="form-ctrl" required placeholder="Travel Agency"></div>
+          <div class="form-row">
+            <div class="form-group"><label class="form-lbl">{% if lang=='ru' %}Страна{% else %}Country{% endif %}</label><input type="text" name="country" class="form-ctrl" placeholder="Country"></div>
+            <div class="form-group"><label class="form-lbl">{% if lang=='ru' %}Телефон{% else %}Phone{% endif %}</label><input type="tel" name="phone" class="form-ctrl" placeholder="+1 ..."></div>
+          </div>
+          <div class="form-group"><label class="form-lbl">Email</label><input type="email" name="email" class="form-ctrl" placeholder="agency@email.com"></div>
+          <button type="submit" class="btn btn-gold btn-block btn-lg"><i class="fa fa-handshake"></i> {% if lang=='ru' %}Стать партнёром{% else %}Apply Now{% endif %}</button>
+        </form>
+        {% else %}
+        <p style="color:var(--muted);margin-bottom:18px;">{% if lang=='ru' %}Войдите в систему для подачи заявки{% else %}Please log in to apply{% endif %}</p>
+        <a href="{{ url_for('auth.login') }}" class="btn btn-gold btn-block btn-lg"><i class="fa fa-sign-in-alt"></i> {% if lang=='ru' %}Войти{% else %}Login to Apply{% endif %}</a>
+        <p style="text-align:center;margin-top:14px;font-size:.8rem;color:var(--muted);">{% if lang=='ru' %}Нет аккаунта?{% else %}No account?{% endif %} <a href="{{ url_for('auth.register') }}" style="color:var(--gold);font-weight:600;">{% if lang=='ru' %}Зарегистрироваться{% else %}Register{% endif %}</a></p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

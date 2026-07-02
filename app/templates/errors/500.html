@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block title %}500 — Server Error{% endblock %}
+{% block content %}
+<div style="min-height:80vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:80px 20px;">
+  <div>
+    <div style="font-family:var(--serif);font-size:8rem;color:var(--gold);line-height:1;margin-bottom:20px;">500</div>
+    <h1 style="font-size:2rem;margin-bottom:14px;">{% if lang=='ru' %}Ошибка сервера{% else %}Server Error{% endif %}</h1>
+    <p style="color:var(--muted);margin-bottom:32px;">{% if lang=='ru' %}Что-то пошло не так. Мы уже исправляем.{% else %}Something went wrong. Our team is on it.{% endif %}</p>
+    <a href="{{ url_for('main.index') }}" class="btn btn-gold btn-lg"><i class="fa fa-home"></i> {% if lang=='ru' %}На главную{% else %}Go Home{% endif %}</a>
+  </div>
+</div>
+{% endblock %}

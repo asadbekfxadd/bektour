@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% block title %}Admin Dashboard — Bek Tour{% endblock %}
+{% block content %}
+<div class="page-hero"><div class="container"><h1>Admin Dashboard</h1><p>Bek Tour management panel</p></div></div>
+<section style="padding:48px 0;">
+  <div class="container">
+    <div class="stat-cards" style="grid-template-columns:repeat(4,1fr);margin-bottom:28px;">
+      <div class="stat-card"><div class="stat-card-n">{{ stats.villas }}</div><div class="stat-card-l">Properties</div></div>
+      <div class="stat-card"><div class="stat-card-n">{{ stats.bookings }}</div><div class="stat-card-l">Bookings</div></div>
+      <div class="stat-card"><div class="stat-card-n">{{ stats.users }}</div><div class="stat-card-l">Users</div></div>
+      <div class="stat-card"><div class="stat-card-n" style="color:#e53e3e;">{{ stats.new }}</div><div class="stat-card-l">New Requests</div></div>
+    </div>
+    <div style="display:flex;gap:10px;margin-bottom:24px;flex-wrap:wrap;">
+      <a href="{{ url_for('admin.villas') }}" class="btn btn-ink btn-sm"><i class="fa fa-home"></i> Villas</a>
+      <a href="{{ url_for('admin.bookings') }}" class="btn btn-gold btn-sm"><i class="fa fa-calendar"></i> Bookings</a>
+    </div>
+    <div class="content-card">
+      <h3><i class="fa fa-list" style="color:var(--gold);margin-right:8px;"></i>Recent Bookings</h3>
+      {% for b in bookings %}
+      <div class="booking-row">
+        <div style="flex:1;">
+          <div style="font-weight:600;font-size:.86rem;">{{ b.villa.title_en if b.villa else 'N/A' }}</div>
+          <div style="font-size:.74rem;color:var(--muted);">{{ b.first_name }} · {{ b.check_in }} → {{ b.check_out }}</div>
+        </div>
+        <span class="badge {% if b.status=='confirmed' %}bdg-green{% elif b.status=='cancelled' %}bdg-red{% else %}bdg-gold{% endif %}">{{ b.status }}</span>
+        <div style="font-weight:700;color:var(--gold);font-size:.88rem;">${{ b.total_price or 0 }}</div>
+      </div>
+      {% else %}
+      <p style="color:var(--muted);text-align:center;padding:24px;">No bookings yet</p>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,63 @@
+{% extends 'b2b/_layout.html' %}
+{% block title %}Properties — Partner Hub{% endblock %}
+{% block b2b_content %}
+<div class="b2b-page-head">
+  <div>
+    <div class="b2b-page-title">{% if lang=='ru' %}Объекты размещения{% else %}Properties{% endif %}</div>
+    <div class="b2b-page-sub">{{ properties|length }} {% if lang=='ru' %}объектов{% else %}total properties{% endif %}</div>
+  </div>
+  <a href="{{ url_for('b2b.property_new') }}" class="btn btn-gold btn-sm"><i class="fa fa-plus"></i> {% if lang=='ru' %}Добавить объект{% else %}Add Property{% endif %}</a>
+</div>
+
+<div class="b2b-chips">
+  <div class="b2b-chip on" onclick="filterProps('all', this)">{% if lang=='ru' %}Все{% else %}All{% endif %} <span class="b2b-chip-count">{{ properties|length }}</span></div>
+  <div class="b2b-chip" onclick="filterProps('published', this)">{% if lang=='ru' %}Опубликовано{% else %}Published{% endif %} <span class="b2b-chip-count">{{ properties|selectattr('status','equalto','published')|list|length }}</span></div>
+  <div class="b2b-chip" onclick="filterProps('draft', this)">{% if lang=='ru' %}Черновики{% else %}Drafts{% endif %} <span class="b2b-chip-count">{{ properties|selectattr('status','equalto','draft')|list|length }}</span></div>
+</div>
+
+{% if properties %}
+<div class="b2b-card-grid" id="propsGrid">
+  {% for p in properties %}
+  <div class="b2b-item-card" data-status="{{ p.status }}">
+    <div class="b2b-item-img">
+      <img src="{{ p.cover_image or '/photo/' + (p.city or 'samarkand').lower() + '?w=400&h=300' }}" alt="{{ p.name }}" loading="lazy">
+      <span class="b2b-pill b2b-pill-{{ p.status }} b2b-item-status">{{ p.status }}</span>
+    </div>
+    <div class="b2b-item-body">
+      <div class="b2b-item-title">{{ p.name }}</div>
+      <div class="b2b-item-meta">
+        <span><i class="fa fa-tag"></i> {{ p.category|title }}</span>
+        <span><i class="fa fa-map-marker-alt"></i> {{ p.city or '—' }}</span>
+        <span><i class="fa fa-bed"></i> {{ p.rooms.count() }} {% if lang=='ru' %}номеров{% else %}rooms{% endif %}</span>
+      </div>
+      <div class="b2b-item-actions">
+        <a href="{{ url_for('b2b.property_edit', id=p.id) }}" class="btn btn-outline btn-sm" style="flex:1;justify-content:center;"><i class="fa fa-edit"></i> {% if lang=='ru' %}Изменить{% else %}Edit{% endif %}</a>
+        <form method="POST" action="{{ url_for('b2b.property_publish', id=p.id) }}">
+          <button type="submit" class="btn btn-sm" style="width:100%;background:{% if p.status=='draft' %}var(--gold){% else %}var(--ink){% endif %};color:#fff;">
+            {% if p.status=='draft' %}{% if lang=='ru' %}Опубликовать{% else %}Publish{% endif %}{% else %}{% if lang=='ru' %}Снять{% else %}Unpublish{% endif %}{% endif %}
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="b2b-panel"><div class="b2b-empty">
+  <div class="b2b-empty-icon">🏨</div>
+  <h4>{% if lang=='ru' %}Нет объектов{% else %}No properties yet{% endif %}</h4>
+  <p>{% if lang=='ru' %}Добавьте отель, виллу или гостевой дом чтобы начать принимать бронирования{% else %}Add a hotel, villa or guesthouse to start receiving bookings{% endif %}</p>
+  <a href="{{ url_for('b2b.property_new') }}" class="btn btn-gold"><i class="fa fa-plus"></i> {% if lang=='ru' %}Добавить первый объект{% else %}Add Your First Property{% endif %}</a>
+</div></div>
+{% endif %}
+
+<script>
+function filterProps(status, el){
+  document.querySelectorAll('.b2b-chips .b2b-chip').forEach(c=>c.classList.remove('on'));
+  el.classList.add('on');
+  document.querySelectorAll('#propsGrid .b2b-item-card').forEach(card=>{
+    card.style.display = (status==='all' || card.dataset.status===status) ? '' : 'none';
+  });
+}
+</script>
+{% endblock %}

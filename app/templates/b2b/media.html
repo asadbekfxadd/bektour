@@ -1,0 +1,140 @@
+{% extends 'b2b/_layout.html' %}
+{% block title %}Media Center — Partner Hub{% endblock %}
+{% block b2b_content %}
+<div class="b2b-page-head">
+  <div>
+    <div class="b2b-page-title">{% if lang=='ru' %}Медиа-центр{% else %}Media Center{% endif %}</div>
+    <div class="b2b-page-sub">{{ assets|length }} {% if lang=='ru' %}файлов{% else %}files{% endif %}</div>
+  </div>
+</div>
+
+<div style="display:grid;grid-template-columns:1fr;gap:20px;" id="mediaGrid">
+  <div class="b2b-form-section">
+    <h4><i class="fa fa-cloud-upload-alt"></i> {% if lang=='ru' %}Загрузить файлы{% else %}Upload Files{% endif %}</h4>
+    <div class="b2b-dropzone" id="mediaDropzone" onclick="document.getElementById('mediaFile').click()">
+      <i class="fa fa-cloud-upload-alt"></i>
+      <div style="font-weight:600;font-size:.86rem;color:var(--ink);">{% if lang=='ru' %}Перетащите файлы сюда или нажмите{% else %}Drag & drop files here or click to browse{% endif %}</div>
+      <div style="font-size:.74rem;color:var(--muted);margin-top:4px;">{% if lang=='ru' %}Фото, видео, PDF, логотипы — до 25MB{% else %}Images, videos, PDFs, logos — up to 25MB{% endif %}</div>
+    </div>
+    <form method="POST" action="{{ url_for('b2b.media_upload') }}" enctype="multipart/form-data" id="mediaUploadForm" style="margin-top:14px;">
+      <input type="file" id="mediaFile" name="file" style="display:none;" accept="image/*,video/*,.pdf,.doc,.docx" onchange="previewFile(this)">
+      <div id="filePreview" style="display:none;background:var(--cream);border-radius:10px;padding:12px;margin-bottom:10px;display:flex;align-items:center;gap:10px;">
+        <i class="fa fa-file" style="color:var(--gold);font-size:1.2rem;"></i>
+        <span id="fileName" style="font-size:.82rem;font-weight:600;color:var(--ink);"></span>
+        <span id="fileSize" style="font-size:.72rem;color:var(--muted);"></span>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+        <select name="file_type" class="form-ctrl" style="width:auto;">
+          <option value="image">📷 {% if lang=='ru' %}Фото{% else %}Photo{% endif %}</option>
+          <option value="video">🎬 Video</option>
+          <option value="drone">🚁 Drone</option>
+          <option value="360">🌐 360°</option>
+          <option value="pdf">📄 PDF</option>
+          <option value="logo">🏷️ Logo</option>
+          <option value="certificate">📜 {% if lang=='ru' %}Сертификат{% else %}Certificate{% endif %}</option>
+        </select>
+        <select name="folder" class="form-ctrl" style="width:auto;">
+          {% for f in folders %}<option value="{{ f }}">{{ f }}</option>{% endfor %}
+          <option value="General">General</option>
+          <option value="Properties">Properties</option>
+          <option value="Tours">Tours</option>
+          <option value="Certificates">Certificates</option>
+        </select>
+        <button type="submit" class="btn btn-gold btn-sm" id="uploadBtn" disabled>
+          <i class="fa fa-upload"></i> {% if lang=='ru' %}Загрузить{% else %}Upload{% endif %}
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <div class="b2b-chips">
+    <a href="{{ url_for('b2b.media') }}" class="b2b-chip {% if not current_folder %}on{% endif %}">{% if lang=='ru' %}Все папки{% else %}All Folders{% endif %}</a>
+    {% for f in folders %}
+    <a href="{{ url_for('b2b.media', folder=f) }}" class="b2b-chip {% if current_folder==f %}on{% endif %}"><i class="fa fa-folder"></i> {{ f }}</a>
+    {% endfor %}
+  </div>
+
+  {% if assets %}
+  <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;" id="assetsGrid">
+    {% for a in assets %}
+    <div class="b2b-item-card" style="position:relative;">
+      <div class="b2b-item-img" style="height:120px;">
+        {% if a.file_type in ['image','drone','360','logo','certificate'] %}
+        <img src="{{ a.file_url }}" alt="{{ a.filename }}" loading="lazy">
+        {% else %}
+        <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:var(--cream);font-size:2rem;color:var(--gold);">
+          <i class="fa {% if a.file_type=='video' %}fa-video{% elif a.file_type=='pdf' %}fa-file-pdf{% else %}fa-file{% endif %}"></i>
+        </div>
+        {% endif %}
+        <span style="position:absolute;top:8px;left:8px;background:rgba(6,24,38,.7);color:#fff;font-size:.6rem;padding:2px 8px;border-radius:10px;">{{ a.file_type }}</span>
+      </div>
+      <div style="padding:10px 12px;">
+        <div style="font-size:.76rem;font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ a.filename }}</div>
+        <div style="font-size:.66rem;color:var(--muted);margin-top:2px;display:flex;justify-content:space-between;align-items:center;">
+          <span>{{ a.folder }}</span>
+          <form method="POST" action="{{ url_for('b2b.media_delete', id=a.id) }}" style="display:inline;">
+            <button type="submit" style="background:none;border:none;color:#dc2626;cursor:pointer;font-size:.74rem;"><i class="fa fa-trash"></i></button>
+          </form>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  <style>
+  @media (min-width:640px) { #assetsGrid { grid-template-columns: repeat(4,1fr); } }
+  @media (min-width:1100px) { #assetsGrid { grid-template-columns: repeat(6,1fr); } }
+  </style>
+  {% else %}
+  <div class="b2b-panel"><div class="b2b-empty">
+    <div class="b2b-empty-icon">📁</div>
+    <h4>{% if lang=='ru' %}Медиатека пуста{% else %}Media library is empty{% endif %}</h4>
+    <p>{% if lang=='ru' %}Загрузите фото, видео и документы для ваших объектов и туров{% else %}Upload photos, videos and documents for your properties and tours{% endif %}</p>
+  </div></div>
+  {% endif %}
+</div>
+<script>
+function previewFile(input) {
+  const btn = document.getElementById('uploadBtn');
+  const preview = document.getElementById('filePreview');
+  const nameEl = document.getElementById('fileName');
+  const sizeEl = document.getElementById('fileSize');
+  if (input.files && input.files[0]) {
+    const f = input.files[0];
+    nameEl.textContent = f.name;
+    sizeEl.textContent = (f.size / 1024 / 1024).toFixed(2) + ' MB';
+    preview.style.display = 'flex';
+    btn.disabled = false;
+    btn.style.opacity = '1';
+    // Auto-detect file type
+    const sel = document.querySelector('select[name="file_type"]');
+    if (f.type.startsWith('image/')) sel.value = 'image';
+    else if (f.type.startsWith('video/')) sel.value = 'video';
+    else if (f.type === 'application/pdf') sel.value = 'pdf';
+  }
+}
+
+// Drag & drop
+const dz = document.getElementById('mediaDropzone');
+['dragover','dragleave','drop'].forEach(evt => {
+  dz.addEventListener(evt, e => {
+    e.preventDefault();
+    dz.classList.toggle('dragover', evt === 'dragover');
+    if (evt === 'drop' && e.dataTransfer.files.length) {
+      const input = document.getElementById('mediaFile');
+      // Transfer files to input
+      const dt = new DataTransfer();
+      dt.items.add(e.dataTransfer.files[0]);
+      input.files = dt.files;
+      previewFile(input);
+    }
+  });
+});
+
+// Show upload progress
+document.getElementById('mediaUploadForm').addEventListener('submit', function() {
+  const btn = document.getElementById('uploadBtn');
+  btn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> {% if lang=="ru" %}Загрузка...{% else %}Uploading...{% endif %}';
+  btn.disabled = true;
+});
+</script>
+{% endblock %}

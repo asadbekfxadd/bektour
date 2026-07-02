@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block title %}{{ service.title_en }} — Bek Tour{% endblock %}
+{% block content %}
+<div class="page-hero">
+  <div class="container">
+    <a href="{{ url_for('services.index') }}" style="color:rgba(255,255,255,.45);font-size:.8rem;margin-bottom:12px;display:inline-flex;align-items:center;gap:6px;"><i class="fa fa-arrow-left"></i> {% if lang=='ru' %}Услуги{% else %}Services{% endif %}</a>
+    <h1>{{ service.title_en }}</h1>
+    {% if service.price_from %}<p>{% if lang=='ru' %}От{% else %}From{% endif %} ${{ service.price_from }}</p>{% endif %}
+  </div>
+</div>
+<section style="padding:64px 0;">
+  <div class="container" style="max-width:800px;">
+    {% if service.description_en %}<p style="font-size:1.05rem;color:var(--muted);line-height:1.85;margin-bottom:32px;">{{ service.description_en }}</p>{% endif %}
+    <a href="{{ url_for('main.contacts') }}" class="btn btn-gold btn-lg"><i class="fa fa-calendar-check"></i> {% if lang=='ru' %}Забронировать{% else %}Book Now{% endif %}</a>
+  </div>
+</section>
+{% endblock %}

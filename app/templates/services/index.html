@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+{% block title %}{% if lang == 'ru' %}Услуги{% elif lang == 'uz' %}Xizmatlar{% else %}Services{% endif %} — Bek Tour{% endblock %}
+{% block extra_css %}
+<style>
+.services-hero { background:var(--ink); padding:80px 0 60px; padding-top:calc(var(--nav-h)+60px); text-align:center; position:relative; }
+.services-hero::after { content:''; position:absolute; bottom:0; left:0; right:0; height:1px; background:linear-gradient(90deg,transparent,var(--gold),transparent); }
+.service-section { padding:80px 0; }
+.service-section:nth-child(even) { background:var(--beige); }
+.service-layout { display:grid; grid-template-columns:1fr 1fr; gap:70px; align-items:center; }
+.service-layout.reverse { direction:rtl; }
+.service-layout.reverse > * { direction:ltr; }
+.service-img { border-radius:var(--r-xl); overflow:hidden; height:420px; }
+.service-img img { width:100%; height:100%; object-fit:cover; }
+.service-features { margin:20px 0 28px; }
+.service-feature { display:flex; align-items:center; gap:12px; padding:10px 0; border-bottom:1px solid var(--muted); font-size:.875rem; color:var(--muted); }
+.service-feature:last-child { border-bottom:none; }
+.service-feature-icon { width:32px; height:32px; border-radius:50%; background:rgba(212,175,55,.1); color:var(--gold); display:flex; align-items:center; justify-content:center; font-size:.8rem; flex-shrink:0; }
+.price-badge { display:inline-flex; align-items:center; gap:8px; background:rgba(212,175,55,.1); border:1px solid rgba(212,175,55,.2); color:var(--gold-dark); padding:8px 18px; border-radius:24px; font-weight:700; font-size:.85rem; margin-bottom:20px; }
+@media (max-width:768px) { .service-layout,.service-layout.reverse { grid-template-columns:1fr; direction:ltr; } .service-img { height:260px; } }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="services-hero">
+  <div class="container">
+    <span class="section-label">{% if lang == 'ru' %}Что мы предлагаем{% elif lang == 'uz' %}Biz taklif etamiz{% else %}What We Offer{% endif %}</span>
+    <h1 style="color:var(--white);margin-bottom:14px;">
+      {% if lang == 'ru' %}Премиальные услуги{% elif lang == 'uz' %}Premium Xizmatlar{% else %}Premium Services{% endif %}
+    </h1>
+    <p style="color:rgba(255,255,255,.5);font-size:1rem;max-width:500px;margin:0 auto;">
+      {% if lang == 'ru' %}Всё необходимое для идеального роскошного путешествия{% elif lang == 'uz' %}Mukammal hashamatli sayohat uchun kerak bo\'lgan hamma narsa{% else %}Everything you need for a perfect luxury experience{% endif %}
+    </p>
+  </div>
+</div>
+
+{% set svcs = [
+  ('transfer', 'fa-car', '/photo/samarkand?w=800&h=600',
+   {'en':'Airport Transfer','ru':'Трансфер из аэропорта','uz':'Aeroport transferi'},
+   {'en':'From $50','ru':'От $50','uz':'$50 dan'},
+   {'en':'Arrive in style with our premium airport transfer service. Professional drivers, luxury vehicles, and meet-and-greet service included.','ru':'Прибывайте стильно с нашим премиальным трансфером. Профессиональные водители, люксовые автомобили и встреча включены.','uz':'Bizning premium aeroport transfer xizmatimiz bilan uslubda keling. Professional haydovchilar, hashamatli avtomobillar va kutib olish xizmati kiritilgan.'},
+   [({'en':'Mercedes, BMW, Range Rover fleet','ru':'Автопарк Mercedes, BMW, Range Rover','uz':'Mercedes, BMW, Range Rover parki'}),
+    ({'en':'Flight tracking — no waiting','ru':'Отслеживание рейса — никакого ожидания','uz':'Parvozni kuzatish — kutish yo\'q'}),
+    ({'en':'Meet & greet at arrivals','ru':'Встреча в зоне прилёта','uz':'Kelish zonasida kutib olish'}),
+    ({'en':'Available 24/7','ru':'Доступно 24/7','uz':'24/7 mavjud'})]),
+  ('car', 'fa-car-side', '/photo/samarkand?w=800&h=600',
+   {'en':'Luxury Car Rental','ru':'Аренда роскошного автомобиля','uz':'Hashamatli avtomobil ijarasi'},
+   {'en':'From $150/day','ru':'От $150/день','uz':'$150/kundan'},
+   {'en':'Explore your destination in absolute comfort. Choose from our exclusive fleet of premium vehicles — from sleek sports cars to spacious SUVs.','ru':'Исследуйте направление в абсолютном комфорте. Выбирайте из нашего эксклюзивного парка премиальных автомобилей.','uz':'O\'z manzilingizni mutlaq qulaylikda o\'rganing. Ekskluziv hashamatli avtomobillar parkidan tanlang.'},
+   [({'en':'Ferrari, Lamborghini, Rolls-Royce','ru':'Ferrari, Lamborghini, Rolls-Royce','uz':'Ferrari, Lamborghini, Rolls-Royce'}),
+    ({'en':'Full insurance included','ru':'Полная страховка включена','uz':'To\'liq sug\'urta kiritilgan'}),
+    ({'en':'Delivery to your villa','ru':'Доставка к вашей вилле','uz':'Villangizga yetkazib berish'}),
+    ({'en':'Optional chauffeur service','ru':'Опциональный сервис с шофёром','uz':'Ixtiyoriy haydovchi xizmati'})]),
+  ('yacht', 'fa-ship', '/photo/samarkand?w=800&h=600',
+   {'en':'Yacht Charter','ru':'Аренда яхты','uz':'Yaxta ijarasi'},
+   {'en':'From $500/day','ru':'От $500/день','uz':'$500/kundan'},
+   {'en':'Set sail on a private luxury yacht. Perfect for sunset cruises, island hopping, snorkeling adventures, or exclusive private parties.','ru':'Отправьтесь в плавание на частной яхте. Идеально для закатных круизов, прогулок по островам и эксклюзивных вечеринок.','uz':'Xususiy hashamatli yaxtada suzib keting. Quyosh botishi kruizlari, orollarga sayohat va maxsus ziyofatlar uchun ideal.'},
+   [({'en':'Sailboats, motorboats, superyachts','ru':'Парусники, катера, суперяхты','uz':'Yelkanli qayiqlar, motorli qayiqlar, superyaxtalar'}),
+    ({'en':'Professional captain & crew','ru':'Профессиональный капитан и экипаж','uz':'Professional kapitan va ekipaj'}),
+    ({'en':'Catering & drinks on board','ru':'Кейтеринг и напитки на борту','uz':'Katering va ichimliklar bortda'}),
+    ({'en':'Custom routes','ru':'Индивидуальные маршруты','uz':'Moslashtirilgan marshrutlar'})]),
+  ('guide', 'fa-map-marked-alt', '/photo/samarkand?w=800&h=600',
+   {'en':'Private Guide','ru':'Частный гид','uz':'Shaxsiy gid'},
+   {'en':'From $80/day','ru':'От $80/день','uz':'$80/kundan'},
+   {'en':'Discover hidden gems and ancient cities with our licensed private guides. Deep local knowledge, multilingual, fully certified.','ru':'Откройте скрытые жемчужины и древние города с нашими лицензированными гидами. Глубокие местные знания, многоязычность.','uz':'Litsenziyalangan shaxsiy gidlarimiz bilan yashirin javohirotlar va qadimiy shaharlarni kashf eting.'},
+   [({'en':'Licensed & certified guides','ru':'Лицензированные гиды','uz':'Litsenziyalangan gidlar'}),
+    ({'en':'EN, RU, UZ, AR, FR available','ru':'Доступны EN, RU, UZ, AR, FR','uz':'EN, RU, UZ, AR, FR mavjud'}),
+    ({'en':'Custom itineraries','ru':'Индивидуальные маршруты','uz':'Moslashtirilgan dasturlar'}),
+    ({'en':'Cultural & historical expertise','ru':'Культурная и историческая экспертиза','uz':'Madaniy va tarixiy tajriba'})]),
+] %}
+
+{% for slug, icon, img, title, price, desc, features in svcs %}
+<section class="service-section" id="{{ slug }}">
+  <div class="container">
+    <div class="service-layout {% if loop.index % 2 == 0 %}reverse{% endif %}">
+      <div class="reveal">
+        <span class="section-label">{{ title[lang] if lang in title else title['en'] }}</span>
+        <h2 style="font-family:var(--font-serif);font-size:2.2rem;margin-bottom:12px;">{{ title[lang] if lang in title else title['en'] }}</h2>
+        <div class="price-badge"><i class="fa fa-tag"></i> {{ price[lang] if lang in price else price['en'] }}</div>
+        <p style="color:var(--muted);line-height:1.8;margin-bottom:20px;font-size:.95rem;">{{ desc[lang] if lang in desc else desc['en'] }}</p>
+        <div class="service-features">
+          {% for feat in features %}
+          <div class="service-feature">
+            <div class="service-feature-icon"><i class="fa fa-check"></i></div>
+            {{ feat[lang] if lang in feat else feat['en'] }}
+          </div>
+          {% endfor %}
+        </div>
+        <a href="{{ url_for('main.contacts') }}" class="btn btn-gold btn-lg">
+          {% if lang == 'ru' %}Забронировать{% elif lang == 'uz' %}Band qilish{% else %}Book Now{% endif %}
+          <i class="fa fa-arrow-right"></i>
+        </a>
+      </div>
+      <div class="service-img reveal"><img src="{{ img }}" alt="{{ title['en'] }}" loading="lazy"></div>
+    </div>
+  </div>
+</section>
+{% endfor %}
+
+<section style="background:var(--ink);padding:80px 0;text-align:center;">
+  <div class="container reveal">
+    <span class="section-label">{% if lang == 'ru' %}Индивидуальный пакет{% elif lang == 'uz' %}Maxsus paket{% else %}Custom Package{% endif %}</span>
+    <h2 style="color:var(--white);font-family:var(--font-serif);margin-bottom:14px;">
+      {% if lang == 'ru' %}Нужен индивидуальный пакет?{% elif lang == 'uz' %}Maxsus paket kerakmi?{% else %}Need a Custom Package?{% endif %}
+    </h2>
+    <p style="color:rgba(255,255,255,.45);margin-bottom:32px;max-width:460px;margin-left:auto;margin-right:auto;">
+      {% if lang == 'ru' %}Мы создаём уникальные путешествия, адаптированные под ваши предпочтения и бюджет{% elif lang == 'uz' %}Biz sizning afzalliklaringiz va byudjetingizga moslashtirilgan noyob sayohatlar yaratamiz{% else %}We create bespoke travel experiences tailored to your preferences and budget{% endif %}
+    </p>
+    <a href="{{ url_for('main.contacts') }}" class="btn btn-gold btn-xl">
+      <i class="fa fa-envelope"></i>
+      {% if lang == 'ru' %}Связаться с нами{% elif lang == 'uz' %}Biz bilan bog\'laning{% else %}Contact Us{% endif %}
+    </a>
+  </div>
+</section>
+{% endblock %}
